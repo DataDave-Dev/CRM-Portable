@@ -324,3 +324,48 @@ CREATE TABLE IF NOT EXISTS CotizacionDetalle (
 );
 
 --- MÓDULO 3: ACTIVIDADES ---
+
+-- Actividades (llamadas, reuniones, correos, tareas, visitas)
+CREATE TABLE IF NOT EXISTS Actividades (
+    ActividadID         INTEGER PRIMARY KEY AUTOINCREMENT,
+    TipoActividadID     INTEGER NOT NULL,
+    Asunto              TEXT NOT NULL,
+    Descripcion         TEXT,
+    ContactoID          INTEGER,
+    EmpresaID           INTEGER,
+    OportunidadID       INTEGER,
+    PropietarioID       INTEGER NOT NULL,
+    PrioridadID         INTEGER,
+    EstadoActividadID   INTEGER NOT NULL,
+    FechaInicio         TEXT,
+    FechaFin            TEXT,
+    FechaVencimiento    TEXT,
+    DuracionMinutos     INTEGER,
+    Ubicacion           TEXT,
+    Resultado           TEXT,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FechaModificacion   TEXT DEFAULT (datetime('now', 'localtime')),
+    CreadoPor           INTEGER,
+    ModificadoPor       INTEGER,
+    FOREIGN KEY (TipoActividadID) REFERENCES TiposActividad(TipoActividadID),
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID),
+    FOREIGN KEY (EmpresaID) REFERENCES Empresas(EmpresaID),
+    FOREIGN KEY (OportunidadID) REFERENCES Oportunidades(OportunidadID),
+    FOREIGN KEY (PropietarioID) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (PrioridadID) REFERENCES Prioridades(PrioridadID),
+    FOREIGN KEY (EstadoActividadID) REFERENCES EstadosActividad(EstadoActividadID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (ModificadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Participantes de actividades
+CREATE TABLE IF NOT EXISTS ActividadParticipantes (
+    ParticipanteID      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ActividadID         INTEGER NOT NULL,
+    ContactoID          INTEGER,
+    UsuarioID           INTEGER,
+    Confirmado          INTEGER DEFAULT 0,
+    FOREIGN KEY (ActividadID) REFERENCES Actividades(ActividadID),
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID),
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID)
+);
