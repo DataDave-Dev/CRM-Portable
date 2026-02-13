@@ -146,3 +146,181 @@ CREATE TABLE IF NOT EXISTS Empresas (
     FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID),
     FOREIGN KEY (ModificadoPor) REFERENCES Usuarios(UsuarioID)
 );
+
+-- Contactos (personas dentro de las empresas)
+CREATE TABLE IF NOT EXISTS Contactos (
+    ContactoID          INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nombre              TEXT NOT NULL,
+    ApellidoPaterno     TEXT NOT NULL,
+    ApellidoMaterno     TEXT,
+    Email               TEXT,
+    EmailSecundario     TEXT,
+    TelefonoOficina     TEXT,
+    TelefonoCelular     TEXT,
+    Puesto              TEXT,
+    Departamento        TEXT,
+    EmpresaID           INTEGER,
+    Direccion           TEXT,
+    CiudadID            INTEGER,
+    CodigoPostal        TEXT,
+    FechaNacimiento     TEXT,
+    LinkedInURL         TEXT,
+    OrigenID            INTEGER,
+    PropietarioID       INTEGER,
+    EsContactoPrincipal INTEGER DEFAULT 0,
+    NoContactar         INTEGER DEFAULT 0,
+    Activo              INTEGER DEFAULT 1,
+    FotoURL             TEXT,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FechaModificacion   TEXT DEFAULT (datetime('now', 'localtime')),
+    CreadoPor           INTEGER,
+    ModificadoPor       INTEGER,
+    FOREIGN KEY (EmpresaID) REFERENCES Empresas(EmpresaID),
+    FOREIGN KEY (CiudadID) REFERENCES Ciudades(CiudadID),
+    FOREIGN KEY (OrigenID) REFERENCES OrigenesContacto(OrigenID),
+    FOREIGN KEY (PropietarioID) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (ModificadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Notas de contactos
+CREATE TABLE IF NOT EXISTS NotasContacto (
+    NotaID              INTEGER PRIMARY KEY AUTOINCREMENT,
+    ContactoID          INTEGER NOT NULL,
+    Titulo              TEXT,
+    Contenido           TEXT NOT NULL,
+    EsPrivada           INTEGER DEFAULT 0,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    CreadoPor           INTEGER NOT NULL,
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Notas de empresas
+CREATE TABLE IF NOT EXISTS NotasEmpresa (
+    NotaID              INTEGER PRIMARY KEY AUTOINCREMENT,
+    EmpresaID           INTEGER NOT NULL,
+    Titulo              TEXT,
+    Contenido           TEXT NOT NULL,
+    EsPrivada           INTEGER DEFAULT 0,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    CreadoPor           INTEGER NOT NULL,
+    FOREIGN KEY (EmpresaID) REFERENCES Empresas(EmpresaID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+--- MÓDULO 2: OPORTUNIDADES DE VENTA (PIPELINE) ---
+
+-- Productos / Servicios del catálogo
+CREATE TABLE IF NOT EXISTS Productos (
+    ProductoID          INTEGER PRIMARY KEY AUTOINCREMENT,
+    Codigo              TEXT UNIQUE,
+    Nombre              TEXT NOT NULL,
+    Descripcion         TEXT,
+    Categoria           TEXT,
+    PrecioUnitario      REAL,
+    MonedaID            INTEGER,
+    UnidadMedida        TEXT,
+    Activo              INTEGER DEFAULT 1,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (MonedaID) REFERENCES Monedas(MonedaID)
+);
+
+-- Oportunidades de venta
+CREATE TABLE IF NOT EXISTS Oportunidades (
+    OportunidadID       INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nombre              TEXT NOT NULL,
+    EmpresaID           INTEGER,
+    ContactoID          INTEGER,
+    EtapaID             INTEGER NOT NULL,
+    MontoEstimado       REAL,
+    MonedaID            INTEGER,
+    ProbabilidadCierre  REAL,
+    FechaCierreEstimada TEXT,
+    FechaCierreReal     TEXT,
+    OrigenID            INTEGER,
+    PropietarioID       INTEGER NOT NULL,
+    MotivosPerdidaID    INTEGER,
+    NotasPerdida        TEXT,
+    Descripcion         TEXT,
+    EsGanada            INTEGER,  -- NULL=abierta, 1=ganada, 0=perdida
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FechaModificacion   TEXT DEFAULT (datetime('now', 'localtime')),
+    CreadoPor           INTEGER,
+    ModificadoPor       INTEGER,
+    FOREIGN KEY (EmpresaID) REFERENCES Empresas(EmpresaID),
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID),
+    FOREIGN KEY (EtapaID) REFERENCES EtapasVenta(EtapaID),
+    FOREIGN KEY (MonedaID) REFERENCES Monedas(MonedaID),
+    FOREIGN KEY (OrigenID) REFERENCES OrigenesContacto(OrigenID),
+    FOREIGN KEY (PropietarioID) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (MotivosPerdidaID) REFERENCES MotivosPerdida(MotivoID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID),
+    FOREIGN KEY (ModificadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Detalle de productos en cada oportunidad
+CREATE TABLE IF NOT EXISTS OportunidadProductos (
+    OportunidadProductoID INTEGER PRIMARY KEY AUTOINCREMENT,
+    OportunidadID         INTEGER NOT NULL,
+    ProductoID            INTEGER NOT NULL,
+    Cantidad              REAL NOT NULL DEFAULT 1,
+    PrecioUnitario        REAL NOT NULL,
+    Descuento             REAL DEFAULT 0,
+    Notas                 TEXT,
+    FOREIGN KEY (OportunidadID) REFERENCES Oportunidades(OportunidadID),
+    FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+);
+
+-- Historial de cambios de etapa en oportunidades
+CREATE TABLE IF NOT EXISTS HistorialEtapas (
+    HistorialID         INTEGER PRIMARY KEY AUTOINCREMENT,
+    OportunidadID       INTEGER NOT NULL,
+    EtapaAnteriorID     INTEGER,
+    EtapaNuevaID        INTEGER NOT NULL,
+    FechaCambio         TEXT DEFAULT (datetime('now', 'localtime')),
+    UsuarioID           INTEGER NOT NULL,
+    Comentario          TEXT,
+    FOREIGN KEY (OportunidadID) REFERENCES Oportunidades(OportunidadID),
+    FOREIGN KEY (EtapaAnteriorID) REFERENCES EtapasVenta(EtapaID),
+    FOREIGN KEY (EtapaNuevaID) REFERENCES EtapasVenta(EtapaID),
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Cotizaciones vinculadas a oportunidades
+CREATE TABLE IF NOT EXISTS Cotizaciones (
+    CotizacionID        INTEGER PRIMARY KEY AUTOINCREMENT,
+    NumeroCotizacion    TEXT NOT NULL UNIQUE,
+    OportunidadID       INTEGER NOT NULL,
+    ContactoID          INTEGER,
+    FechaEmision        TEXT NOT NULL DEFAULT (date('now', 'localtime')),
+    FechaVigencia       TEXT,
+    Subtotal            REAL,
+    IVA                 REAL,
+    Total               REAL,
+    MonedaID            INTEGER,
+    Estado              TEXT DEFAULT 'Borrador',
+    Notas               TEXT,
+    TerminosCondiciones TEXT,
+    CreadoPor           INTEGER NOT NULL,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (OportunidadID) REFERENCES Oportunidades(OportunidadID),
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID),
+    FOREIGN KEY (MonedaID) REFERENCES Monedas(MonedaID),
+    FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Detalle de cotizaciones
+CREATE TABLE IF NOT EXISTS CotizacionDetalle (
+    DetalleID           INTEGER PRIMARY KEY AUTOINCREMENT,
+    CotizacionID        INTEGER NOT NULL,
+    ProductoID          INTEGER NOT NULL,
+    Descripcion         TEXT,
+    Cantidad            REAL NOT NULL DEFAULT 1,
+    PrecioUnitario      REAL NOT NULL,
+    Descuento           REAL DEFAULT 0,
+    FOREIGN KEY (CotizacionID) REFERENCES Cotizaciones(CotizacionID),
+    FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+);
+
+--- MÓDULO 3: ACTIVIDADES ---
