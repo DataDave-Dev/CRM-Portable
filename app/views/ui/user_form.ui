@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>700</height>
+    <width>889</width>
+    <height>822</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -151,8 +151,8 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>780</width>
-        <height>680</height>
+        <width>889</width>
+        <height>822</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -174,8 +174,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
        <property name="bottomMargin">
         <number>10</number>
        </property>
-
-       <!-- HEADER: Titulo y subtitulo -->
        <item>
         <widget class="QLabel" name="form_titulo">
          <property name="text">
@@ -193,8 +191,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- SEPARATOR -->
        <item>
         <widget class="QFrame" name="separator1">
          <property name="frameShape">
@@ -205,8 +201,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- SECCION: Informacion Personal -->
        <item>
         <widget class="QLabel" name="seccionPersonal">
          <property name="text">
@@ -214,8 +208,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- Fila: Nombre / Apellido Paterno -->
        <item>
         <layout class="QHBoxLayout" name="row1Layout">
          <property name="spacing">
@@ -268,8 +260,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- Fila: Apellido Materno / Telefono -->
        <item>
         <layout class="QHBoxLayout" name="row2Layout">
          <property name="spacing">
@@ -310,11 +300,11 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
            </item>
            <item>
             <widget class="QLineEdit" name="input_telefono">
-             <property name="placeholderText">
-              <string>10 digitos (opcional)</string>
-             </property>
              <property name="maxLength">
               <number>10</number>
+             </property>
+             <property name="placeholderText">
+              <string>10 digitos (opcional)</string>
              </property>
             </widget>
            </item>
@@ -322,8 +312,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- SEPARATOR -->
        <item>
         <widget class="QFrame" name="separator2">
          <property name="frameShape">
@@ -334,8 +322,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- SECCION: Informacion de Cuenta -->
        <item>
         <widget class="QLabel" name="seccionCuenta">
          <property name="text">
@@ -343,8 +329,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- Fila: Email (ancho completo) -->
        <item>
         <layout class="QVBoxLayout" name="emailLayout">
          <property name="spacing">
@@ -366,8 +350,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- Fila: Contrasena / Confirmar Contrasena -->
        <item>
         <layout class="QHBoxLayout" name="row4Layout">
          <property name="spacing">
@@ -392,33 +374,33 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
              </property>
              <item>
               <widget class="QLineEdit" name="input_password">
-               <property name="placeholderText">
-                <string>Minimo 8 caracteres</string>
-               </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
+               </property>
+               <property name="placeholderText">
+                <string>Minimo 8 caracteres</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="btn_toggle_password">
-               <property name="text">
-                <string>Ver</string>
-               </property>
                <property name="minimumSize">
                 <size>
-                 <width>38</width>
+                 <width>50</width>
                  <height>34</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>38</width>
+                 <width>60</width>
                  <height>34</height>
                 </size>
                </property>
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string>Ver</string>
                </property>
               </widget>
              </item>
@@ -445,33 +427,33 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
              </property>
              <item>
               <widget class="QLineEdit" name="input_confirm_password">
-               <property name="placeholderText">
-                <string>Repite la contrasena</string>
-               </property>
                <property name="echoMode">
                 <enum>QLineEdit::Password</enum>
+               </property>
+               <property name="placeholderText">
+                <string>Repite la contrasena</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="btn_toggle_confirm">
-               <property name="text">
-                <string>Ver</string>
-               </property>
                <property name="minimumSize">
                 <size>
-                 <width>38</width>
+                 <width>50</width>
                  <height>34</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>38</width>
+                 <width>60</width>
                  <height>34</height>
                 </size>
                </property>
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string>Ver</string>
                </property>
               </widget>
              </item>
@@ -481,8 +463,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- SEPARATOR -->
        <item>
         <widget class="QFrame" name="separator3">
          <property name="frameShape">
@@ -493,8 +473,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- SECCION: Permisos y Estado -->
        <item>
         <widget class="QLabel" name="seccionPermisos">
          <property name="text">
@@ -502,8 +480,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </widget>
        </item>
-
-       <!-- Fila: Rol / Estado -->
        <item>
         <layout class="QHBoxLayout" name="row5Layout">
          <property name="spacing">
@@ -552,8 +528,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- SPACER vertical -->
        <item>
         <spacer name="formBottomSpacer">
          <property name="orientation">
@@ -570,8 +544,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </spacer>
        </item>
-
-       <!-- BOTONES DE ACCION -->
        <item>
         <layout class="QHBoxLayout" name="buttonsLayout">
          <property name="spacing">
@@ -579,31 +551,31 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
          <item>
           <widget class="QPushButton" name="btn_guardar">
-           <property name="text">
-            <string>Guardar Usuario</string>
-           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Guardar Usuario</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_limpiar">
-           <property name="text">
-            <string>Limpiar</string>
-           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Limpiar</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btn_cancelar">
-           <property name="text">
-            <string>Cancelar</string>
-           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Cancelar</string>
            </property>
           </widget>
          </item>
@@ -622,8 +594,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </item>
         </layout>
        </item>
-
-       <!-- SPACER expansivo final -->
        <item>
         <spacer name="finalSpacer">
          <property name="orientation">
@@ -637,7 +607,6 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
          </property>
         </spacer>
        </item>
-
       </layout>
      </widget>
     </widget>

@@ -22,7 +22,7 @@
   <property name="styleSheet">
    <string notr="true">/* Estilos globales */
 QWidget {
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
 }
 
 /* Panel izquierdo con branding */
@@ -191,28 +191,6 @@ QLineEdit:hover {
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="iconLabel">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>120</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>120</width>
-          <height>120</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QLabel" name="brandTitle">
@@ -449,11 +427,11 @@ QLineEdit:hover {
           <height>50</height>
          </size>
         </property>
-        <property name="placeholderText">
-         <string>••••••••</string>
-        </property>
         <property name="echoMode">
          <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="placeholderText">
+         <string>••••••••</string>
         </property>
        </widget>
       </item>
@@ -507,6 +485,9 @@ QLineEdit:hover {
       </item>
       <item>
        <widget class="QLabel" name="errorLabel">
+        <property name="visible">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -515,9 +496,6 @@ QLineEdit:hover {
         </property>
         <property name="wordWrap">
          <bool>true</bool>
-        </property>
-        <property name="visible">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -533,16 +511,6 @@ QLineEdit:hover {
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="hintLabel">
-        <property name="text">
-         <string>  Credenciales de prueba: admin@crm.com / admin123</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>

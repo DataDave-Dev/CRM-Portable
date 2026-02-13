@@ -2,13 +2,11 @@
 
 import os
 from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QComboBox, QCheckBox, QMessageBox,
-    QScrollArea, QFrame, QGridLayout, QTableWidget, QTableWidgetItem,
-    QHeaderView, QAbstractItemView
+    QMainWindow, QWidget, QLineEdit, QMessageBox,
+    QTableWidgetItem, QHeaderView
 )
-from PyQt5.QtGui import QIcon, QCursor, QColor
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtCore import QSize
 from PyQt5 import uic
 from app.services.usuario_service import UsuarioService
 from app.repositories.rol_repository import RolRepository
@@ -99,194 +97,34 @@ class MainView(QMainWindow):
             boton_activo.setStyleSheet(estilo_activo)
 
     def _create_lista_usuarios(self):
-        # crear el widget de lista de usuarios con diseño mejorado
+        # cargar la lista de usuarios desde el archivo .ui (editable con Qt Designer)
+        ui_list_path = os.path.join(os.path.dirname(__file__), "ui", "user_list.ui")
         self.lista_usuarios_widget = QWidget()
-        lista_layout = QVBoxLayout(self.lista_usuarios_widget)
-        lista_layout.setContentsMargins(0, 0, 0, 0)
-        lista_layout.setSpacing(25)
+        uic.loadUi(ui_list_path, self.lista_usuarios_widget)
 
-        # cabecera con título y botón nuevo
-        header_container = QWidget()
-        header_layout = QHBoxLayout(header_container)
-        header_layout.setContentsMargins(0, 0, 0, 0)
+        # crear referencias directas
+        self.btn_nuevo_usuario = self.lista_usuarios_widget.btn_nuevo_usuario
+        self.tabla_usuarios = self.lista_usuarios_widget.tabla_usuarios
+        self.stat_value_total = self.lista_usuarios_widget.statValueTotal
+        self.stat_value_activos = self.lista_usuarios_widget.statValueActivos
+        self.stat_value_inactivos = self.lista_usuarios_widget.statValueInactivos
 
-        # contenedor del título y subtítulo
-        title_container = QWidget()
-        title_layout = QVBoxLayout(title_container)
-        title_layout.setContentsMargins(0, 0, 0, 0)
-        title_layout.setSpacing(5)
-
-        titulo = QLabel("Gestión de Usuarios")
-        titulo.setStyleSheet("font-size: 28px; font-weight: bold; color: #1a1a2e;")
-        title_layout.addWidget(titulo)
-
-        subtitulo = QLabel("Administra y visualiza todos los usuarios del sistema")
-        subtitulo.setStyleSheet("font-size: 15px; color: #7f8c9b;")
-        title_layout.addWidget(subtitulo)
-
-        header_layout.addWidget(title_container)
-        header_layout.addStretch()
-
-        # botón para crear nuevo usuario
-        self.btn_nuevo_usuario = QPushButton("+ Nuevo Usuario")
-        self.btn_nuevo_usuario.setFixedSize(180, 50)
-        self.btn_nuevo_usuario.setStyleSheet("""
-            QPushButton {
-                background-color: #4a90d9;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: 600;
-                padding: 0 25px;
-            }
-            QPushButton:hover {
-                background-color: #3a7bc8;
-            }
-            QPushButton:pressed {
-                background-color: #2a6bb8;
-            }
-        """)
-        self.btn_nuevo_usuario.setCursor(QCursor(Qt.PointingHandCursor))
+        # conectar señales
         self.btn_nuevo_usuario.clicked.connect(self._mostrar_form_nuevo_usuario)
-        header_layout.addWidget(self.btn_nuevo_usuario)
+        self.tabla_usuarios.doubleClicked.connect(self._editar_usuario_seleccionado)
 
-        lista_layout.addWidget(header_container)
-
-        # tarjetas de estadísticas rápidas
-        stats_container = QWidget()
-        stats_layout = QHBoxLayout(stats_container)
-        stats_layout.setContentsMargins(0, 0, 0, 0)
-        stats_layout.setSpacing(20)
-
-        # tarjeta total de usuarios
-        self.card_total_usuarios = self._create_stat_card("Total Usuarios", "0", "#4a90d9")
-        stats_layout.addWidget(self.card_total_usuarios, 1)
-
-        # tarjeta usuarios activos
-        self.card_usuarios_activos = self._create_stat_card("Usuarios Activos", "0", "#48bb78")
-        stats_layout.addWidget(self.card_usuarios_activos, 1)
-
-        # tarjeta usuarios inactivos
-        self.card_usuarios_inactivos = self._create_stat_card("Usuarios Inactivos", "0", "#f56565")
-        stats_layout.addWidget(self.card_usuarios_inactivos, 1)
-
-        lista_layout.addWidget(stats_container)
-
-        # crear tabla de usuarios con mejor diseño
-        self.tabla_usuarios = QTableWidget()
-        self.tabla_usuarios.setColumnCount(7)
-        self.tabla_usuarios.setHorizontalHeaderLabels([
-            "ID", "Nombre Completo", "Email", "Teléfono", "Rol", "Estado", "Fecha Registro"
-        ])
-
-        # configurar apariencia de la tabla mejorada
-        self.tabla_usuarios.setStyleSheet("""
-            QTableWidget {
-                background-color: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 10px;
-                gridline-color: #f0f2f5;
-                font-size: 14px;
-            }
-            QHeaderView::section {
-                background-color: #f7fafc;
-                color: #2d3748;
-                font-weight: bold;
-                font-size: 14px;
-                padding: 15px 12px;
-                border: none;
-                border-bottom: 2px solid #e2e8f0;
-                border-right: 1px solid #f0f2f5;
-            }
-            QHeaderView::section:first {
-                border-top-left-radius: 10px;
-            }
-            QHeaderView::section:last {
-                border-top-right-radius: 10px;
-                border-right: none;
-            }
-            QTableWidget::item {
-                padding: 15px 12px;
-                color: #2d3748;
-                border-bottom: 1px solid #f0f2f5;
-            }
-            QTableWidget::item:selected {
-                background-color: #ebf8ff;
-                color: #2c5282;
-            }
-            QTableWidget::item:hover {
-                background-color: #f7fafc;
-            }
-        """)
-
-        # configurar comportamiento de la tabla
-        self.tabla_usuarios.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tabla_usuarios.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tabla_usuarios.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tabla_usuarios.setAlternatingRowColors(False)
-        self.tabla_usuarios.setShowGrid(True)
-
-        # configurar headers horizontales para ocupar todo el ancho
+        # configurar headers de la tabla para ocupar todo el ancho
         h_header = self.tabla_usuarios.horizontalHeader()
         if h_header:
             h_header.setSectionResizeMode(QHeaderView.Stretch)
 
-        # configurar headers verticales
         v_header = self.tabla_usuarios.verticalHeader()
         if v_header:
             v_header.setVisible(False)
-            # agregar más altura a las filas para mejor legibilidad
-            v_header.setDefaultSectionSize(50)
-
-        # doble-click en una fila abre el formulario de edición
-        self.tabla_usuarios.doubleClicked.connect(self._editar_usuario_seleccionado)
-
-        lista_layout.addWidget(self.tabla_usuarios)
+            v_header.setDefaultSectionSize(42)
 
         # ocultar el widget inicialmente
         self.lista_usuarios_widget.hide()
-
-    def _create_stat_card(self, title, value, color):
-        # crear una tarjeta de estadística con diseño moderno
-        card = QWidget()
-        card.setFixedHeight(100)
-        card.setStyleSheet(f"""
-            QWidget {{
-                background-color: white;
-                border: 1px solid #e2e8f0;
-                border-left: 4px solid {color};
-                border-radius: 8px;
-            }}
-        """)
-
-        card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(20, 15, 20, 15)
-        card_layout.setSpacing(8)
-
-        # etiqueta del valor (número grande)
-        value_label = QLabel(value)
-        value_label.setObjectName("statValue")
-        value_label.setStyleSheet(f"""
-            font-size: 32px;
-            font-weight: bold;
-            color: {color};
-        """)
-        card_layout.addWidget(value_label)
-
-        # etiqueta del título
-        title_label = QLabel(title)
-        title_label.setStyleSheet("""
-            font-size: 13px;
-            color: #718096;
-            font-weight: 500;
-        """)
-        card_layout.addWidget(title_label)
-
-        # guardar referencia al label del valor para actualizarlo después
-        card.value_label = value_label
-
-        return card
 
     def _cargar_tabla_usuarios(self):
         # cargar todos los usuarios desde la BD y mostrarlos en la tabla
@@ -298,9 +136,9 @@ class MainView(QMainWindow):
             usuarios_activos = sum(1 for u in usuarios if u.activo == 1)
             usuarios_inactivos = total_usuarios - usuarios_activos
 
-            self.card_total_usuarios.value_label.setText(str(total_usuarios))
-            self.card_usuarios_activos.value_label.setText(str(usuarios_activos))
-            self.card_usuarios_inactivos.value_label.setText(str(usuarios_inactivos))
+            self.stat_value_total.setText(str(total_usuarios))
+            self.stat_value_activos.setText(str(usuarios_activos))
+            self.stat_value_inactivos.setText(str(usuarios_inactivos))
 
             # limpiar la tabla antes de llenarla
             self.tabla_usuarios.setRowCount(0)
@@ -458,378 +296,40 @@ class MainView(QMainWindow):
         self.contentLayout.invalidate()
 
     def _create_form_usuarios(self):
-        # crear el widget de formulario de alta de usuarios con diseño mejorado
+        # cargar el formulario desde el archivo .ui (editable con Qt Designer)
+        ui_form_path = os.path.join(os.path.dirname(__file__), "ui", "user_form.ui")
         self.form_usuarios_widget = QWidget()
-        form_layout = QVBoxLayout(self.form_usuarios_widget)
-        form_layout.setContentsMargins(0, 0, 0, 0)
+        uic.loadUi(ui_form_path, self.form_usuarios_widget)
 
-        # crear un scroll area para el formulario
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        scroll.setStyleSheet("QScrollArea { background-color: transparent; border: none; }")
+        # conectar señales de los botones
+        self.form_usuarios_widget.btn_guardar.clicked.connect(self._guardar_usuario)
+        self.form_usuarios_widget.btn_limpiar.clicked.connect(self._limpiar_formulario)
+        self.form_usuarios_widget.btn_cancelar.clicked.connect(self._mostrar_seccion_usuarios)
+        self.form_usuarios_widget.btn_toggle_password.clicked.connect(self._toggle_password_visibility)
+        self.form_usuarios_widget.btn_toggle_confirm.clicked.connect(self._toggle_confirm_visibility)
 
-        # contenedor del formulario
-        form_container = QWidget()
-        container_layout = QVBoxLayout(form_container)
-        container_layout.setSpacing(30)
-        container_layout.setContentsMargins(0, 0, 20, 0)
+        # crear referencias directas para acceso rapido desde el resto de la clase
+        self.form_titulo = self.form_usuarios_widget.form_titulo
+        self.form_subtitulo = self.form_usuarios_widget.form_subtitulo
+        self.input_nombre = self.form_usuarios_widget.input_nombre
+        self.input_apellido_paterno = self.form_usuarios_widget.input_apellido_paterno
+        self.input_apellido_materno = self.form_usuarios_widget.input_apellido_materno
+        self.input_telefono = self.form_usuarios_widget.input_telefono
+        self.input_email = self.form_usuarios_widget.input_email
+        self.input_password = self.form_usuarios_widget.input_password
+        self.input_confirm_password = self.form_usuarios_widget.input_confirm_password
+        self.btn_toggle_password = self.form_usuarios_widget.btn_toggle_password
+        self.btn_toggle_confirm = self.form_usuarios_widget.btn_toggle_confirm
+        self.btn_guardar = self.form_usuarios_widget.btn_guardar
+        self.combo_rol = self.form_usuarios_widget.combo_rol
+        self.check_activo = self.form_usuarios_widget.check_activo
+        self.label_password = self.form_usuarios_widget.label_password
+        self.label_confirm_password = self.form_usuarios_widget.label_confirm_password
 
-        # cabecera del formulario
-        header_container = QWidget()
-        header_layout = QVBoxLayout(header_container)
-        header_layout.setContentsMargins(0, 0, 0, 0)
-        header_layout.setSpacing(8)
-
-        self.form_titulo = QLabel("Nuevo Usuario")
-        self.form_titulo.setStyleSheet("font-size: 32px; font-weight: bold; color: #1a1a2e;")
-        header_layout.addWidget(self.form_titulo)
-
-        self.form_subtitulo = QLabel("Completa la información del nuevo usuario del sistema. Los campos marcados con * son obligatorios.")
-        self.form_subtitulo.setStyleSheet("font-size: 15px; color: #718096; line-height: 1.5;")
-        self.form_subtitulo.setWordWrap(True)
-        header_layout.addWidget(self.form_subtitulo)
-
-        container_layout.addWidget(header_container)
-
-        # contenedor con fondo blanco para el formulario
-        form_card = QWidget()
-        form_card.setStyleSheet("""
-            QWidget {
-                background-color: white;
-                border-radius: 12px;
-                border: 1px solid #e2e8f0;
-            }
-        """)
-        form_card_layout = QVBoxLayout(form_card)
-        form_card_layout.setContentsMargins(40, 35, 40, 35)
-        form_card_layout.setSpacing(25)
-
-        # crear el grid para los campos del formulario con diseño de 2 columnas
-        form_grid = QGridLayout()
-        form_grid.setHorizontalSpacing(25)
-        form_grid.setVerticalSpacing(20)
-        form_grid.setColumnStretch(1, 1)
-        form_grid.setColumnStretch(3, 1)
-
-        # estilos mejorados para los inputs
-        input_style = """
-            QLineEdit, QComboBox {
-                padding: 14px 16px;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                background-color: #f7fafc;
-                font-size: 15px;
-                min-height: 48px;
-            }
-            QLineEdit:focus, QComboBox:focus {
-                border: 2px solid #4a90d9;
-                background-color: white;
-            }
-            QLineEdit:hover, QComboBox:hover {
-                border: 2px solid #cbd5e0;
-            }
-        """
-
-        label_style = """
-            font-size: 14px;
-            color: #2d3748;
-            font-weight: 600;
-        """
-
-        row = 0
-
-        # sección de información personal
-        seccion_personal = QLabel("Información Personal")
-        seccion_personal.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a2e; margin-top: 5px;")
-        form_grid.addWidget(seccion_personal, row, 0, 1, 4)
-        row += 1
-
-        # nombre (columna izquierda)
-        nombre_layout = QVBoxLayout()
-        nombre_layout.setSpacing(8)
-        label_nombre = QLabel("Nombre *")
-        label_nombre.setStyleSheet(label_style)
-        self.input_nombre = QLineEdit()
-        self.input_nombre.setPlaceholderText("Ingresa el nombre")
-        self.input_nombre.setStyleSheet(input_style)
-        nombre_layout.addWidget(label_nombre)
-        nombre_layout.addWidget(self.input_nombre)
-        form_grid.addLayout(nombre_layout, row, 0)
-
-        # apellido paterno (columna derecha)
-        apellido_p_layout = QVBoxLayout()
-        apellido_p_layout.setSpacing(8)
-        label_apellido_p = QLabel("Apellido Paterno *")
-        label_apellido_p.setStyleSheet(label_style)
-        self.input_apellido_paterno = QLineEdit()
-        self.input_apellido_paterno.setPlaceholderText("Ingresa el apellido paterno")
-        self.input_apellido_paterno.setStyleSheet(input_style)
-        apellido_p_layout.addWidget(label_apellido_p)
-        apellido_p_layout.addWidget(self.input_apellido_paterno)
-        form_grid.addLayout(apellido_p_layout, row, 1)
-        row += 1
-
-        # apellido materno (columna izquierda)
-        apellido_m_layout = QVBoxLayout()
-        apellido_m_layout.setSpacing(8)
-        label_apellido_m = QLabel("Apellido Materno")
-        label_apellido_m.setStyleSheet(label_style)
-        self.input_apellido_materno = QLineEdit()
-        self.input_apellido_materno.setPlaceholderText("Ingresa el apellido materno (opcional)")
-        self.input_apellido_materno.setStyleSheet(input_style)
-        apellido_m_layout.addWidget(label_apellido_m)
-        apellido_m_layout.addWidget(self.input_apellido_materno)
-        form_grid.addLayout(apellido_m_layout, row, 0)
-
-        # teléfono (columna derecha)
-        telefono_layout = QVBoxLayout()
-        telefono_layout.setSpacing(8)
-        label_telefono = QLabel("Teléfono")
-        label_telefono.setStyleSheet(label_style)
-        self.input_telefono = QLineEdit()
-        self.input_telefono.setPlaceholderText("10 dígitos (opcional)")
-        self.input_telefono.setMaxLength(10)
-        self.input_telefono.setStyleSheet(input_style)
-        telefono_layout.addWidget(label_telefono)
-        telefono_layout.addWidget(self.input_telefono)
-        form_grid.addLayout(telefono_layout, row, 1)
-        row += 1
-
-        # sección de cuenta
-        seccion_cuenta = QLabel("Información de Cuenta")
-        seccion_cuenta.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a2e; margin-top: 15px;")
-        form_grid.addWidget(seccion_cuenta, row, 0, 1, 4)
-        row += 1
-
-        # email (span completo)
-        email_layout = QVBoxLayout()
-        email_layout.setSpacing(8)
-        label_email = QLabel("Email *")
-        label_email.setStyleSheet(label_style)
-        self.input_email = QLineEdit()
-        self.input_email.setPlaceholderText("ejemplo@correo.com")
-        self.input_email.setStyleSheet(input_style)
-        email_layout.addWidget(label_email)
-        email_layout.addWidget(self.input_email)
-        form_grid.addLayout(email_layout, row, 0, 1, 2)
-        row += 1
-
-        # contraseña (columna izquierda)
-        password_main_layout = QVBoxLayout()
-        password_main_layout.setSpacing(8)
-        self.label_password = QLabel("Contraseña *")
-        self.label_password.setStyleSheet(label_style)
-
-        password_container = QWidget()
-        password_layout = QHBoxLayout(password_container)
-        password_layout.setContentsMargins(0, 0, 0, 0)
-        password_layout.setSpacing(8)
-
-        self.input_password = QLineEdit()
-        self.input_password.setPlaceholderText("Mínimo 8 caracteres")
-        self.input_password.setEchoMode(QLineEdit.Password)
-        self.input_password.setStyleSheet(input_style)
-
-        self.btn_toggle_password = QPushButton("👁")
-        self.btn_toggle_password.setFixedSize(48, 48)
-        self.btn_toggle_password.setStyleSheet("""
-            QPushButton {
-                background-color: #f0f2f5;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 18px;
-            }
-            QPushButton:hover {
-                background-color: #e2e8f0;
-                border: 2px solid #cbd5e0;
-            }
-        """)
-        self.btn_toggle_password.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_toggle_password.clicked.connect(self._toggle_password_visibility)
-
-        password_layout.addWidget(self.input_password)
-        password_layout.addWidget(self.btn_toggle_password)
-
-        password_main_layout.addWidget(self.label_password)
-        password_main_layout.addWidget(password_container)
-        form_grid.addLayout(password_main_layout, row, 0)
-
-        # confirmar contraseña (columna derecha)
-        confirm_main_layout = QVBoxLayout()
-        confirm_main_layout.setSpacing(8)
-        self.label_confirm_password = QLabel("Confirmar Contraseña *")
-        self.label_confirm_password.setStyleSheet(label_style)
-
-        confirm_password_container = QWidget()
-        confirm_password_layout = QHBoxLayout(confirm_password_container)
-        confirm_password_layout.setContentsMargins(0, 0, 0, 0)
-        confirm_password_layout.setSpacing(8)
-
-        self.input_confirm_password = QLineEdit()
-        self.input_confirm_password.setPlaceholderText("Repite la contraseña")
-        self.input_confirm_password.setEchoMode(QLineEdit.Password)
-        self.input_confirm_password.setStyleSheet(input_style)
-
-        self.btn_toggle_confirm = QPushButton("👁")
-        self.btn_toggle_confirm.setFixedSize(48, 48)
-        self.btn_toggle_confirm.setStyleSheet("""
-            QPushButton {
-                background-color: #f0f2f5;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 18px;
-            }
-            QPushButton:hover {
-                background-color: #e2e8f0;
-                border: 2px solid #cbd5e0;
-            }
-        """)
-        self.btn_toggle_confirm.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_toggle_confirm.clicked.connect(self._toggle_confirm_visibility)
-
-        confirm_password_layout.addWidget(self.input_confirm_password)
-        confirm_password_layout.addWidget(self.btn_toggle_confirm)
-
-        confirm_main_layout.addWidget(self.label_confirm_password)
-        confirm_main_layout.addWidget(confirm_password_container)
-        form_grid.addLayout(confirm_main_layout, row, 1)
-        row += 1
-
-        # sección de permisos
-        seccion_permisos = QLabel("Permisos y Estado")
-        seccion_permisos.setStyleSheet("font-size: 18px; font-weight: bold; color: #1a1a2e; margin-top: 15px;")
-        form_grid.addWidget(seccion_permisos, row, 0, 1, 4)
-        row += 1
-
-        # rol (columna izquierda)
-        rol_layout = QVBoxLayout()
-        rol_layout.setSpacing(8)
-        label_rol = QLabel("Rol *")
-        label_rol.setStyleSheet(label_style)
-        self.combo_rol = QComboBox()
-        self.combo_rol.setStyleSheet(input_style)
+        # cargar los roles en el combobox
         self._cargar_roles()
-        rol_layout.addWidget(label_rol)
-        rol_layout.addWidget(self.combo_rol)
-        form_grid.addLayout(rol_layout, row, 0)
 
-        # estado (columna derecha)
-        estado_layout = QVBoxLayout()
-        estado_layout.setSpacing(8)
-        label_activo = QLabel("Estado")
-        label_activo.setStyleSheet(label_style)
-        self.check_activo = QCheckBox("Usuario activo")
-        self.check_activo.setChecked(True)
-        self.check_activo.setStyleSheet("""
-            QCheckBox {
-                font-size: 15px;
-                color: #2d3748;
-                spacing: 10px;
-            }
-            QCheckBox::indicator {
-                width: 20px;
-                height: 20px;
-                border: 2px solid #e2e8f0;
-                border-radius: 4px;
-                background-color: #f7fafc;
-            }
-            QCheckBox::indicator:checked {
-                background-color: #4a90d9;
-                border-color: #4a90d9;
-                image: url(none);
-            }
-            QCheckBox::indicator:hover {
-                border-color: #cbd5e0;
-            }
-        """)
-        estado_layout.addWidget(label_activo)
-        estado_layout.addWidget(self.check_activo)
-        form_grid.addLayout(estado_layout, row, 1)
-        row += 1
-
-        # agregar el grid a la tarjeta
-        form_card_layout.addLayout(form_grid)
-
-        container_layout.addWidget(form_card)
-
-        # botones de acción fuera de la tarjeta
-        buttons_layout = QHBoxLayout()
-        buttons_layout.setSpacing(15)
-        buttons_layout.setContentsMargins(0, 10, 0, 0)
-
-        self.btn_guardar = QPushButton("Guardar Usuario")
-        self.btn_guardar.setFixedSize(180, 55)
-        self.btn_guardar.setStyleSheet("""
-            QPushButton {
-                background-color: #4a90d9;
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: 600;
-            }
-            QPushButton:hover {
-                background-color: #3a7bc8;
-            }
-            QPushButton:pressed {
-                background-color: #2a6bb8;
-            }
-        """)
-        self.btn_guardar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_guardar.clicked.connect(self._guardar_usuario)
-
-        self.btn_limpiar = QPushButton("Limpiar")
-        self.btn_limpiar.setFixedSize(120, 55)
-        self.btn_limpiar.setStyleSheet("""
-            QPushButton {
-                background-color: white;
-                color: #2d3748;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: 500;
-            }
-            QPushButton:hover {
-                background-color: #f7fafc;
-                border-color: #cbd5e0;
-            }
-        """)
-        self.btn_limpiar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_limpiar.clicked.connect(self._limpiar_formulario)
-
-        self.btn_cancelar = QPushButton("Cancelar")
-        self.btn_cancelar.setFixedSize(120, 55)
-        self.btn_cancelar.setStyleSheet("""
-            QPushButton {
-                background-color: white;
-                color: #718096;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: 500;
-            }
-            QPushButton:hover {
-                background-color: #f7fafc;
-                border-color: #cbd5e0;
-            }
-        """)
-        self.btn_cancelar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_cancelar.clicked.connect(self._mostrar_seccion_usuarios)
-
-        buttons_layout.addWidget(self.btn_guardar)
-        buttons_layout.addWidget(self.btn_limpiar)
-        buttons_layout.addWidget(self.btn_cancelar)
-        buttons_layout.addStretch()
-
-        container_layout.addLayout(buttons_layout)
-        container_layout.addStretch()
-
-        # configurar el scroll area
-        scroll.setWidget(form_container)
-        form_layout.addWidget(scroll)
-
-        # ocultar el formulario inicialmente - se mostrará cuando se presione "Nuevo Usuario"
+        # ocultar el formulario inicialmente
         self.form_usuarios_widget.hide()
 
     def _cargar_roles(self):
@@ -850,19 +350,19 @@ class MainView(QMainWindow):
         # alternar entre mostrar y ocultar la contraseña
         if self.input_password.echoMode() == QLineEdit.Password:
             self.input_password.setEchoMode(QLineEdit.Normal)
-            self.btn_toggle_password.setText("🙈")
+            self.btn_toggle_password.setText("Ocultar")
         else:
             self.input_password.setEchoMode(QLineEdit.Password)
-            self.btn_toggle_password.setText("👁")
+            self.btn_toggle_password.setText("Ver")
 
     def _toggle_confirm_visibility(self):
         # alternar entre mostrar y ocultar la confirmación de contraseña
         if self.input_confirm_password.echoMode() == QLineEdit.Password:
             self.input_confirm_password.setEchoMode(QLineEdit.Normal)
-            self.btn_toggle_confirm.setText("🙈")
+            self.btn_toggle_confirm.setText("Ocultar")
         else:
             self.input_confirm_password.setEchoMode(QLineEdit.Password)
-            self.btn_toggle_confirm.setText("👁")
+            self.btn_toggle_confirm.setText("Ver")
 
     def _validar_formulario(self):
         # validar que todos los campos requeridos estén completos

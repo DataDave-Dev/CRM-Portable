@@ -14,7 +14,10 @@ class UsuarioService:
         # validar que los campos requeridos estén presentes
         campos_requeridos = ["nombre", "apellido_paterno", "email", "contrasena", "rol_id"]
         for campo in campos_requeridos:
-            if not datos_usuario.get(campo) or datos_usuario.get(campo).strip() == "":
+            valor = datos_usuario.get(campo)
+            if valor is None:
+                return None, f"El campo {campo.replace('_', ' ')} es requerido"
+            if isinstance(valor, str) and valor.strip() == "":
                 return None, f"El campo {campo.replace('_', ' ')} es requerido"
 
         # validar formato de email usando una expresión regular simple
