@@ -88,7 +88,7 @@ Proyecto Equipo #1/
 
 ## Base de datos
 
-El esquema SQLite contiene **más de 60 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
+El esquema SQLite contiene **40 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
 
 | Módulo | Tablas principales | Descripción |
 |---|---|---|
