@@ -4,6 +4,7 @@ import os
 from PyQt5.QtWidgets import QWidget, QMessageBox, QTableWidgetItem, QHeaderView
 from PyQt5 import uic
 from app.services.nota_empresa_service import NotaEmpresaService
+from app.utils.sanitizer import Sanitizer
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "clientes", "notas_empresa_widget.ui")
 
@@ -44,6 +45,9 @@ class NotasEmpresaWidget(QWidget):
 
         # ocultar columna ID
         self.tabla_notas.setColumnHidden(0, True)
+
+        # configurar limites de caracteres
+        self.input_titulo.setMaxLength(Sanitizer.MAX_TITULO_LENGTH)
 
     def _setup_signals(self):
         self.btn_nueva_nota.clicked.connect(self._mostrar_form_nueva_nota)
@@ -152,6 +156,15 @@ class NotasEmpresaWidget(QWidget):
             QMessageBox.warning(self, "Atencion", "El contenido de la nota es requerido.")
             return
 
+        # validar longitudes
+        if len(contenido) > Sanitizer.MAX_CONTENIDO_LENGTH:
+            QMessageBox.warning(self, "Atencion", f"El contenido no puede exceder {Sanitizer.MAX_CONTENIDO_LENGTH} caracteres. Actualmente: {len(contenido)}")
+            return
+
+        if titulo and len(titulo) > Sanitizer.MAX_TITULO_LENGTH:
+            QMessageBox.warning(self, "Atencion", f"El titulo no puede exceder {Sanitizer.MAX_TITULO_LENGTH} caracteres. Actualmente: {len(titulo)}")
+            return
+
         datos = {
             "empresa_id": self._empresa_id,
             "titulo": titulo,
@@ -162,7 +175,7 @@ class NotasEmpresaWidget(QWidget):
         try:
             if self._nota_editando:
                 # actualizar nota existente
-                _, error = self._nota_service.actualizar_nota(self._nota_editando.nota_id, datos)
+                _, error = self._nota_service.actualizar_nota(self._nota_editando.nota_id, datos, self._usuario_actual_id)
                 if error:
                     QMessageBox.critical(self, "Error", error)
                     return
@@ -204,7 +217,7 @@ class NotasEmpresaWidget(QWidget):
         nota_id = int(id_item.text())
 
         try:
-            _, error = self._nota_service.eliminar_nota(nota_id)
+            _, error = self._nota_service.eliminar_nota(nota_id, self._usuario_actual_id)
             if error:
                 QMessageBox.critical(self, "Error", error)
                 return
