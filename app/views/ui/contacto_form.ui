@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ContactoForm</class>
+ <widget class="QWidget" name="ContactoForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>889</width>
+    <height>950</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* === FORM GLOBAL === */
+QWidget#ContactoForm {
+    background-color: transparent;
+}
+
+/* === LABELS === */
+QLabel#form_titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#form_subtitulo {
+    font-size: 13px;
+    color: #718096;
+}
+QLabel#seccionPersonal, QLabel#seccionContacto, QLabel#seccionLaboral, QLabel#seccionUbicacion, QLabel#seccionAsignacion {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1a1a2e;
+    padding-top: 8px;
+}
+QLabel.fieldLabel {
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* === INPUTS === */
+QLineEdit, QComboBox {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+    min-height: 34px;
+}
+QLineEdit:focus, QComboBox:focus {
+    border: 1px solid #4a90d9;
+    background-color: white;
+}
+QLineEdit:hover, QComboBox:hover {
+    border: 1px solid #cbd5e0;
+}
+
+/* === CHECKBOX === */
+QCheckBox#check_contacto_principal, QCheckBox#check_no_contactar, QCheckBox#check_activo {
+    font-size: 13px;
+    color: #2d3748;
+    spacing: 8px;
+}
+QCheckBox#check_contacto_principal::indicator, QCheckBox#check_no_contactar::indicator, QCheckBox#check_activo::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 4px;
+    background-color: #f7fafc;
+}
+QCheckBox#check_contacto_principal::indicator:checked, QCheckBox#check_no_contactar::indicator:checked, QCheckBox#check_activo::indicator:checked {
+    background-color: #4a90d9;
+    border-color: #4a90d9;
+}
+QCheckBox#check_contacto_principal::indicator:hover, QCheckBox#check_no_contactar::indicator:hover, QCheckBox#check_activo::indicator:hover {
+    border-color: #cbd5e0;
+}
+
+/* === BUTTONS === */
+QPushButton#btn_guardar {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    min-height: 38px;
+}
+QPushButton#btn_guardar:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_guardar:pressed {
+    background-color: #2a6bb8;
+}
+QPushButton#btn_limpiar, QPushButton#btn_cancelar {
+    background-color: white;
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    min-height: 38px;
+}
+QPushButton#btn_limpiar:hover, QPushButton#btn_cancelar:hover {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+}
+
+/* === SEPARATOR === */
+QFrame#separator1, QFrame#separator2, QFrame#separator3, QFrame#separator4, QFrame#separator5 {
+    color: #e2e8f0;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="formMainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <property name="widgetResizable"><bool>true</bool></property>
+     <widget class="QWidget" name="scrollContent">
+      <property name="styleSheet">
+       <string notr="true">QWidget#scrollContent { background-color: transparent; }</string>
+      </property>
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="spacing"><number>12</number></property>
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>10</number></property>
+       <property name="bottomMargin"><number>10</number></property>
+
+       <!-- TITULO -->
+       <item>
+        <widget class="QLabel" name="form_titulo">
+         <property name="text"><string>Nuevo Contacto</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="form_subtitulo">
+         <property name="text"><string>Completa la informacion del contacto. Los campos con * son obligatorios.</string></property>
+         <property name="wordWrap"><bool>true</bool></property>
+        </widget>
+       </item>
+
+       <!-- SEPARATOR 1 -->
+       <item>
+        <widget class="QFrame" name="separator1">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Informacion Personal -->
+       <item>
+        <widget class="QLabel" name="seccionPersonal">
+         <property name="text"><string>Informacion Personal</string></property>
+        </widget>
+       </item>
+
+       <!-- Row 1: Nombre + Apellido Paterno -->
+       <item>
+        <layout class="QHBoxLayout" name="row1Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="nombreLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_nombre">
+             <property name="text"><string>Nombre *</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_nombre">
+             <property name="placeholderText"><string>Ingresa el nombre</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="apellidoPLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_apellido_paterno">
+             <property name="text"><string>Apellido Paterno *</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_apellido_paterno">
+             <property name="placeholderText"><string>Ingresa el apellido paterno</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 2: Apellido Materno + Fecha Nacimiento -->
+       <item>
+        <layout class="QHBoxLayout" name="row2Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="apellidoMLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_apellido_materno">
+             <property name="text"><string>Apellido Materno</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_apellido_materno">
+             <property name="placeholderText"><string>Ingresa el apellido materno (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="fechaNacLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_fecha_nacimiento">
+             <property name="text"><string>Fecha de Nacimiento</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_fecha_nacimiento">
+             <property name="placeholderText"><string>AAAA-MM-DD (opcional)</string></property>
+             <property name="maxLength"><number>10</number></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARATOR 2 -->
+       <item>
+        <widget class="QFrame" name="separator2">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Informacion de Contacto -->
+       <item>
+        <widget class="QLabel" name="seccionContacto">
+         <property name="text"><string>Informacion de Contacto</string></property>
+        </widget>
+       </item>
+
+       <!-- Row 3: Email + Email Secundario -->
+       <item>
+        <layout class="QHBoxLayout" name="row3Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="emailLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_email">
+             <property name="text"><string>Email</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_email">
+             <property name="placeholderText"><string>ejemplo@correo.com (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="emailSecLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_email_secundario">
+             <property name="text"><string>Email Secundario</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_email_secundario">
+             <property name="placeholderText"><string>Email alternativo (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 4: Telefono Oficina + Telefono Celular -->
+       <item>
+        <layout class="QHBoxLayout" name="row4Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="telOficinaLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_telefono_oficina">
+             <property name="text"><string>Telefono Oficina</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_telefono_oficina">
+             <property name="maxLength"><number>10</number></property>
+             <property name="placeholderText"><string>10 digitos (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="telCelularLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_telefono_celular">
+             <property name="text"><string>Telefono Celular</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_telefono_celular">
+             <property name="maxLength"><number>10</number></property>
+             <property name="placeholderText"><string>10 digitos (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 5: LinkedIn URL (ancho completo) -->
+       <item>
+        <layout class="QVBoxLayout" name="linkedinLayout">
+         <property name="spacing"><number>4</number></property>
+         <item>
+          <widget class="QLabel" name="label_linkedin_url">
+           <property name="text"><string>LinkedIn</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="input_linkedin_url">
+           <property name="placeholderText"><string>URL de perfil de LinkedIn (opcional)</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARATOR 3 -->
+       <item>
+        <widget class="QFrame" name="separator3">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Informacion Laboral -->
+       <item>
+        <widget class="QLabel" name="seccionLaboral">
+         <property name="text"><string>Informacion Laboral</string></property>
+        </widget>
+       </item>
+
+       <!-- Row 6: Empresa + Puesto -->
+       <item>
+        <layout class="QHBoxLayout" name="row6Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="empresaLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_empresa">
+             <property name="text"><string>Empresa</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_empresa"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="puestoLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_puesto">
+             <property name="text"><string>Puesto</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_puesto">
+             <property name="placeholderText"><string>Cargo o puesto (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 7: Departamento -->
+       <item>
+        <layout class="QHBoxLayout" name="row7Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="departamentoLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_departamento">
+             <property name="text"><string>Departamento</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_departamento">
+             <property name="placeholderText"><string>Departamento (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="row7Spacer">
+           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           <property name="sizeHint" stdset="0">
+            <size><width>40</width><height>20</height></size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARATOR 4 -->
+       <item>
+        <widget class="QFrame" name="separator4">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Ubicacion -->
+       <item>
+        <widget class="QLabel" name="seccionUbicacion">
+         <property name="text"><string>Ubicacion</string></property>
+        </widget>
+       </item>
+
+       <!-- Row 8: Direccion (ancho completo) -->
+       <item>
+        <layout class="QVBoxLayout" name="direccionLayout">
+         <property name="spacing"><number>4</number></property>
+         <item>
+          <widget class="QLabel" name="label_direccion">
+           <property name="text"><string>Direccion</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="input_direccion">
+           <property name="placeholderText"><string>Calle, numero, colonia (opcional)</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 9: Ciudad + Codigo Postal -->
+       <item>
+        <layout class="QHBoxLayout" name="row9Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="ciudadLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_ciudad">
+             <property name="text"><string>Ciudad</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_ciudad"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="cpLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_codigo_postal">
+             <property name="text"><string>Codigo Postal</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_codigo_postal">
+             <property name="maxLength"><number>5</number></property>
+             <property name="placeholderText"><string>5 digitos (opcional)</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARATOR 5 -->
+       <item>
+        <widget class="QFrame" name="separator5">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Asignacion y Estado -->
+       <item>
+        <widget class="QLabel" name="seccionAsignacion">
+         <property name="text"><string>Asignacion y Estado</string></property>
+        </widget>
+       </item>
+
+       <!-- Row 10: Origen + Propietario -->
+       <item>
+        <layout class="QHBoxLayout" name="row10Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="origenLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_origen">
+             <property name="text"><string>Origen</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_origen"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="propietarioLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="label_propietario">
+             <property name="text"><string>Propietario</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_propietario"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 11: Checkboxes -->
+       <item>
+        <layout class="QHBoxLayout" name="row11Layout">
+         <property name="spacing"><number>20</number></property>
+         <item>
+          <widget class="QCheckBox" name="check_contacto_principal">
+           <property name="text"><string>Contacto principal</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="check_no_contactar">
+           <property name="text"><string>No contactar</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="check_activo">
+           <property name="text"><string>Contacto activo</string></property>
+           <property name="checked"><bool>true</bool></property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="checkboxSpacer">
+           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           <property name="sizeHint" stdset="0">
+            <size><width>40</width><height>20</height></size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SPACER -->
+       <item>
+        <spacer name="formBottomSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeType"><enum>QSizePolicy::Fixed</enum></property>
+         <property name="sizeHint" stdset="0">
+          <size><width>20</width><height>10</height></size>
+         </property>
+        </spacer>
+       </item>
+
+       <!-- BUTTONS -->
+       <item>
+        <layout class="QHBoxLayout" name="buttonsLayout">
+         <property name="spacing"><number>12</number></property>
+         <item>
+          <widget class="QPushButton" name="btn_guardar">
+           <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+           <property name="text"><string>Guardar Contacto</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_limpiar">
+           <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+           <property name="text"><string>Limpiar</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_cancelar">
+           <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+           <property name="text"><string>Cancelar</string></property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="buttonsSpacer">
+           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           <property name="sizeHint" stdset="0">
+            <size><width>40</width><height>20</height></size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+
+       <!-- FINAL SPACER -->
+       <item>
+        <spacer name="finalSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint" stdset="0">
+          <size><width>20</width><height>40</height></size>
+         </property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

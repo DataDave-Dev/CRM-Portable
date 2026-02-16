@@ -11,6 +11,7 @@ from PyQt5 import uic
 from app.services.usuario_service import UsuarioService
 from app.repositories.rol_repository import RolRepository
 from app.views.configuracion_view import ConfiguracionView
+from app.views.clientes_view import ClientesView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -30,6 +31,7 @@ class MainView(QMainWindow):
         self._setup_navigation()
         self._create_lista_usuarios()
         self._create_form_usuarios()
+        self._create_clientes()
         self._create_configuracion()
 
     def _setup_icons(self):
@@ -61,6 +63,9 @@ class MainView(QMainWindow):
             self.sidebar_buttons.append(self.btnUsuarios)
             # conectar el botón de Usuarios para mostrar la lista
             self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
+        if hasattr(self, 'btnClientes'):
+            self.sidebar_buttons.append(self.btnClientes)
+            self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
         if hasattr(self, 'btnConfiguracion'):
             self.sidebar_buttons.append(self.btnConfiguracion)
             self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
@@ -461,6 +466,23 @@ class MainView(QMainWindow):
         self.check_activo.setChecked(True)
         # enfocar el primer campo
         self.input_nombre.setFocus()
+
+    def _create_clientes(self):
+        self.clientes_widget = ClientesView(self._usuario_actual)
+        self.clientes_widget.hide()
+
+    def _mostrar_seccion_clientes(self):
+        self._ocultar_contenido_actual()
+
+        if self.clientes_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.clientes_widget)
+
+        self.clientes_widget.show()
+        self.clientes_widget.cargar_datos()
+        self.headerPageTitle.setText("Clientes")
+
+        if hasattr(self, 'btnClientes'):
+            self._resaltar_boton_activo(self.btnClientes)
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()

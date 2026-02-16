@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EmpresaList</class>
+ <widget class="QWidget" name="EmpresaList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* === GLOBAL === */
+QWidget#EmpresaList {
+    background-color: transparent;
+}
+
+/* === HEADER === */
+QLabel#listTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#listSubtitle {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+
+/* === BOTON NUEVO === */
+QPushButton#btn_nueva_empresa {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    min-height: 38px;
+}
+QPushButton#btn_nueva_empresa:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_nueva_empresa:pressed {
+    background-color: #2a6bb8;
+}
+
+/* === STAT CARDS === */
+QFrame#cardTotal, QFrame#cardActivas, QFrame#cardInactivas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+QFrame#cardTotal {
+    border-left: 4px solid #4a90d9;
+}
+QFrame#cardActivas {
+    border-left: 4px solid #48bb78;
+}
+QFrame#cardInactivas {
+    border-left: 4px solid #f56565;
+}
+
+QLabel#statValueTotal {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4a90d9;
+}
+QLabel#statValueActivas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #48bb78;
+}
+QLabel#statValueInactivas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f56565;
+}
+QLabel#statLabelTotal, QLabel#statLabelActivas, QLabel#statLabelInactivas {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* === TABLA === */
+QTableWidget#tabla_empresas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QTableWidget#tabla_empresas QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_empresas QHeaderView::section:last {
+    border-right: none;
+}
+QTableWidget#tabla_empresas::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_empresas::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget#tabla_empresas::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>16</number>
+   </property>
+
+   <!-- HEADER: Titulo + Boton Nuevo -->
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <item>
+      <layout class="QVBoxLayout" name="titleLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="listTitle">
+         <property name="text">
+          <string>Gestion de Empresas</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="listSubtitle">
+         <property name="text">
+          <string>Administra y visualiza todas las empresas del sistema</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_nueva_empresa">
+       <property name="text">
+        <string>+ Nueva Empresa</string>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <!-- STAT CARDS -->
+   <item>
+    <layout class="QHBoxLayout" name="statsLayout">
+     <property name="spacing">
+      <number>16</number>
+     </property>
+
+     <!-- Card Total -->
+     <item>
+      <widget class="QFrame" name="cardTotal">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardTotalLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueTotal">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelTotal">
+          <property name="text"><string>Total Empresas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card Activas -->
+     <item>
+      <widget class="QFrame" name="cardActivas">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardActivasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueActivas">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelActivas">
+          <property name="text"><string>Empresas Activas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card Inactivas -->
+     <item>
+      <widget class="QFrame" name="cardInactivas">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardInactivasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueInactivas">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelInactivas">
+          <property name="text"><string>Empresas Inactivas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- TABLA DE EMPRESAS -->
+   <item>
+    <widget class="QTableWidget" name="tabla_empresas">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="showGrid">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>8</number>
+     </property>
+     <column>
+      <property name="text"><string>ID</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Razon Social</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Nombre Comercial</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Industria</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Telefono</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Email</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Propietario</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Estado</string></property>
+     </column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
