@@ -6,10 +6,10 @@ from app.models.Empresa import Empresa
 
 class EmpresaRepository:
 
-    def find_all(self):
+    def find_all(self, limit=None, offset=0):
+        # obtiene empresas con paginacion opcional
         conn = get_connection()
-        cursor = conn.execute(
-            """
+        query = """
             SELECT e.*,
                    i.Nombre AS NombreIndustria,
                    t.Nombre AS NombreTamano,
@@ -25,10 +25,19 @@ class EmpresaRepository:
             LEFT JOIN OrigenesContacto oc ON e.OrigenID = oc.OrigenID
             LEFT JOIN Usuarios u ON e.PropietarioID = u.UsuarioID
             ORDER BY e.FechaCreacion DESC
-            """
-        )
+        """
+        if limit:
+            query += f" LIMIT {limit} OFFSET {offset}"
+
+        cursor = conn.execute(query)
         rows = cursor.fetchall()
         return [self._row_to_empresa(row) for row in rows]
+
+    def count_all(self):
+        # cuenta total de empresas para calcular paginas
+        conn = get_connection()
+        cursor = conn.execute("SELECT COUNT(*) as total FROM Empresas")
+        return cursor.fetchone()["total"]
 
     def find_by_id(self, empresa_id):
         conn = get_connection()

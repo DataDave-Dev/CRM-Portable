@@ -934,41 +934,75 @@ INSERT INTO Ciudades (Nombre, EstadoID) VALUES
 
 --- ÍNDICES ---
 
--- Contactos
-CREATE INDEX IF NOT EXISTS IX_Contactos_Empresa ON Contactos(EmpresaID);
-CREATE INDEX IF NOT EXISTS IX_Contactos_Propietario ON Contactos(PropietarioID);
-CREATE INDEX IF NOT EXISTS IX_Contactos_Email ON Contactos(Email);
-CREATE INDEX IF NOT EXISTS IX_Contactos_NombreCompleto ON Contactos(Nombre, ApellidoPaterno);
+-- Indices en foreign keys de Empresas
+CREATE INDEX IF NOT EXISTS idx_empresas_industria ON Empresas(IndustriaID);
+CREATE INDEX IF NOT EXISTS idx_empresas_tamano ON Empresas(TamanoID);
+CREATE INDEX IF NOT EXISTS idx_empresas_ciudad ON Empresas(CiudadID);
+CREATE INDEX IF NOT EXISTS idx_empresas_moneda ON Empresas(MonedaID);
+CREATE INDEX IF NOT EXISTS idx_empresas_origen ON Empresas(OrigenID);
+CREATE INDEX IF NOT EXISTS idx_empresas_propietario ON Empresas(PropietarioID);
 
--- Empresas
-CREATE INDEX IF NOT EXISTS IX_Empresas_Industria ON Empresas(IndustriaID);
-CREATE INDEX IF NOT EXISTS IX_Empresas_Propietario ON Empresas(PropietarioID);
-CREATE INDEX IF NOT EXISTS IX_Empresas_RFC ON Empresas(RFC);
+-- Indices en foreign keys de Contactos
+CREATE INDEX IF NOT EXISTS idx_contactos_empresa ON Contactos(EmpresaID);
+CREATE INDEX IF NOT EXISTS idx_contactos_ciudad ON Contactos(CiudadID);
+CREATE INDEX IF NOT EXISTS idx_contactos_origen ON Contactos(OrigenID);
+CREATE INDEX IF NOT EXISTS idx_contactos_propietario ON Contactos(PropietarioID);
 
--- Oportunidades
-CREATE INDEX IF NOT EXISTS IX_Oportunidades_Etapa ON Oportunidades(EtapaID);
-CREATE INDEX IF NOT EXISTS IX_Oportunidades_Propietario ON Oportunidades(PropietarioID);
-CREATE INDEX IF NOT EXISTS IX_Oportunidades_Empresa ON Oportunidades(EmpresaID);
-CREATE INDEX IF NOT EXISTS IX_Oportunidades_FechaCierre ON Oportunidades(FechaCierreEstimada);
-CREATE INDEX IF NOT EXISTS IX_Oportunidades_EsGanada ON Oportunidades(EsGanada);
+-- Indices en foreign keys de Oportunidades
+CREATE INDEX IF NOT EXISTS idx_oportunidades_etapa ON Oportunidades(EtapaID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_propietario ON Oportunidades(PropietarioID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_empresa ON Oportunidades(EmpresaID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_contacto ON Oportunidades(ContactoID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_moneda ON Oportunidades(MonedaID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_motivo_perdida ON Oportunidades(MotivoPerdidaID);
 
--- Actividades
-CREATE INDEX IF NOT EXISTS IX_Actividades_Contacto ON Actividades(ContactoID);
-CREATE INDEX IF NOT EXISTS IX_Actividades_Oportunidad ON Actividades(OportunidadID);
-CREATE INDEX IF NOT EXISTS IX_Actividades_Propietario ON Actividades(PropietarioID);
-CREATE INDEX IF NOT EXISTS IX_Actividades_FechaVencimiento ON Actividades(FechaVencimiento);
+-- Indices en foreign keys de Actividades
+CREATE INDEX IF NOT EXISTS idx_actividades_contacto ON Actividades(ContactoID);
+CREATE INDEX IF NOT EXISTS idx_actividades_oportunidad ON Actividades(OportunidadID);
+CREATE INDEX IF NOT EXISTS idx_actividades_propietario ON Actividades(PropietarioID);
+CREATE INDEX IF NOT EXISTS idx_actividades_tipo ON Actividades(TipoActividadID);
+CREATE INDEX IF NOT EXISTS idx_actividades_estado ON Actividades(EstadoActividadID);
 
--- Recordatorios
-CREATE INDEX IF NOT EXISTS IX_Recordatorios_Usuario ON Recordatorios(UsuarioID);
-CREATE INDEX IF NOT EXISTS IX_Recordatorios_Fecha ON Recordatorios(FechaRecordatorio);
+-- Indices en foreign keys de Recordatorios y Notificaciones
+CREATE INDEX IF NOT EXISTS idx_recordatorios_usuario ON Recordatorios(UsuarioID);
+CREATE INDEX IF NOT EXISTS idx_recordatorios_actividad ON Recordatorios(ActividadID);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_usuario ON Notificaciones(UsuarioID);
 
--- Notificaciones
-CREATE INDEX IF NOT EXISTS IX_Notificaciones_Usuario ON Notificaciones(UsuarioID, EsLeida);
+-- Indices en foreign keys de Campanas
+CREATE INDEX IF NOT EXISTS idx_campana_dest_campana ON CampanaDestinatarios(CampanaID);
+CREATE INDEX IF NOT EXISTS idx_campana_dest_contacto ON CampanaDestinatarios(ContactoID);
 
--- Campañas
-CREATE INDEX IF NOT EXISTS IX_CampDest_Campana ON CampanaDestinatarios(CampanaID);
-CREATE INDEX IF NOT EXISTS IX_CampDest_Contacto ON CampanaDestinatarios(ContactoID);
+-- Indices para geografia (jerarquia)
+CREATE INDEX IF NOT EXISTS idx_estados_pais ON Estados(PaisID);
+CREATE INDEX IF NOT EXISTS idx_ciudades_estado ON Ciudades(EstadoID);
 
--- Auditoría
-CREATE INDEX IF NOT EXISTS IX_LogAuditoria_Fecha ON LogAuditoria(FechaAccion);
-CREATE INDEX IF NOT EXISTS IX_LogAuditoria_Entidad ON LogAuditoria(EntidadTipo, EntidadID);
+-- Indices compuestos para filtros frecuentes
+CREATE INDEX IF NOT EXISTS idx_empresas_activo_fecha ON Empresas(Activo, FechaCreacion DESC);
+CREATE INDEX IF NOT EXISTS idx_contactos_activo_fecha ON Contactos(Activo, FechaCreacion DESC);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_activo_fecha ON Oportunidades(Activo, FechaCreacion DESC);
+CREATE INDEX IF NOT EXISTS idx_usuarios_activo_rol ON Usuarios(Activo, RolID);
+
+-- Indices para busquedas por email y RFC
+CREATE INDEX IF NOT EXISTS idx_empresas_email ON Empresas(Email);
+CREATE INDEX IF NOT EXISTS idx_empresas_rfc ON Empresas(RFC);
+CREATE INDEX IF NOT EXISTS idx_contactos_email ON Contactos(Email);
+CREATE INDEX IF NOT EXISTS idx_usuarios_email ON Usuarios(Email);
+
+-- Indices para busquedas por nombre
+CREATE INDEX IF NOT EXISTS idx_empresas_razon_social ON Empresas(RazonSocial);
+CREATE INDEX IF NOT EXISTS idx_contactos_nombre_completo ON Contactos(Nombre, ApellidoPaterno);
+CREATE INDEX IF NOT EXISTS idx_contactos_apellidos ON Contactos(ApellidoPaterno, ApellidoMaterno);
+CREATE INDEX IF NOT EXISTS idx_usuarios_nombre ON Usuarios(Nombre, ApellidoPaterno);
+
+-- Indices para ordenamiento y filtrado por fechas
+CREATE INDEX IF NOT EXISTS idx_oportunidades_fecha_cierre ON Oportunidades(FechaCierreEstimada);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_es_ganada ON Oportunidades(EsGanada);
+CREATE INDEX IF NOT EXISTS idx_actividades_fecha_vencimiento ON Actividades(FechaVencimiento);
+CREATE INDEX IF NOT EXISTS idx_recordatorios_fecha ON Recordatorios(FechaRecordatorio);
+
+-- Indices compuestos para notificaciones (filtro frecuente)
+CREATE INDEX IF NOT EXISTS idx_notificaciones_usuario_leida ON Notificaciones(UsuarioID, EsLeida);
+
+-- Indices para auditoria
+CREATE INDEX IF NOT EXISTS idx_log_auditoria_fecha ON LogAuditoria(FechaAccion);
+CREATE INDEX IF NOT EXISTS idx_log_auditoria_entidad ON LogAuditoria(EntidadTipo, EntidadID);

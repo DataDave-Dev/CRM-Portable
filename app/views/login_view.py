@@ -7,7 +7,7 @@ from PyQt5.QtGui import QPixmap, QPainter
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5 import uic
 
-UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "login_view.ui")
+UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "auth", "login_view.ui")
 ICON_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "building.svg")
 
 

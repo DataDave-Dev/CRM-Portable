@@ -1,5 +1,6 @@
 # Repositorio generico para catalogos - CRUD parametrizado por configuracion
 
+import re
 import sqlite3
 from app.database.connection import get_connection
 from app.models.Catalogo import Catalogo
@@ -7,12 +8,42 @@ from app.models.Catalogo import Catalogo
 
 class CatalogoRepository:
 
+    # whitelist de tablas permitidas para evitar SQL injection
+    ALLOWED_TABLES = {
+        'EtapasVenta', 'MotivosPerdida', 'TiposActividad', 'Prioridades',
+        'EstadosActividad', 'Industrias', 'TamanosEmpresa', 'OrigenesContacto',
+        'Monedas', 'Paises', 'Estados', 'Ciudades'
+    }
+
     def __init__(self, config):
         self._config = config
         self._table = config['table']
         self._id_col = config['id_column']
         self._columns = [c['name'] for c in config['columns']]
         self._order_by = config.get('order_by', self._columns[0])
+        self._fk_column = config.get('fk_column')  # columna de foreign key para catalogos jerarquicos
+
+        # validar identificadores SQL al inicializar
+        self._validate_identifiers()
+
+    def _validate_identifiers(self):
+        # validar que tabla esta en whitelist
+        if self._table not in self.ALLOWED_TABLES:
+            raise ValueError(f"Tabla no permitida: {self._table}")
+
+        # validar formato de identificadores SQL (solo letras, numeros y guion bajo)
+        sql_identifier_pattern = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
+
+        if not sql_identifier_pattern.match(self._id_col):
+            raise ValueError(f"Columna ID invalida: {self._id_col}")
+
+        for col in self._columns:
+            if not sql_identifier_pattern.match(col):
+                raise ValueError(f"Columna invalida: {col}")
+
+        # validar columna FK si existe (para catalogos jerarquicos como geografia)
+        if self._fk_column and not sql_identifier_pattern.match(self._fk_column):
+            raise ValueError(f"Columna FK invalida: {self._fk_column}")
 
     def find_all(self, filters=None):
         conn = get_connection()
@@ -20,8 +51,12 @@ class CatalogoRepository:
         params = []
 
         if filters:
+            # validar que columnas en filters estan en columnas permitidas
             conditions = []
             for col, val in filters.items():
+                # permitir: columnas configuradas, id_column o fk_column (para jerarquias)
+                if col not in self._columns and col != self._id_col and col != self._fk_column:
+                    raise ValueError(f"Columna '{col}' no permitida para filtrado")
                 conditions.append(f"{col} = ?")
                 params.append(val)
             query += " WHERE " + " AND ".join(conditions)

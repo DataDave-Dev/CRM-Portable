@@ -1,6 +1,7 @@
 # Logica de negocio generica para catalogos
 
 from app.repositories.catalogo_repository import CatalogoRepository
+from app.utils.catalog_cache import CatalogCache
 
 
 class CatalogoService:
@@ -40,6 +41,8 @@ class CatalogoService:
 
         try:
             new_id = self._repo.create(datos)
+            # invalidar cache del catalogo modificado
+            self._invalidate_cache()
             return new_id, None
         except Exception as e:
             return None, f"Error al crear: {str(e)}"
@@ -60,6 +63,8 @@ class CatalogoService:
 
         try:
             self._repo.update(id_value, datos)
+            # invalidar cache del catalogo modificado
+            self._invalidate_cache()
             return True, None
         except Exception as e:
             return None, f"Error al actualizar: {str(e)}"
@@ -73,4 +78,23 @@ class CatalogoService:
         ok, error = self._repo.delete(id_value)
         if not ok:
             return None, error
+        # invalidar cache del catalogo modificado
+        self._invalidate_cache()
         return True, None
+
+    def _invalidate_cache(self):
+        # invalida cache segun la tabla del catalogo
+        table = self._config.get('table', '')
+        cache_map = {
+            'Industrias': 'industrias',
+            'TamanosEmpresa': 'tamanos',
+            'OrigenesContacto': 'origenes',
+            'Monedas': 'monedas',
+            'Paises': 'paises',
+            'Estados': 'estados',
+            'Ciudades': 'ciudades',
+            'Usuarios': 'usuarios'
+        }
+        cache_key = cache_map.get(table)
+        if cache_key:
+            CatalogCache.invalidate(cache_key)

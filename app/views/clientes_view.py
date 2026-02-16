@@ -9,8 +9,9 @@ from PyQt5 import uic
 from app.database.connection import get_connection
 from app.services.empresa_service import EmpresaService
 from app.services.contacto_service import ContactoService
+from app.utils.catalog_cache import CatalogCache
 
-UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "clientes_view.ui")
+UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "clientes", "clientes_view.ui")
 
 
 class ClientesView(QWidget):
@@ -57,7 +58,7 @@ class ClientesView(QWidget):
     # ==========================================
 
     def _create_empresa_list(self):
-        ui_path = os.path.join(os.path.dirname(__file__), "ui", "empresa_list.ui")
+        ui_path = os.path.join(os.path.dirname(__file__), "ui", "clientes", "empresa_list.ui")
         self.lista_empresas_widget = QWidget()
         uic.loadUi(ui_path, self.lista_empresas_widget)
 
@@ -85,7 +86,8 @@ class ClientesView(QWidget):
 
     def _cargar_tabla_empresas(self):
         try:
-            empresas, error = self._empresa_service.obtener_todas()
+            # cargar con limite de 200 registros para mejorar rendimiento
+            empresas, error = self._empresa_service.obtener_todas(limit=200)
             if error:
                 QMessageBox.critical(self, "Error", error)
                 return
@@ -135,7 +137,7 @@ class ClientesView(QWidget):
     # ==========================================
 
     def _create_empresa_form(self):
-        ui_path = os.path.join(os.path.dirname(__file__), "ui", "empresa_form.ui")
+        ui_path = os.path.join(os.path.dirname(__file__), "ui", "clientes", "empresa_form.ui")
         self.form_empresas_widget = QWidget()
         uic.loadUi(ui_path, self.form_empresas_widget)
 
@@ -174,37 +176,35 @@ class ClientesView(QWidget):
         self.tabEmpresasLayout.addWidget(self.form_empresas_widget)
 
     def _cargar_combos_empresa(self):
-        conn = get_connection()
+        # usar cache para mejorar rendimiento - evita consultas repetitivas a la BD
 
         # Industrias
         self.emp_combo_industria.clear()
         self.emp_combo_industria.addItem("-- Seleccionar --", None)
-        cursor = conn.execute("SELECT IndustriaID, Nombre FROM Industrias ORDER BY Nombre")
-        for row in cursor.fetchall():
-            self.emp_combo_industria.addItem(row["Nombre"], row["IndustriaID"])
+        for id_val, nombre in CatalogCache.get_industrias():
+            self.emp_combo_industria.addItem(nombre, id_val)
 
         # Tamanos de empresa
         self.emp_combo_tamano.clear()
         self.emp_combo_tamano.addItem("-- Seleccionar --", None)
-        cursor = conn.execute("SELECT TamanoID, Nombre FROM TamanosEmpresa ORDER BY TamanoID")
-        for row in cursor.fetchall():
-            self.emp_combo_tamano.addItem(row["Nombre"], row["TamanoID"])
+        for id_val, nombre in CatalogCache.get_tamanos_empresa():
+            self.emp_combo_tamano.addItem(nombre, id_val)
 
         # Origenes de contacto
         self.emp_combo_origen.clear()
         self.emp_combo_origen.addItem("-- Seleccionar --", None)
-        cursor = conn.execute("SELECT OrigenID, Nombre FROM OrigenesContacto ORDER BY Nombre")
-        for row in cursor.fetchall():
-            self.emp_combo_origen.addItem(row["Nombre"], row["OrigenID"])
+        for id_val, nombre in CatalogCache.get_origenes_contacto():
+            self.emp_combo_origen.addItem(nombre, id_val)
 
-        # Monedas
+        # Monedas (requiere consulta especial para mostrar codigo)
         self.emp_combo_moneda.clear()
         self.emp_combo_moneda.addItem("-- Seleccionar --", None)
+        conn = get_connection()
         cursor = conn.execute("SELECT MonedaID, Nombre, Codigo FROM Monedas ORDER BY Codigo")
         for row in cursor.fetchall():
             self.emp_combo_moneda.addItem(f"{row['Codigo']} - {row['Nombre']}", row["MonedaID"])
 
-        # Ciudades (con estado para disambiguation)
+        # Ciudades (requiere consulta especial para mostrar estado)
         self.emp_combo_ciudad.clear()
         self.emp_combo_ciudad.addItem("-- Seleccionar --", None)
         cursor = conn.execute(
@@ -223,13 +223,8 @@ class ClientesView(QWidget):
         # Propietarios (usuarios activos)
         self.emp_combo_propietario.clear()
         self.emp_combo_propietario.addItem("-- Seleccionar --", None)
-        cursor = conn.execute(
-            "SELECT UsuarioID, Nombre, ApellidoPaterno FROM Usuarios WHERE Activo = 1 ORDER BY Nombre"
-        )
-        for row in cursor.fetchall():
-            self.emp_combo_propietario.addItem(
-                f"{row['Nombre']} {row['ApellidoPaterno']}", row["UsuarioID"]
-            )
+        for id_val, nombre_completo in CatalogCache.get_usuarios():
+            self.emp_combo_propietario.addItem(nombre_completo, id_val)
 
     def _mostrar_form_nueva_empresa(self):
         self._empresa_editando = None
@@ -361,7 +356,7 @@ class ClientesView(QWidget):
     # ==========================================
 
     def _create_contacto_list(self):
-        ui_path = os.path.join(os.path.dirname(__file__), "ui", "contacto_list.ui")
+        ui_path = os.path.join(os.path.dirname(__file__), "ui", "clientes", "contacto_list.ui")
         self.lista_contactos_widget = QWidget()
         uic.loadUi(ui_path, self.lista_contactos_widget)
 
@@ -389,7 +384,8 @@ class ClientesView(QWidget):
 
     def _cargar_tabla_contactos(self):
         try:
-            contactos, error = self._contacto_service.obtener_todos()
+            # cargar con limite de 200 registros para mejorar rendimiento
+            contactos, error = self._contacto_service.obtener_todos(limit=200)
             if error:
                 QMessageBox.critical(self, "Error", error)
                 return
@@ -444,7 +440,7 @@ class ClientesView(QWidget):
     # ==========================================
 
     def _create_contacto_form(self):
-        ui_path = os.path.join(os.path.dirname(__file__), "ui", "contacto_form.ui")
+        ui_path = os.path.join(os.path.dirname(__file__), "ui", "clientes", "contacto_form.ui")
         self.form_contactos_widget = QWidget()
         uic.loadUi(ui_path, self.form_contactos_widget)
 
@@ -485,9 +481,10 @@ class ClientesView(QWidget):
         self.tabContactosLayout.addWidget(self.form_contactos_widget)
 
     def _cargar_combos_contacto(self):
+        # usar cache para mejorar rendimiento - evita consultas repetitivas a la BD
         conn = get_connection()
 
-        # Empresas activas
+        # Empresas activas (no cacheado - datos dinamicos de usuario)
         self.ct_combo_empresa.clear()
         self.ct_combo_empresa.addItem("-- Seleccionar --", None)
         cursor = conn.execute(
@@ -496,7 +493,7 @@ class ClientesView(QWidget):
         for row in cursor.fetchall():
             self.ct_combo_empresa.addItem(row["RazonSocial"], row["EmpresaID"])
 
-        # Ciudades (con estado)
+        # Ciudades (requiere consulta especial para mostrar estado)
         self.ct_combo_ciudad.clear()
         self.ct_combo_ciudad.addItem("-- Seleccionar --", None)
         cursor = conn.execute(
@@ -515,20 +512,14 @@ class ClientesView(QWidget):
         # Origenes de contacto
         self.ct_combo_origen.clear()
         self.ct_combo_origen.addItem("-- Seleccionar --", None)
-        cursor = conn.execute("SELECT OrigenID, Nombre FROM OrigenesContacto ORDER BY Nombre")
-        for row in cursor.fetchall():
-            self.ct_combo_origen.addItem(row["Nombre"], row["OrigenID"])
+        for id_val, nombre in CatalogCache.get_origenes_contacto():
+            self.ct_combo_origen.addItem(nombre, id_val)
 
         # Propietarios (usuarios activos)
         self.ct_combo_propietario.clear()
         self.ct_combo_propietario.addItem("-- Seleccionar --", None)
-        cursor = conn.execute(
-            "SELECT UsuarioID, Nombre, ApellidoPaterno FROM Usuarios WHERE Activo = 1 ORDER BY Nombre"
-        )
-        for row in cursor.fetchall():
-            self.ct_combo_propietario.addItem(
-                f"{row['Nombre']} {row['ApellidoPaterno']}", row["UsuarioID"]
-            )
+        for id_val, nombre_completo in CatalogCache.get_usuarios():
+            self.ct_combo_propietario.addItem(nombre_completo, id_val)
 
     def _mostrar_form_nuevo_contacto(self):
         self._contacto_editando = None

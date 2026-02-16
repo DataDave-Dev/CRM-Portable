@@ -9,11 +9,19 @@ class ContactoService:
     def __init__(self):
         self._repo = ContactoRepository()
 
-    def obtener_todos(self):
+    def obtener_todos(self, limit=None, offset=0):
+        # obtiene contactos con paginacion opcional
         try:
-            return self._repo.find_all(), None
+            return self._repo.find_all(limit=limit, offset=offset), None
         except Exception as e:
             return None, f"Error al obtener contactos: {str(e)}"
+
+    def contar_total(self):
+        # cuenta total de contactos para paginacion
+        try:
+            return self._repo.count_all(), None
+        except Exception as e:
+            return None, f"Error al contar contactos: {str(e)}"
 
     def obtener_por_id(self, contacto_id):
         try:

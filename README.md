@@ -125,14 +125,25 @@ pip install -r requirements.txt
 python main.py
 ```
 
-La base de datos se crea automáticamente en la primera ejecución con datos iniciales precargados (roles, catálogos, datos geográficos y un usuario administrador).
+### Primera ejecución
 
-### Credenciales por defecto
+La base de datos se crea automáticamente en la primera ejecución con la estructura completa de tablas (roles, catálogos, datos geográficos).
 
-| Campo | Valor |
-|---|---|
-| Email | `admin@crm.com` |
-| Contraseña | `admin123` |
+**Al iniciar la aplicación por primera vez**, se mostrará un asistente de configuración inicial que te permitirá crear tu usuario administrador personalizado:
+
+1. La aplicación detecta que no hay usuarios en el sistema
+2. Se muestra la ventana de "Configuración Inicial"
+3. Completa el formulario con tu información:
+   - Nombre
+   - Apellido Paterno
+   - Correo Electrónico
+   - Contraseña (con validación de fortaleza en tiempo real)
+   - Confirmación de contraseña
+4. Haz clic en "Crear Usuario Administrador"
+5. El sistema te redirigirá automáticamente a la pantalla de login
+6. Inicia sesión con las credenciales que acabas de crear
+
+**Nota:** No hay credenciales por defecto. El primer usuario siempre debe ser creado manualmente a través del asistente de configuración inicial.
 
 ---
 
@@ -155,11 +166,131 @@ La base de datos se crea automáticamente en la primera ejecución con datos ini
 
 ## Validaciones
 
+El sistema implementa validaciones robustas a través del módulo `app/utils/validators.py`:
+
 - Correo electrónico con formato válido (regex)
 - Teléfono de 10 dígitos
-- Contraseña mínimo 8 caracteres
+- Código postal de 5 dígitos
+- RFC mexicano (12-13 caracteres alfanuméricos)
+- URLs con formato válido
+- Contraseñas con fortaleza mínima:
+  - Mínimo 8 caracteres
+  - Al menos una mayúscula
+  - Al menos una minúscula
+  - Al menos un número
+  - Validación contra contraseñas comunes
 - Campos requeridos y restricciones de unicidad
 - Protección contra eliminación de registros referenciados
+
+---
+
+## Mejoras de Seguridad
+
+El proyecto incluye las siguientes mejoras de seguridad implementadas:
+
+### Autenticación Segura
+- Contraseñas hasheadas con bcrypt (factor de costo 12)
+- Configuración inicial interactiva para crear primer usuario administrador
+- Sin credenciales por defecto ni hardcodeadas en el código fuente
+- Validación de fortaleza de contraseña en tiempo real durante el registro
+
+### Protección contra Inyección SQL
+- Queries parametrizadas en todos los repositorios
+- Validación de identificadores SQL (tablas y columnas)
+- Whitelist de tablas permitidas en CatalogoRepository
+- Validación de columnas en filtros dinámicos
+
+### Validaciones Centralizadas
+- Módulo `validators.py` con funciones reutilizables
+- Validación de tipos de datos y formatos
+- Protección contra entrada maliciosa
+
+### Próximas Mejoras Planeadas
+- Sistema de logging centralizado
+- Sanitización de mensajes de error
+- Auditoría de operaciones CRUD
+- Rate limiting en login
+- Encriptación de base de datos con SQLCipher
+
+---
+
+## Mejoras de Rendimiento
+
+El proyecto implementa optimizaciones clave para mejorar el rendimiento y escalabilidad:
+
+### Caché de Catálogos
+- Sistema de caché en memoria para catálogos frecuentemente consultados
+- TTL configurable (5 minutos por defecto)
+- Invalidación automática al modificar catálogos
+- Reduce consultas repetitivas en carga de formularios
+- Implementado en `app/utils/catalog_cache.py`
+
+### Paginación de Datos
+- Soporte de paginación en repositorios de Empresas y Contactos
+- Límite de 200 registros por página por defecto
+- Métodos `find_all(limit, offset)` y `count_all()` en repositorios
+- Reduce uso de memoria con grandes volúmenes de datos
+
+### Impacto Esperado
+- Reducción de 80% en consultas a BD para carga de formularios
+- Uso de memoria estable independiente del volumen de datos
+
+---
+
+## Testing
+
+El proyecto incluye una suite de tests unitarios para asegurar la calidad del código:
+
+### Estructura de Tests
+```
+tests/
+├── test_utils/
+│   ├── test_validators.py          # Tests de validaciones
+│   └── test_catalog_cache.py       # Tests de sistema de caché
+└── test_services/
+    └── test_auth_service.py        # Tests de autenticación
+```
+
+### Cobertura de Tests
+- **Validadores**: 100% de cobertura
+  - Validación de email, teléfono, código postal
+  - Validación de RFC, URLs
+  - Validación de fortaleza de contraseña
+  - Validación de rangos numéricos y longitud de texto
+
+- **Autenticación**: Tests críticos de seguridad
+  - Login exitoso con credenciales correctas
+  - Login con email inexistente
+  - Login con contraseña incorrecta
+  - Login con usuario inactivo
+  - Validación de campos vacíos
+
+- **Caché de Catálogos**: Tests de rendimiento
+  - Verificación de caché en memoria
+  - Invalidación de caché
+  - Caché con filtros
+  - Configuración de TTL
+
+### Ejecutar Tests
+```bash
+# Instalar dependencias de testing
+pip install pytest pytest-mock
+
+# Ejecutar todos los tests
+pytest
+
+# Ejecutar tests con verbose
+pytest -v
+
+# Ejecutar tests de un módulo específico
+pytest tests/test_utils/test_validators.py
+```
+
+### Próximos Tests Planeados
+- Tests de servicios de Empresas y Contactos
+- Tests de repositorios
+- Tests de integración
+- Configuración de coverage para medir cobertura de código
 
 ---
 

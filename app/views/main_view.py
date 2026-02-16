@@ -13,7 +13,7 @@ from app.repositories.rol_repository import RolRepository
 from app.views.configuracion_view import ConfiguracionView
 from app.views.clientes_view import ClientesView
 
-UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main_view.ui")
+UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
 
 
@@ -106,7 +106,7 @@ class MainView(QMainWindow):
 
     def _create_lista_usuarios(self):
         # cargar la lista de usuarios desde el archivo .ui (editable con Qt Designer)
-        ui_list_path = os.path.join(os.path.dirname(__file__), "ui", "user_list.ui")
+        ui_list_path = os.path.join(os.path.dirname(__file__), "ui", "users", "user_list.ui")
         self.lista_usuarios_widget = QWidget()
         uic.loadUi(ui_list_path, self.lista_usuarios_widget)
 
@@ -305,7 +305,7 @@ class MainView(QMainWindow):
 
     def _create_form_usuarios(self):
         # cargar el formulario desde el archivo .ui (editable con Qt Designer)
-        ui_form_path = os.path.join(os.path.dirname(__file__), "ui", "user_form.ui")
+        ui_form_path = os.path.join(os.path.dirname(__file__), "ui", "users", "user_form.ui")
         self.form_usuarios_widget = QWidget()
         uic.loadUi(ui_form_path, self.form_usuarios_widget)
 

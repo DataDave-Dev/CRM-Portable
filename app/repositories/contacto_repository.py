@@ -6,10 +6,10 @@ from app.models.Contacto import Contacto
 
 class ContactoRepository:
 
-    def find_all(self):
+    def find_all(self, limit=None, offset=0):
+        # obtiene contactos con paginacion opcional
         conn = get_connection()
-        cursor = conn.execute(
-            """
+        query = """
             SELECT ct.*,
                    e.RazonSocial AS NombreEmpresa,
                    c.Nombre AS NombreCiudad,
@@ -21,10 +21,19 @@ class ContactoRepository:
             LEFT JOIN OrigenesContacto oc ON ct.OrigenID = oc.OrigenID
             LEFT JOIN Usuarios u ON ct.PropietarioID = u.UsuarioID
             ORDER BY ct.FechaCreacion DESC
-            """
-        )
+        """
+        if limit:
+            query += f" LIMIT {limit} OFFSET {offset}"
+
+        cursor = conn.execute(query)
         rows = cursor.fetchall()
         return [self._row_to_contacto(row) for row in rows]
+
+    def count_all(self):
+        # cuenta total de contactos para calcular paginas
+        conn = get_connection()
+        cursor = conn.execute("SELECT COUNT(*) as total FROM Contactos")
+        return cursor.fetchone()["total"]
 
     def find_by_id(self, contacto_id):
         conn = get_connection()

@@ -9,11 +9,19 @@ class EmpresaService:
     def __init__(self):
         self._repo = EmpresaRepository()
 
-    def obtener_todas(self):
+    def obtener_todas(self, limit=None, offset=0):
+        # obtiene empresas con paginacion opcional
         try:
-            return self._repo.find_all(), None
+            return self._repo.find_all(limit=limit, offset=offset), None
         except Exception as e:
             return None, f"Error al obtener empresas: {str(e)}"
+
+    def contar_total(self):
+        # cuenta total de empresas para paginacion
+        try:
+            return self._repo.count_all(), None
+        except Exception as e:
+            return None, f"Error al contar empresas: {str(e)}"
 
     def obtener_por_id(self, empresa_id):
         try:

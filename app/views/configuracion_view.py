@@ -7,7 +7,7 @@ from app.config.catalogos import CATALOGO_CONFIGS
 from app.views.catalogo_list_widget import CatalogoListWidget
 from app.views.geografia_widget import GeografiaWidget
 
-UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "configuracion_view.ui")
+UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "configuracion", "configuracion_view.ui")
 
 
 class ConfiguracionView(QWidget):

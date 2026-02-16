@@ -8,7 +8,7 @@ from app.services.catalogo_service import CatalogoService
 from app.config.catalogos import GEOGRAFIA_CONFIGS
 from app.views.catalogo_form_dialog import CatalogoFormDialog
 
-UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "geografia_view.ui")
+UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "geografia", "geografia_view.ui")
 
 
 class GeografiaWidget(QWidget):

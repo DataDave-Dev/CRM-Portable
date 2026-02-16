@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SetupView</class>
+ <widget class="QWidget" name="SetupView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Configuración Inicial - CRM</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#SetupView {
+    background-color: #f5f7fa;
+}
+
+QLabel#titulo {
+    color: #2d3748;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+QLabel#subtitulo {
+    color: #718096;
+    font-size: 14px;
+}
+
+QLabel {
+    color: #4a5568;
+    font-size: 13px;
+}
+
+QLineEdit {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #4a90d9;
+}
+
+QPushButton#btnCrear {
+    background-color: #4a90d9;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+}
+
+QPushButton#btnCrear:hover {
+    background-color: #3182ce;
+}
+
+QPushButton#btnCrear:pressed {
+    background-color: #2c5282;
+}
+
+QPushButton#btnCrear:disabled {
+    background-color: #a0aec0;
+}
+
+QLabel#lblError {
+    color: #e53e3e;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+QLabel#lblStrength {
+    font-size: 12px;
+    font-weight: 600;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QWidget" name="containerCentral" native="true">
+     <property name="styleSheet">
+      <string notr="true">
+QWidget#containerCentral {
+    background-color: white;
+    border-radius: 12px;
+}
+      </string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>20</number>
+      </property>
+      <property name="leftMargin">
+       <number>40</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>40</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="titulo">
+        <property name="text">
+         <string>Configuración Inicial</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="subtitulo">
+        <property name="text">
+         <string>Crea tu usuario administrador para comenzar a usar el CRM</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_nombre">
+        <property name="text">
+         <string>Nombre</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputNombre">
+        <property name="placeholderText">
+         <string>Ingresa tu nombre</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_apellido">
+        <property name="text">
+         <string>Apellido Paterno</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputApellido">
+        <property name="placeholderText">
+         <string>Ingresa tu apellido</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_email">
+        <property name="text">
+         <string>Correo Electrónico</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputEmail">
+        <property name="placeholderText">
+         <string>correo@ejemplo.com</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_password">
+        <property name="text">
+         <string>Contraseña</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputPassword">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="placeholderText">
+         <string>Mínimo 8 caracteres</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblStrength">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_confirm">
+        <property name="text">
+         <string>Confirmar Contraseña</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="inputConfirm">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="placeholderText">
+         <string>Repite tu contraseña</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblError">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnCrear">
+        <property name="text">
+         <string>Crear Usuario Administrador</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
