@@ -10,6 +10,8 @@ from app.database.connection import get_connection
 from app.services.empresa_service import EmpresaService
 from app.services.contacto_service import ContactoService
 from app.utils.catalog_cache import CatalogCache
+from app.views.notas_empresa_widget import NotasEmpresaWidget
+from app.views.notas_contacto_widget import NotasContactoWidget
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "clientes", "clientes_view.ui")
 
@@ -26,6 +28,8 @@ class ClientesView(QWidget):
         self._contacto_editando = None
         self._empresas_cargadas = []
         self._contactos_cargados = []
+        self._notas_empresa_widget = None
+        self._notas_contacto_widget = None
 
         self._create_empresa_list()
         self._create_empresa_form()
@@ -238,6 +242,9 @@ class ClientesView(QWidget):
         self.emp_btn_guardar.setText("Guardar Empresa")
         self._limpiar_formulario_empresa()
 
+        # ocultar widget de notas (no disponible para nueva empresa)
+        self._ocultar_notas_empresa()
+
     def _editar_empresa_seleccionada(self, index):
         row = index.row()
         id_item = self.tabla_empresas.item(row, 0)
@@ -283,6 +290,9 @@ class ClientesView(QWidget):
         self._seleccionar_combo(self.emp_combo_moneda, empresa.moneda_id)
         self._seleccionar_combo(self.emp_combo_ciudad, empresa.ciudad_id)
         self._seleccionar_combo(self.emp_combo_propietario, empresa.propietario_id)
+
+        # crear o actualizar widget de notas para empresa existente
+        self._mostrar_notas_empresa(empresa.empresa_id)
 
     def _guardar_empresa(self):
         datos = {
@@ -350,6 +360,25 @@ class ClientesView(QWidget):
         self.emp_combo_propietario.setCurrentIndex(0)
         self.emp_check_activo.setChecked(True)
         self.emp_input_razon_social.setFocus()
+
+    def _mostrar_notas_empresa(self, empresa_id):
+        # crear widget de notas si no existe o recrearlo con nuevo empresa_id
+        if self._notas_empresa_widget:
+            self._notas_empresa_widget.setParent(None)
+            self._notas_empresa_widget.deleteLater()
+
+        self._notas_empresa_widget = NotasEmpresaWidget(
+            empresa_id, self._usuario_actual.usuario_id, self.form_empresas_widget
+        )
+        # añadir al layout del formulario (asumiendo que hay un layout vertical)
+        layout = self.form_empresas_widget.layout()
+        if layout:
+            layout.addWidget(self._notas_empresa_widget)
+        self._notas_empresa_widget.show()
+
+    def _ocultar_notas_empresa(self):
+        if self._notas_empresa_widget:
+            self._notas_empresa_widget.hide()
 
     # ==========================================
     # CONTACTOS - LISTA
@@ -535,6 +564,9 @@ class ClientesView(QWidget):
         self._cargar_combos_contacto()
         self._limpiar_formulario_contacto()
 
+        # ocultar widget de notas (no disponible para nuevo contacto)
+        self._ocultar_notas_contacto()
+
     def _editar_contacto_seleccionado(self, index):
         row = index.row()
         id_item = self.tabla_contactos.item(row, 0)
@@ -582,6 +614,9 @@ class ClientesView(QWidget):
         self._seleccionar_combo(self.ct_combo_ciudad, contacto.ciudad_id)
         self._seleccionar_combo(self.ct_combo_origen, contacto.origen_id)
         self._seleccionar_combo(self.ct_combo_propietario, contacto.propietario_id)
+
+        # crear o actualizar widget de notas para contacto existente
+        self._mostrar_notas_contacto(contacto.contacto_id)
 
     def _guardar_contacto(self):
         datos = {
@@ -654,6 +689,25 @@ class ClientesView(QWidget):
         self.ct_check_no_contactar.setChecked(False)
         self.ct_check_activo.setChecked(True)
         self.ct_input_nombre.setFocus()
+
+    def _mostrar_notas_contacto(self, contacto_id):
+        # crear widget de notas si no existe o recrearlo con nuevo contacto_id
+        if self._notas_contacto_widget:
+            self._notas_contacto_widget.setParent(None)
+            self._notas_contacto_widget.deleteLater()
+
+        self._notas_contacto_widget = NotasContactoWidget(
+            contacto_id, self._usuario_actual.usuario_id, self.form_contactos_widget
+        )
+        # añadir al layout del formulario (asumiendo que hay un layout vertical)
+        layout = self.form_contactos_widget.layout()
+        if layout:
+            layout.addWidget(self._notas_contacto_widget)
+        self._notas_contacto_widget.show()
+
+    def _ocultar_notas_contacto(self):
+        if self._notas_contacto_widget:
+            self._notas_contacto_widget.hide()
 
     # ==========================================
     # UTILIDADES
