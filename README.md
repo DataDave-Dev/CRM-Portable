@@ -154,7 +154,7 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] Gestión de catálogos genérica (13 tipos de catálogo)
 - [x] Jerarquía geográfica (Paises, Estados, Ciudades)
 - [x] Configuración con navegación por pestañas
-- [ ] Gestión de contactos y empresas
+- [x] Gestión de contactos y empresas
 - [ ] Pipeline de oportunidades
 - [ ] Gestión de actividades
 - [ ] Campañas de marketing
