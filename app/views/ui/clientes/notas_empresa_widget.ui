@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NotasEmpresaWidget</class>
+ <widget class="QWidget" name="NotasEmpresaWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* === GLOBAL === */
+QWidget#NotasEmpresaWidget {
+    background-color: transparent;
+}
+
+/* === HEADER === */
+QLabel#notasTitle {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+/* === BOTONES === */
+QPushButton#btn_nueva_nota {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    min-height: 34px;
+}
+QPushButton#btn_nueva_nota:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_nueva_nota:pressed {
+    background-color: #2a6bb8;
+}
+
+QPushButton#btn_editar_nota {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    min-height: 34px;
+}
+QPushButton#btn_editar_nota:hover {
+    background-color: #38a168;
+}
+QPushButton#btn_editar_nota:pressed {
+    background-color: #288158;
+}
+
+QPushButton#btn_eliminar_nota {
+    background-color: #f56565;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    min-height: 34px;
+}
+QPushButton#btn_eliminar_nota:hover {
+    background-color: #e55555;
+}
+QPushButton#btn_eliminar_nota:pressed {
+    background-color: #d54545;
+}
+
+/* === TABLA === */
+QTableWidget#tabla_notas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QTableWidget#tabla_notas QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+}
+QTableWidget#tabla_notas::item {
+    padding: 8px;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_notas::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+
+/* === FORMULARIO NOTA === */
+QLabel#form_titulo_label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+QLineEdit#input_titulo {
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: white;
+    color: #2d3748;
+}
+QLineEdit#input_titulo:focus {
+    border: 2px solid #4a90d9;
+}
+
+QTextEdit#input_contenido {
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: white;
+    color: #2d3748;
+}
+QTextEdit#input_contenido:focus {
+    border: 2px solid #4a90d9;
+}
+
+QCheckBox#check_privada {
+    font-size: 13px;
+    color: #2d3748;
+    spacing: 8px;
+}
+QCheckBox#check_privada::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 2px solid #cbd5e0;
+}
+QCheckBox#check_privada::indicator:checked {
+    background-color: #4a90d9;
+    border-color: #4a90d9;
+}
+
+QPushButton#btn_guardar_nota {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    min-height: 38px;
+}
+QPushButton#btn_guardar_nota:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_guardar_nota:pressed {
+    background-color: #2a6bb8;
+}
+
+QPushButton#btn_cancelar_nota {
+    background-color: #e2e8f0;
+    color: #2d3748;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    min-height: 38px;
+}
+QPushButton#btn_cancelar_nota:hover {
+    background-color: #cbd5e0;
+}
+QPushButton#btn_cancelar_nota:pressed {
+    background-color: #a0aec0;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="listaNotasContainer" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QWidget" name="headerWidget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="notasTitle">
+           <property name="text">
+            <string>Notas de la Empresa</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_nueva_nota">
+           <property name="text">
+            <string>+ Nueva Nota</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="botonesWidget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="btn_editar_nota">
+           <property name="text">
+            <string>Editar</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_eliminar_nota">
+           <property name="text">
+            <string>Eliminar</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tabla_notas">
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Titulo</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Contenido</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Privada</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Creado Por</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Fecha</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="formNotaContainer" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="form_titulo_label">
+        <property name="text">
+         <string>Nueva Nota</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_titulo">
+        <property name="text">
+         <string>Titulo (opcional):</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="input_titulo">
+        <property name="placeholderText">
+         <string>Ingrese un titulo para la nota</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_contenido">
+        <property name="text">
+         <string>Contenido *:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="input_contenido">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>120</height>
+         </size>
+        </property>
+        <property name="placeholderText">
+         <string>Ingrese el contenido de la nota</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="check_privada">
+        <property name="text">
+         <string>Nota privada (solo visible para mi)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="botonesFormWidget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_cancelar_nota">
+           <property name="text">
+            <string>Cancelar</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_guardar_nota">
+           <property name="text">
+            <string>Guardar Nota</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
