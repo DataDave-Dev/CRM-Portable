@@ -18,15 +18,6 @@ def initialize_database():
     conn.executescript(schema_sql)
     conn.commit()
 
-    # aplicar indices de rendimiento
-    indexes_path = os.path.join(os.path.dirname(SCHEMA_PATH), 'add_indexes.sql')
-    if os.path.exists(indexes_path):
-        with open(indexes_path, "r", encoding="utf-8") as f:
-            indexes_sql = f.read()
-        conn.executescript(indexes_sql)
-        conn.commit()
-
-
 def has_users():
     # verifica si existe al menos un usuario en la base de datos
     conn = get_connection()

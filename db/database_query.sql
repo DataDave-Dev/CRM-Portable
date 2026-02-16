@@ -954,7 +954,7 @@ CREATE INDEX IF NOT EXISTS idx_oportunidades_propietario ON Oportunidades(Propie
 CREATE INDEX IF NOT EXISTS idx_oportunidades_empresa ON Oportunidades(EmpresaID);
 CREATE INDEX IF NOT EXISTS idx_oportunidades_contacto ON Oportunidades(ContactoID);
 CREATE INDEX IF NOT EXISTS idx_oportunidades_moneda ON Oportunidades(MonedaID);
-CREATE INDEX IF NOT EXISTS idx_oportunidades_motivo_perdida ON Oportunidades(MotivoPerdidaID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_motivo_perdida ON Oportunidades(MotivosPerdidaID);
 
 -- Indices en foreign keys de Actividades
 CREATE INDEX IF NOT EXISTS idx_actividades_contacto ON Actividades(ContactoID);
@@ -979,7 +979,7 @@ CREATE INDEX IF NOT EXISTS idx_ciudades_estado ON Ciudades(EstadoID);
 -- Indices compuestos para filtros frecuentes
 CREATE INDEX IF NOT EXISTS idx_empresas_activo_fecha ON Empresas(Activo, FechaCreacion DESC);
 CREATE INDEX IF NOT EXISTS idx_contactos_activo_fecha ON Contactos(Activo, FechaCreacion DESC);
-CREATE INDEX IF NOT EXISTS idx_oportunidades_activo_fecha ON Oportunidades(Activo, FechaCreacion DESC);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_activo_fecha ON Oportunidades(FechaCreacion DESC);
 CREATE INDEX IF NOT EXISTS idx_usuarios_activo_rol ON Usuarios(Activo, RolID);
 
 -- Indices para busquedas por email y RFC
