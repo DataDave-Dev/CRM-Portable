@@ -77,7 +77,7 @@ Proyecto Equipo #1/
 │       ├── catalogo_form_dialog.py
 │       └── geografia_widget.py
 ├── db/                             # Base de datos y esquema SQL
-│   ├── database_query.sql          # Esquema completo (60+ tablas)
+│   ├── database_query.sql          # Esquema completo (40+ tablas)
 │   └── crm.db                     # Archivo SQLite generado
 ├── tests/                          # Pruebas (pendiente)
 ├── Docs/                           # Documentación del proyecto
