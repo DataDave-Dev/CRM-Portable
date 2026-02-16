@@ -835,8 +835,7 @@ INSERT INTO Roles (NombreRol, Descripcion) VALUES
 ('Administrador', 'Acceso total al sistema'),
 ('Gerente de Ventas', 'Gestión del equipo de ventas y reportes'),
 ('Vendedor', 'Gestión de contactos, oportunidades y actividades'),
-('Marketing', 'Gestión de campañas y comunicaciones'),
-('Solo Lectura', 'Visualización de datos sin edición');
+('Marketing', 'Gestión de campañas y comunicaciones')
 
 -- Etapas de venta
 INSERT INTO EtapasVenta (Nombre, Orden, Probabilidad, Color, Descripcion) VALUES
