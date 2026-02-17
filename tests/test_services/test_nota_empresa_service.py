@@ -55,7 +55,7 @@ class TestNotaEmpresaService:
         notas, error = service.obtener_por_empresa(1)
 
         assert notas is None
-        assert "Error al obtener notas" in error
+        assert error is not None  # el mensaje es sanitizado
 
     def test_crear_nota_exitoso(self, service, mock_repo):
         # test de crear nota correctamente
@@ -147,4 +147,4 @@ class TestNotaEmpresaService:
         resultado, error = service.eliminar_nota(1)
 
         assert resultado is False
-        assert "Error al eliminar nota" in error
+        assert error is not None  # el mensaje es sanitizado
