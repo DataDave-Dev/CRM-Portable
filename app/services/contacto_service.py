@@ -1,35 +1,96 @@
-# Logica de negocio para gestionar contactos
+"""
+Servicio de gestion de contactos para el sistema CRM.
+
+Este modulo proporciona la logica de negocio para gestionar contactos (personas),
+incluyendo validaciones de email, telefonos, codigo postal, y fecha de nacimiento.
+
+Validaciones implementadas:
+    - Campos requeridos: nombre, apellido_paterno
+    - Email primario y secundario: formato valido (RFC 5322)
+    - Telefonos (oficina y celular): 10 digitos numericos
+    - Codigo postal: 5 digitos numericos
+    - Fecha de nacimiento: formato AAAA-MM-DD
+    - LinkedIn URL: formato URL valido
+    - Foreign keys: empresa_id, ciudad_id, origen_id, propietario_id
+
+Attributes:
+    logger: Logger configurado con filtrado automatico de datos sensibles.
+"""
 
 import re
 from app.repositories.contacto_repository import ContactoRepository
 from app.models.Contacto import Contacto
+from app.utils.logger import AppLogger
+from app.utils.db_retry import sanitize_error_message
+
+logger = AppLogger.get_logger(__name__)
 
 
 class ContactoService:
+    """
+    Servicio de gestion de contactos del sistema CRM.
+
+    Proporciona metodos CRUD para contactos con validaciones completas,
+    paginacion, y logging de operaciones.
+    """
+
     def __init__(self):
+        """Inicializa el servicio de contactos."""
         self._repo = ContactoRepository()
 
     def obtener_todos(self, limit=None, offset=0):
+        """
+        Obtiene todos los contactos con paginacion opcional.
+
+        Args:
+            limit (int, opcional): Numero maximo de registros a retornar
+            offset (int, opcional): Numero de registros a saltar (default 0)
+
+        Returns:
+            tuple: (list[Contacto]|None, str|None)
+        """
         # obtiene contactos con paginacion opcional
         try:
-            return self._repo.find_all(limit=limit, offset=offset), None
+            logger.debug(f"Obteniendo contactos - limit: {limit}, offset: {offset}")
+            contactos = self._repo.find_all(limit=limit, offset=offset)
+            logger.info(f"Se obtuvieron {len(contactos)} contactos")
+            return contactos, None
         except Exception as e:
-            return None, f"Error al obtener contactos: {str(e)}"
+            AppLogger.log_exception(logger, "Error al obtener contactos")
+            return None, sanitize_error_message(e)
 
     def contar_total(self):
+        """Cuenta el total de contactos para paginacion."""
         # cuenta total de contactos para paginacion
         try:
-            return self._repo.count_all(), None
+            total = self._repo.count_all()
+            logger.debug(f"Total de contactos: {total}")
+            return total, None
         except Exception as e:
-            return None, f"Error al contar contactos: {str(e)}"
+            AppLogger.log_exception(logger, "Error al contar contactos")
+            return None, sanitize_error_message(e)
 
     def obtener_por_id(self, contacto_id):
+        """Obtiene un contacto por su ID."""
         try:
-            return self._repo.find_by_id(contacto_id), None
+            logger.debug(f"Obteniendo contacto {contacto_id}")
+            contacto = self._repo.find_by_id(contacto_id)
+            return contacto, None
         except Exception as e:
-            return None, f"Error al obtener contacto: {str(e)}"
+            AppLogger.log_exception(logger, f"Error al obtener contacto {contacto_id}")
+            return None, sanitize_error_message(e)
 
     def crear_contacto(self, datos, usuario_actual_id):
+        """
+        Crea un nuevo contacto en el sistema.
+
+        Args:
+            datos (dict): Datos del contacto (nombre, apellido_paterno, email, telefonos, etc.)
+            usuario_actual_id (int): ID del usuario que crea el contacto
+
+        Returns:
+            tuple: (Contacto|None, str|None)
+        """
         # validar campos requeridos
         nombre = datos.get("nombre", "").strip()
         if not nombre:
@@ -102,13 +163,27 @@ class ContactoService:
         )
 
         try:
+            logger.info(f"Creando contacto: {nombre} {apellido_paterno} por usuario {usuario_actual_id}")
             contacto_id = self._repo.create(nuevo_contacto)
             nuevo_contacto.contacto_id = contacto_id
+            logger.info(f"Contacto {contacto_id} creado exitosamente")
             return nuevo_contacto, None
         except Exception as e:
-            return None, f"Error al crear contacto: {str(e)}"
+            AppLogger.log_exception(logger, f"Error al crear contacto: {nombre} {apellido_paterno}")
+            return None, sanitize_error_message(e)
 
     def actualizar_contacto(self, contacto_id, datos, usuario_actual_id):
+        """
+        Actualiza un contacto existente en el sistema.
+
+        Args:
+            contacto_id (int): ID del contacto a actualizar
+            datos (dict): Datos a actualizar (mismos campos que crear_contacto)
+            usuario_actual_id (int): ID del usuario que actualiza el contacto
+
+        Returns:
+            tuple: (Contacto|None, str|None)
+        """
         # validar campos requeridos
         nombre = datos.get("nombre", "").strip()
         if not nombre:
@@ -181,7 +256,10 @@ class ContactoService:
         )
 
         try:
+            logger.info(f"Actualizando contacto {contacto_id}: {nombre} {apellido_paterno} por usuario {usuario_actual_id}")
             self._repo.update(contacto)
+            logger.info(f"Contacto {contacto_id} actualizado exitosamente")
             return contacto, None
         except Exception as e:
-            return None, f"Error al actualizar contacto: {str(e)}"
+            AppLogger.log_exception(logger, f"Error al actualizar contacto {contacto_id}")
+            return None, sanitize_error_message(e)
