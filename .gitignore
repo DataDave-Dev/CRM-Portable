@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 
 # Database files
+*.db
 *.db-shm
 *.db-wal
 
@@ -17,3 +18,7 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+logs/
+*.log
