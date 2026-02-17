@@ -1,7 +1,8 @@
 # Widget para gestionar notas de contacto
 
 import os
-from PyQt5.QtWidgets import QWidget, QMessageBox, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QWidget, QMessageBox, QTableWidgetItem, QHeaderView, QLineEdit, QLabel, QHBoxLayout
+from PyQt5.QtCore import Qt
 from PyQt5 import uic
 from app.services.nota_contacto_service import NotaContactoService
 from app.utils.sanitizer import Sanitizer
@@ -19,6 +20,7 @@ class NotasContactoWidget(QWidget):
         self._nota_service = NotaContactoService()
         self._nota_editando = None
         self._notas_cargadas = []
+        self._filtro_texto = ""
 
         self._setup_ui()
         self._setup_signals()
@@ -37,6 +39,8 @@ class NotasContactoWidget(QWidget):
             h_header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Privada
             h_header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Creado Por
             h_header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Fecha
+            # habilitar ordenamiento por columna
+            self.tabla_notas.setSortingEnabled(True)
 
         v_header = self.tabla_notas.verticalHeader()
         if v_header:
@@ -49,6 +53,41 @@ class NotasContactoWidget(QWidget):
         # configurar limites de caracteres
         self.input_titulo.setMaxLength(Sanitizer.MAX_TITULO_LENGTH)
 
+        # agregar campo de busqueda si existe el contenedor adecuado
+        try:
+            if hasattr(self, 'tablaContainer'):
+                # crear campo de busqueda
+                search_layout = QHBoxLayout()
+                search_label = QLabel("Buscar:")
+                self.search_input = QLineEdit()
+                self.search_input.setPlaceholderText("Buscar en notas...")
+                self.search_input.setClearButtonEnabled(True)
+                search_layout.addWidget(search_label)
+                search_layout.addWidget(self.search_input)
+
+                # insertar al inicio del layout de la tabla
+                self.tablaContainer.layout().insertLayout(0, search_layout)
+        except:
+            pass
+
+        # agregar contadores de caracteres para el formulario
+        try:
+            if hasattr(self, 'formNotaContainer'):
+                # crear labels para contadores
+                self.label_contador_titulo = QLabel(f"0/{Sanitizer.MAX_TITULO_LENGTH}")
+                self.label_contador_contenido = QLabel(f"0/{Sanitizer.MAX_CONTENIDO_LENGTH}")
+
+                # intentar agregar los contadores cerca de los campos
+                if hasattr(self, 'input_titulo') and self.input_titulo.parent():
+                    parent_layout = self.input_titulo.parent().layout()
+                    if parent_layout:
+                        for i in range(parent_layout.count()):
+                            if parent_layout.itemAt(i).widget() == self.input_titulo:
+                                parent_layout.insertWidget(i + 1, self.label_contador_titulo)
+                                break
+        except:
+            pass
+
     def _setup_signals(self):
         self.btn_nueva_nota.clicked.connect(self._mostrar_form_nueva_nota)
         self.btn_editar_nota.clicked.connect(self._editar_nota_seleccionada)
@@ -56,6 +95,67 @@ class NotasContactoWidget(QWidget):
         self.btn_guardar_nota.clicked.connect(self._guardar_nota)
         self.btn_cancelar_nota.clicked.connect(self._cancelar_form_nota)
         self.tabla_notas.doubleClicked.connect(self._editar_nota_desde_tabla)
+
+        # conectar busqueda
+        if hasattr(self, 'search_input'):
+            self.search_input.textChanged.connect(self._filtrar_notas)
+
+        # conectar contadores de caracteres
+        if hasattr(self, 'label_contador_titulo'):
+            self.input_titulo.textChanged.connect(self._actualizar_contador_titulo)
+        if hasattr(self, 'label_contador_contenido'):
+            self.input_contenido.textChanged.connect(self._actualizar_contador_contenido)
+
+    def _filtrar_notas(self, texto):
+        # filtra las notas segun el texto de busqueda
+        self._filtro_texto = texto.lower()
+        self._actualizar_tabla_filtrada()
+
+    def _actualizar_tabla_filtrada(self):
+        # actualiza la tabla aplicando el filtro
+        self.tabla_notas.setSortingEnabled(False)
+        self.tabla_notas.setRowCount(0)
+
+        for nota in self._notas_cargadas:
+            # aplicar filtro
+            if self._filtro_texto:
+                titulo = (nota.titulo or "").lower()
+                contenido = (nota.contenido or "").lower()
+                if self._filtro_texto not in titulo and self._filtro_texto not in contenido:
+                    continue
+
+            # agregar fila
+            row = self.tabla_notas.rowCount()
+            self.tabla_notas.insertRow(row)
+
+            self.tabla_notas.setItem(row, 0, QTableWidgetItem(str(nota.nota_id)))
+            self.tabla_notas.setItem(row, 1, QTableWidgetItem(nota.titulo or ""))
+            self.tabla_notas.setItem(row, 2, QTableWidgetItem(nota.contenido or ""))
+            self.tabla_notas.setItem(row, 3, QTableWidgetItem("Si" if nota.es_privada else "No"))
+            self.tabla_notas.setItem(row, 4, QTableWidgetItem(nota.nombre_creador or ""))
+            self.tabla_notas.setItem(row, 5, QTableWidgetItem(nota.fecha_creacion or ""))
+
+        self.tabla_notas.setSortingEnabled(True)
+
+    def _actualizar_contador_titulo(self, texto):
+        # actualiza el contador de caracteres del titulo
+        if hasattr(self, 'label_contador_titulo'):
+            longitud = len(texto)
+            self.label_contador_titulo.setText(f"{longitud}/{Sanitizer.MAX_TITULO_LENGTH}")
+            if longitud > Sanitizer.MAX_TITULO_LENGTH * 0.9:
+                self.label_contador_titulo.setStyleSheet("color: red;")
+            else:
+                self.label_contador_titulo.setStyleSheet("")
+
+    def _actualizar_contador_contenido(self):
+        # actualiza el contador de caracteres del contenido
+        if hasattr(self, 'label_contador_contenido'):
+            longitud = len(self.input_contenido.toPlainText())
+            self.label_contador_contenido.setText(f"{longitud}/{Sanitizer.MAX_CONTENIDO_LENGTH}")
+            if longitud > Sanitizer.MAX_CONTENIDO_LENGTH * 0.9:
+                self.label_contador_contenido.setStyleSheet("color: red;")
+            else:
+                self.label_contador_contenido.setStyleSheet("")
 
     def cargar_notas(self):
         # metodo publico para recargar notas desde el exterior
@@ -72,30 +172,7 @@ class NotasContactoWidget(QWidget):
                 return
 
             self._notas_cargadas = notas or []
-            self.tabla_notas.setRowCount(0)
-
-            for nota in self._notas_cargadas:
-                row = self.tabla_notas.rowCount()
-                self.tabla_notas.insertRow(row)
-
-                self.tabla_notas.setItem(row, 0, QTableWidgetItem(str(nota.nota_id)))
-                self.tabla_notas.setItem(row, 1, QTableWidgetItem(nota.titulo or "(Sin titulo)"))
-
-                # truncar contenido para vista de tabla
-                contenido_corto = nota.contenido[:100] + "..." if len(nota.contenido) > 100 else nota.contenido
-                self.tabla_notas.setItem(row, 2, QTableWidgetItem(contenido_corto))
-
-                privada = "Si" if nota.es_privada == 1 else "No"
-                self.tabla_notas.setItem(row, 3, QTableWidgetItem(privada))
-                self.tabla_notas.setItem(row, 4, QTableWidgetItem(nota.nombre_creador or "N/A"))
-
-                # formatear fecha
-                if nota.fecha_creacion:
-                    fecha_parts = nota.fecha_creacion.split(" ")
-                    fecha_corta = fecha_parts[0] if len(fecha_parts) > 0 else nota.fecha_creacion
-                    self.tabla_notas.setItem(row, 5, QTableWidgetItem(fecha_corta))
-                else:
-                    self.tabla_notas.setItem(row, 5, QTableWidgetItem("N/A"))
+            self._actualizar_tabla_filtrada()
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudieron cargar las notas: {str(e)}")
