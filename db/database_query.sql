@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS TamanosEmpresa (
     RangoEmpleados  TEXT,
     Descripcion     TEXT
 );
--- Catálogo de orígenes de contacto (lead source)
+-- Catálogo de orígenes de contacto
 CREATE TABLE IF NOT EXISTS OrigenesContacto (
     OrigenID        INTEGER PRIMARY KEY AUTOINCREMENT,
     Nombre          TEXT NOT NULL UNIQUE,
