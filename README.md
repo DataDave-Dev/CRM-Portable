@@ -44,7 +44,7 @@ Database (SQLite)
 ## Estructura de carpetas
 
 ```
-Proyecto Equipo #1/
+CRM-Portable/
 ├── app/                            # Paquete principal de la aplicación
 │   ├── assets/                     # Iconos SVG para la interfaz
 │   ├── config/                     # Configuración de la app y catálogos
@@ -56,26 +56,47 @@ Proyecto Equipo #1/
 │   ├── models/                     # Modelos de datos
 │   │   ├── Usuario.py
 │   │   ├── Rol.py
-│   │   └── Catalogo.py
+│   │   ├── Catalogo.py
+│   │   ├── Oportunidad.py
+│   │   ├── Producto.py
+│   │   └── Cotizacion.py
 │   ├── repositories/               # Capa de acceso a datos (CRUD)
 │   │   ├── usuario_repository.py
 │   │   ├── rol_repository.py
-│   │   └── catalogo_repository.py
+│   │   ├── catalogo_repository.py
+│   │   ├── oportunidad_repository.py
+│   │   ├── oportunidad_producto_repository.py
+│   │   ├── historial_etapas_repository.py
+│   │   ├── producto_repository.py
+│   │   ├── cotizacion_repository.py
+│   │   └── cotizacion_detalle_repository.py
 │   ├── services/                   # Capa de lógica de negocio
 │   │   ├── auth_service.py
 │   │   ├── usuario_service.py
-│   │   └── catalogo_service.py
+│   │   ├── catalogo_service.py
+│   │   ├── oportunidad_service.py
+│   │   ├── producto_service.py
+│   │   └── cotizacion_service.py
 │   ├── controllers/                # Controladores MVC
 │   │   ├── login_controller.py
 │   │   └── main_controller.py
 │   └── views/                      # Vistas e interfaz gráfica
 │       ├── ui/                     # Archivos .ui (Qt Designer)
+│       │   ├── main/, auth/, users/   # UI principal, login y usuarios
+│       │   ├── clientes/           # UI módulo de clientes (empresas, contactos, notas)
+│       │   ├── catalogos/          # UI catálogos por módulo (ventas, actividades, empresas, sistema)
+│       │   ├── configuracion/, geografia/
+│       │   └── ventas/             # UI módulo de ventas (10 archivos)
 │       ├── login_view.py
 │       ├── main_view.py
 │       ├── configuracion_view.py
 │       ├── catalogo_list_widget.py
 │       ├── catalogo_form_dialog.py
-│       └── geografia_widget.py
+│       ├── geografia_widget.py
+│       ├── ventas_view.py
+│       ├── oportunidad_productos_widget.py
+│       ├── historial_etapas_widget.py
+│       └── cotizacion_detalle_widget.py
 ├── db/                             # Base de datos y esquema SQL
 │   ├── database_query.sql          # Esquema completo (40+ tablas)
 │   └── crm.db                     # Archivo SQLite generado
@@ -159,7 +180,11 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] **Sistema de logging**: Logs rotativos con filtrado de datos sensibles
 - [x] **Sistema de auditoría**: Tracking completo de CREATE/UPDATE/DELETE
 - [x] **Configuración**: Navegación por pestañas con vistas especializadas
-- [ ] Pipeline de oportunidades
+- [x] **Catálogo de Productos/Servicios**: CRUD completo con código, categoría, precio y moneda
+- [x] **Pipeline de Oportunidades**: CRUD con etapas, monto, probabilidad, historial automático de etapas
+- [x] **Productos en Oportunidades**: Líneas de productos vinculadas a cada oportunidad con subtotales
+- [x] **Cotizaciones**: CRUD con número auto-generado (COT-AAAA-NNNN), estados y cálculo de IVA (16%)
+- [x] **Detalle de Cotizaciones**: Líneas de producto con cantidad, precio, descuento y subtotal
 - [ ] Gestión de actividades
 - [ ] Campañas de marketing
 - [ ] Reportes y dashboards
