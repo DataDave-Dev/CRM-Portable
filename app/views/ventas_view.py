@@ -736,6 +736,13 @@ class VentasView(QWidget):
         self.cot_btn_limpiar.clicked.connect(self._limpiar_formulario_cotizacion)
         self.cot_btn_cancelar.clicked.connect(self._mostrar_lista_cotizaciones)
 
+        self._simbolo_moneda_actual = "$"
+        self._subtotal_actual = 0
+        self._iva_actual = 0
+        self._total_actual = 0
+        self._monedas_simbolos = {}
+        self.cot_combo_moneda.currentIndexChanged.connect(self._on_moneda_cot_changed)
+
         self._cargar_combos_cotizacion()
         self.form_cotizaciones_widget.hide()
         self.tabCotizacionesLayout.addWidget(self.form_cotizaciones_widget)
@@ -759,9 +766,11 @@ class VentasView(QWidget):
 
         self.cot_combo_moneda.clear()
         self.cot_combo_moneda.addItem("-- Seleccionar --", None)
-        cursor = conn.execute("SELECT MonedaID, Nombre, Codigo FROM Monedas ORDER BY Codigo")
+        self._monedas_simbolos = {}
+        cursor = conn.execute("SELECT MonedaID, Nombre, Codigo, Simbolo FROM Monedas ORDER BY Codigo")
         for row in cursor.fetchall():
             self.cot_combo_moneda.addItem(f"{row['Codigo']} - {row['Nombre']}", row["MonedaID"])
+            self._monedas_simbolos[row["MonedaID"]] = row["Simbolo"] or "$"
 
         self.cot_combo_estado.clear()
         for estado in _ESTADOS_COTIZACION:
@@ -837,10 +846,19 @@ class VentasView(QWidget):
             self._cotizacion_detalle_widget.deleteLater()
             self._cotizacion_detalle_widget = None
 
+    def _on_moneda_cot_changed(self):
+        moneda_id = self.cot_combo_moneda.currentData()
+        self._simbolo_moneda_actual = self._monedas_simbolos.get(moneda_id, "$") if moneda_id else "$"
+        self._actualizar_totales_cotizacion(self._subtotal_actual, self._iva_actual, self._total_actual)
+
     def _actualizar_totales_cotizacion(self, subtotal, iva, total):
-        self.cot_label_subtotal.setText(f"${subtotal:,.2f}")
-        self.cot_label_iva.setText(f"${iva:,.2f}")
-        self.cot_label_total.setText(f"${total:,.2f}")
+        self._subtotal_actual = subtotal
+        self._iva_actual = iva
+        self._total_actual = total
+        simbolo = self._simbolo_moneda_actual
+        self.cot_label_subtotal.setText(f"{simbolo}{subtotal:,.2f}")
+        self.cot_label_iva.setText(f"{simbolo}{iva:,.2f}")
+        self.cot_label_total.setText(f"{simbolo}{total:,.2f}")
 
     def _guardar_cotizacion(self):
         items_detalle = (
