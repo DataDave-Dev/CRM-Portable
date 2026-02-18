@@ -47,33 +47,17 @@ class MainView(QMainWindow):
         self.welcomeTitle.setText(f"Bienvenido, {usuario.nombre}")
 
     def _setup_navigation(self):
-        # conectar los botones de navegación del sidebar
-        self.sidebar_buttons = []
+        self.sidebar_buttons = [
+            self.btnClientes,
+            self.btnVentas,
+            self.btnUsuarios,
+            self.btnConfiguracion,
+        ]
 
-        # lista de todos los botones de navegación para poder cambiar estilos
-        if hasattr(self, 'btnDashboard'):
-            self.sidebar_buttons.append(self.btnDashboard)
-        if hasattr(self, 'btnClientes'):
-            self.sidebar_buttons.append(self.btnClientes)
-        if hasattr(self, 'btnProductos'):
-            self.sidebar_buttons.append(self.btnProductos)
-        if hasattr(self, 'btnVentas'):
-            self.sidebar_buttons.append(self.btnVentas)
-        if hasattr(self, 'btnReportes'):
-            self.sidebar_buttons.append(self.btnReportes)
-        if hasattr(self, 'btnUsuarios'):
-            self.sidebar_buttons.append(self.btnUsuarios)
-            # conectar el botón de Usuarios para mostrar la lista
-            self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
-        if hasattr(self, 'btnClientes'):
-            self.sidebar_buttons.append(self.btnClientes)
-            self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
-        if hasattr(self, 'btnVentas'):
-            self.sidebar_buttons.append(self.btnVentas)
-            self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
-        if hasattr(self, 'btnConfiguracion'):
-            self.sidebar_buttons.append(self.btnConfiguracion)
-            self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
+        self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
+        self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
+        self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
+        self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
 
     def _resaltar_boton_activo(self, boton_activo):
         # resetear el estilo de todos los botones del sidebar
