@@ -2,7 +2,7 @@
 
 import sys
 from typing import Optional
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from app.database.initializer import initialize_database, has_users
 from app.views.setup_view import SetupView
@@ -14,6 +14,7 @@ from app.controllers.main_controller import MainController
 class CRMApp:
     def __init__(self):
         self._app = QApplication(sys.argv)
+        self._app.setQuitOnLastWindowClosed(False)
         self._setup_view: Optional[SetupView] = None
         self._login_controller: Optional[LoginController] = None
         self._main_controller: Optional[MainController] = None
@@ -48,9 +49,20 @@ class CRMApp:
         # cerrar login y abrir menu principal
         if self._login_controller:
             self._login_controller.close()
-        self._main_controller = MainController(usuario)
-        self._main_controller.show()
+        try:
+            self._main_controller = MainController(usuario)
+            self._main_controller.show()
+        except Exception as e:
+            QMessageBox.critical(
+                None,
+                "Error al iniciar",
+                f"No se pudo abrir la ventana principal:\n{str(e)}"
+            )
+            self._show_login()
 
 if __name__ == "__main__":
-    app = CRMApp()
-    app.run()
+    try:
+        app = CRMApp()
+        app.run()
+    except KeyboardInterrupt:
+        sys.exit(0)
