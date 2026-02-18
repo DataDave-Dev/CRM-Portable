@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OportunidadList</class>
+ <widget class="QWidget" name="OportunidadList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>620</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* === GLOBAL === */
+QWidget#OportunidadList {
+    background-color: transparent;
+}
+
+/* === HEADER === */
+QLabel#listTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#listSubtitle {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+
+/* === BOTON NUEVO === */
+QPushButton#btn_nueva_oportunidad {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    min-height: 38px;
+}
+QPushButton#btn_nueva_oportunidad:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_nueva_oportunidad:pressed {
+    background-color: #2a6bb8;
+}
+
+/* === STAT CARDS === */
+QFrame#cardTotal, QFrame#cardAbiertas, QFrame#cardGanadas, QFrame#cardPerdidas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+QFrame#cardTotal {
+    border-left: 4px solid #4a90d9;
+}
+QFrame#cardAbiertas {
+    border-left: 4px solid #ed8936;
+}
+QFrame#cardGanadas {
+    border-left: 4px solid #48bb78;
+}
+QFrame#cardPerdidas {
+    border-left: 4px solid #f56565;
+}
+
+QLabel#statValueTotal {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4a90d9;
+}
+QLabel#statValueAbiertas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ed8936;
+}
+QLabel#statValueGanadas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #48bb78;
+}
+QLabel#statValuePerdidas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f56565;
+}
+QLabel#statLabelTotal, QLabel#statLabelAbiertas, QLabel#statLabelGanadas, QLabel#statLabelPerdidas {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* === TABLA === */
+QTableWidget#tabla_oportunidades {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QTableWidget#tabla_oportunidades QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_oportunidades QHeaderView::section:last {
+    border-right: none;
+}
+QTableWidget#tabla_oportunidades::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_oportunidades::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget#tabla_oportunidades::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>16</number>
+   </property>
+
+   <!-- HEADER: Titulo + Boton Nuevo -->
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <item>
+      <layout class="QVBoxLayout" name="titleLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="listTitle">
+         <property name="text">
+          <string>Pipeline de Ventas</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="listSubtitle">
+         <property name="text">
+          <string>Gestiona y visualiza todas las oportunidades de venta</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_nueva_oportunidad">
+       <property name="text">
+        <string>+ Nueva Oportunidad</string>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <!-- STAT CARDS -->
+   <item>
+    <layout class="QHBoxLayout" name="statsLayout">
+     <property name="spacing">
+      <number>16</number>
+     </property>
+
+     <!-- Card Total -->
+     <item>
+      <widget class="QFrame" name="cardTotal">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardTotalLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueTotal">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelTotal">
+          <property name="text"><string>Total</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card Abiertas -->
+     <item>
+      <widget class="QFrame" name="cardAbiertas">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardAbiertasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueAbiertas">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelAbiertas">
+          <property name="text"><string>Abiertas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card Ganadas -->
+     <item>
+      <widget class="QFrame" name="cardGanadas">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardGanadasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValueGanadas">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelGanadas">
+          <property name="text"><string>Ganadas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card Perdidas -->
+     <item>
+      <widget class="QFrame" name="cardPerdidas">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="cardPerdidasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="statValuePerdidas">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="statLabelPerdidas">
+          <property name="text"><string>Perdidas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- TABLA DE OPORTUNIDADES -->
+   <item>
+    <widget class="QTableWidget" name="tabla_oportunidades">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="showGrid">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>9</number>
+     </property>
+     <column>
+      <property name="text"><string>ID</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Nombre</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Empresa</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Etapa</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Monto Est.</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Probabilidad</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Fecha Cierre Est.</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Vendedor</string></property>
+     </column>
+     <column>
+      <property name="text"><string>Estado</string></property>
+     </column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CotizacionForm</class>
+ <widget class="QWidget" name="CotizacionForm">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>889</width><height>1000</height></rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#CotizacionForm { background-color: transparent; }
+
+QLabel#form_titulo { font-size: 24px; font-weight: bold; color: #1a1a2e; }
+QLabel#form_subtitulo { font-size: 13px; color: #718096; }
+QLabel#seccionInfoCot, QLabel#seccionFechasEstado, QLabel#seccionTerminos, QLabel#seccionTotales {
+    font-size: 15px; font-weight: bold; color: #1a1a2e; padding-top: 8px;
+}
+
+QLineEdit, QComboBox {
+    padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px;
+    background-color: #f7fafc; font-size: 13px; min-height: 34px;
+}
+QLineEdit:focus, QComboBox:focus { border: 1px solid #4a90d9; background-color: white; }
+QLineEdit:hover, QComboBox:hover { border: 1px solid #cbd5e0; }
+QLineEdit[readOnly="true"] { background-color: #edf2f7; color: #718096; }
+
+QPushButton#btn_guardar {
+    background-color: #4a90d9; color: white; border: none; border-radius: 6px;
+    font-size: 14px; font-weight: 600; padding: 10px 24px; min-height: 38px;
+}
+QPushButton#btn_guardar:hover { background-color: #3a7bc8; }
+QPushButton#btn_guardar:pressed { background-color: #2a6bb8; }
+QPushButton#btn_limpiar, QPushButton#btn_cancelar {
+    background-color: white; color: #2d3748; border: 1px solid #e2e8f0;
+    border-radius: 6px; font-size: 14px; font-weight: 500; padding: 10px 20px; min-height: 38px;
+}
+QPushButton#btn_limpiar:hover, QPushButton#btn_cancelar:hover { background-color: #f7fafc; }
+
+QFrame#separator1, QFrame#separator2, QFrame#separator3, QFrame#separator4 { color: #e2e8f0; }
+
+/* Totales */
+QFrame#frameTotales {
+    background-color: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+}
+QLabel#labelSubtotalLiteral, QLabel#labelIVALiteral, QLabel#labelTotalLiteral {
+    font-size: 13px; color: #718096;
+}
+QLabel#labelSubtotalValor, QLabel#labelIVAValor {
+    font-size: 14px; font-weight: 600; color: #2d3748;
+}
+QLabel#labelTotalValor {
+    font-size: 18px; font-weight: bold; color: #4a90d9;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="formMainLayout">
+   <property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property><property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <property name="widgetResizable"><bool>true</bool></property>
+     <widget class="QWidget" name="scrollContent">
+      <property name="styleSheet">
+       <string notr="true">QWidget#scrollContent { background-color: transparent; }</string>
+      </property>
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="spacing"><number>12</number></property>
+       <property name="leftMargin"><number>0</number></property><property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>10</number></property><property name="bottomMargin"><number>10</number></property>
+
+       <item><widget class="QLabel" name="form_titulo"><property name="text"><string>Nueva Cotizacion</string></property></widget></item>
+       <item><widget class="QLabel" name="form_subtitulo"><property name="text"><string>Completa la informacion de la cotizacion. Los campos con * son obligatorios.</string></property><property name="wordWrap"><bool>true</bool></property></widget></item>
+
+       <item><widget class="QFrame" name="separator1"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="frameShadow"><enum>QFrame::Sunken</enum></property></widget></item>
+
+       <!-- SECCION: Informacion -->
+       <item><widget class="QLabel" name="seccionInfoCot"><property name="text"><string>Informacion de la Cotizacion</string></property></widget></item>
+
+       <!-- Row 1: Numero + Oportunidad -->
+       <item>
+        <layout class="QHBoxLayout" name="row1CotLayout"><property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="numeroCotLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_numero"><property name="text"><string>Numero de Cotizacion *</string></property></widget></item>
+           <item><widget class="QLineEdit" name="input_numero_cotizacion"><property name="placeholderText"><string>Auto-generado</string></property></widget></item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="oportunidadCotLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_oportunidad_cot"><property name="text"><string>Oportunidad *</string></property></widget></item>
+           <item><widget class="QComboBox" name="combo_oportunidad_cot"/></item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Row 2: Contacto + Moneda -->
+       <item>
+        <layout class="QHBoxLayout" name="row2CotLayout"><property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="contactoCotLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_contacto_cot"><property name="text"><string>Contacto</string></property></widget></item>
+           <item><widget class="QComboBox" name="combo_contacto_cot"/></item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="monedaCotLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_moneda_cot"><property name="text"><string>Moneda</string></property></widget></item>
+           <item><widget class="QComboBox" name="combo_moneda_cot"/></item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <item><widget class="QFrame" name="separator2"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="frameShadow"><enum>QFrame::Sunken</enum></property></widget></item>
+
+       <!-- SECCION: Fechas y Estado -->
+       <item><widget class="QLabel" name="seccionFechasEstado"><property name="text"><string>Fechas y Estado</string></property></widget></item>
+
+       <!-- Row 3: Fecha Emision + Fecha Vigencia + Estado -->
+       <item>
+        <layout class="QHBoxLayout" name="row3CotLayout"><property name="spacing"><number>20</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="fechaEmisionLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_fecha_emision"><property name="text"><string>Fecha de Emision</string></property></widget></item>
+           <item><widget class="QLineEdit" name="input_fecha_emision"><property name="placeholderText"><string>AAAA-MM-DD</string></property></widget></item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="fechaVigenciaLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_fecha_vigencia"><property name="text"><string>Fecha de Vigencia</string></property></widget></item>
+           <item><widget class="QLineEdit" name="input_fecha_vigencia"><property name="placeholderText"><string>AAAA-MM-DD (opcional)</string></property></widget></item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="estadoCotLayout"><property name="spacing"><number>4</number></property>
+           <item><widget class="QLabel" name="label_estado_cot"><property name="text"><string>Estado</string></property></widget></item>
+           <item><widget class="QComboBox" name="combo_estado_cot"/></item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <item><widget class="QFrame" name="separator3"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="frameShadow"><enum>QFrame::Sunken</enum></property></widget></item>
+
+       <!-- SECCION: Terminos -->
+       <item><widget class="QLabel" name="seccionTerminos"><property name="text"><string>Notas y Terminos</string></property></widget></item>
+
+       <!-- Row 4: Notas (full width) -->
+       <item>
+        <layout class="QVBoxLayout" name="notasCotLayout"><property name="spacing"><number>4</number></property>
+         <item><widget class="QLabel" name="label_notas_cot"><property name="text"><string>Notas</string></property></widget></item>
+         <item><widget class="QLineEdit" name="input_notas_cot"><property name="placeholderText"><string>Notas adicionales para el cliente (opcional)</string></property></widget></item>
+        </layout>
+       </item>
+
+       <!-- Row 5: Terminos y condiciones (full width) -->
+       <item>
+        <layout class="QVBoxLayout" name="terminosCotLayout"><property name="spacing"><number>4</number></property>
+         <item><widget class="QLabel" name="label_terminos_cot"><property name="text"><string>Terminos y Condiciones</string></property></widget></item>
+         <item><widget class="QLineEdit" name="input_terminos_cot"><property name="placeholderText"><string>Terminos y condiciones de la cotizacion (opcional)</string></property></widget></item>
+        </layout>
+       </item>
+
+       <item><widget class="QFrame" name="separator4"><property name="frameShape"><enum>QFrame::HLine</enum></property><property name="frameShadow"><enum>QFrame::Sunken</enum></property></widget></item>
+
+       <!-- SECCION: Totales -->
+       <item><widget class="QLabel" name="seccionTotales"><property name="text"><string>Totales</string></property></widget></item>
+
+       <item>
+        <widget class="QFrame" name="frameTotales">
+         <layout class="QHBoxLayout" name="frameTotalesLayout">
+          <property name="leftMargin"><number>16</number></property><property name="topMargin"><number>12</number></property>
+          <property name="rightMargin"><number>16</number></property><property name="bottomMargin"><number>12</number></property>
+          <property name="spacing"><number>32</number></property>
+          <item>
+           <layout class="QVBoxLayout" name="subtotalLayout"><property name="spacing"><number>2</number></property>
+            <item><widget class="QLabel" name="labelSubtotalLiteral"><property name="text"><string>Subtotal</string></property></widget></item>
+            <item><widget class="QLabel" name="labelSubtotalValor"><property name="text"><string>$0.00</string></property></widget></item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="ivaLayout"><property name="spacing"><number>2</number></property>
+            <item><widget class="QLabel" name="labelIVALiteral"><property name="text"><string>IVA (16%)</string></property></widget></item>
+            <item><widget class="QLabel" name="labelIVAValor"><property name="text"><string>$0.00</string></property></widget></item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="totalCotLayout"><property name="spacing"><number>2</number></property>
+            <item><widget class="QLabel" name="labelTotalLiteral"><property name="text"><string>Total</string></property></widget></item>
+            <item><widget class="QLabel" name="labelTotalValor"><property name="text"><string>$0.00</string></property></widget></item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="totalesSpacer">
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Spacer + Buttons -->
+       <item>
+        <spacer name="formBottomSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeType"><enum>QSizePolicy::Fixed</enum></property>
+         <property name="sizeHint" stdset="0"><size><width>20</width><height>10</height></size></property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="buttonsLayout"><property name="spacing"><number>12</number></property>
+         <item><widget class="QPushButton" name="btn_guardar"><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property><property name="text"><string>Guardar Cotizacion</string></property></widget></item>
+         <item><widget class="QPushButton" name="btn_limpiar"><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property><property name="text"><string>Limpiar</string></property></widget></item>
+         <item><widget class="QPushButton" name="btn_cancelar"><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property><property name="text"><string>Cancelar</string></property></widget></item>
+         <item><spacer name="buttonsSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+        </layout>
+       </item>
+
+       <item>
+        <spacer name="finalSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

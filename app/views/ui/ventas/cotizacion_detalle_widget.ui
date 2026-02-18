@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CotizacionDetalleWidget</class>
+ <widget class="QWidget" name="CotizacionDetalleWidget">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>800</width><height>480</height></rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#CotizacionDetalleWidget { background-color: transparent; }
+
+QLabel#detWidgetTitle { font-size: 16px; font-weight: bold; color: #1a1a2e; padding-top: 8px; }
+QFrame#detSeparator { color: #e2e8f0; }
+
+QPushButton#btn_agregar_item {
+    background-color: #48bb78; color: white; border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 600; padding: 8px 16px; min-height: 32px;
+}
+QPushButton#btn_agregar_item:hover { background-color: #38a168; }
+
+QPushButton#btn_eliminar_item {
+    background-color: #f56565; color: white; border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 600; padding: 8px 16px; min-height: 32px;
+}
+QPushButton#btn_eliminar_item:hover { background-color: #e55555; }
+
+QPushButton#btn_confirmar_item {
+    background-color: #4a90d9; color: white; border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 600; padding: 8px 16px; min-height: 32px;
+}
+QPushButton#btn_confirmar_item:hover { background-color: #3a7bc8; }
+
+QPushButton#btn_cancelar_item {
+    background-color: white; color: #2d3748; border: 1px solid #e2e8f0;
+    border-radius: 6px; font-size: 13px; padding: 8px 16px; min-height: 32px;
+}
+QPushButton#btn_cancelar_item:hover { background-color: #f7fafc; }
+
+QTableWidget#tabla_detalle {
+    background-color: white; border: 1px solid #e2e8f0; border-radius: 8px;
+    gridline-color: #f0f2f5; font-size: 13px;
+}
+QTableWidget#tabla_detalle QHeaderView::section {
+    background-color: #f7fafc; color: #2d3748; font-weight: bold;
+    font-size: 12px; padding: 8px; border: none; border-bottom: 1px solid #e2e8f0;
+}
+QTableWidget#tabla_detalle::item { padding: 8px; border-bottom: 1px solid #f0f2f5; }
+QTableWidget#tabla_detalle::item:selected { background-color: #ebf8ff; color: #2c5282; }
+
+QLineEdit, QComboBox {
+    padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px;
+    background-color: #f7fafc; font-size: 13px; min-height: 30px;
+}
+QLineEdit:focus, QComboBox:focus { border: 1px solid #4a90d9; background-color: white; }
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="outerDetLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>8</number></property>
+
+   <item>
+    <widget class="QFrame" name="detSeparator">
+     <property name="frameShape"><enum>QFrame::HLine</enum></property>
+     <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+    </widget>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="headerDetLayout">
+     <item><widget class="QLabel" name="detWidgetTitle"><property name="text"><string>Detalle de la Cotizacion</string></property></widget></item>
+     <item>
+      <spacer name="headerDetSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_agregar_item">
+       <property name="text"><string>+ Agregar Producto</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_eliminar_item">
+       <property name="text"><string>Eliminar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <widget class="QTableWidget" name="tabla_detalle">
+     <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+     <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
+     <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+     <property name="minimumSize"><size><width>0</width><height>120</height></size></property>
+     <property name="maximumSize"><size><width>16777215</width><height>180</height></size></property>
+     <property name="columnCount"><number>7</number></property>
+     <column><property name="text"><string>ID</string></property></column>
+     <column><property name="text"><string>Producto</string></property></column>
+     <column><property name="text"><string>Descripcion</string></property></column>
+     <column><property name="text"><string>Cantidad</string></property></column>
+     <column><property name="text"><string>Precio Unit.</string></property></column>
+     <column><property name="text"><string>Desc %</string></property></column>
+     <column><property name="text"><string>Subtotal</string></property></column>
+    </widget>
+   </item>
+
+   <!-- Formulario para agregar item (oculto inicialmente) -->
+   <item>
+    <widget class="QWidget" name="formItemContainer" native="true">
+     <layout class="QVBoxLayout" name="formItemLayout">
+      <property name="leftMargin"><number>0</number></property>
+      <property name="topMargin"><number>8</number></property>
+      <property name="rightMargin"><number>0</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+      <property name="spacing"><number>8</number></property>
+
+      <!-- Producto -->
+      <item>
+       <layout class="QVBoxLayout" name="comboItemLayout"><property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="label_combo_item"><property name="text"><string>Producto *</string></property></widget></item>
+        <item><widget class="QComboBox" name="combo_producto_cot"/></item>
+       </layout>
+      </item>
+
+      <!-- Descripcion -->
+      <item>
+       <layout class="QVBoxLayout" name="descItemLayout"><property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="label_desc_item"><property name="text"><string>Descripcion adicional</string></property></widget></item>
+        <item><widget class="QLineEdit" name="input_descripcion_cot"><property name="placeholderText"><string>Descripcion o detalle adicional (opcional)</string></property></widget></item>
+       </layout>
+      </item>
+
+      <!-- Cantidad + Precio + Descuento -->
+      <item>
+       <layout class="QHBoxLayout" name="rowItemQtyLayout"><property name="spacing"><number>12</number></property>
+        <item>
+         <layout class="QVBoxLayout" name="cantItemLayout"><property name="spacing"><number>4</number></property>
+          <item><widget class="QLabel" name="label_cantidad_cot"><property name="text"><string>Cantidad *</string></property></widget></item>
+          <item><widget class="QLineEdit" name="input_cantidad_cot"><property name="placeholderText"><string>1</string></property></widget></item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="precioItemLayout"><property name="spacing"><number>4</number></property>
+          <item><widget class="QLabel" name="label_precio_cot"><property name="text"><string>Precio Unitario *</string></property></widget></item>
+          <item><widget class="QLineEdit" name="input_precio_cot"><property name="placeholderText"><string>0.00</string></property></widget></item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="descItemLayout2"><property name="spacing"><number>4</number></property>
+          <item><widget class="QLabel" name="label_descuento_cot"><property name="text"><string>Descuento %</string></property></widget></item>
+          <item><widget class="QLineEdit" name="input_descuento_cot"><property name="placeholderText"><string>0</string></property></widget></item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+
+      <!-- Botones -->
+      <item>
+       <layout class="QHBoxLayout" name="formItemBotonesLayout"><property name="spacing"><number>8</number></property>
+        <item>
+         <widget class="QPushButton" name="btn_confirmar_item">
+          <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+          <property name="text"><string>Agregar</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_cancelar_item">
+          <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+          <property name="text"><string>Cancelar</string></property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="formItemBotonesSpacer">
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+          <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

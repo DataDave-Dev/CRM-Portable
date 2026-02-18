@@ -51,8 +51,7 @@ QMainWindow {
 }
 
 /* Sidebar buttons base */
-#btnDashboard, #btnClientes, #btnProductos,
-#btnVentas, #btnReportes, #btnUsuarios, #btnConfiguracion {
+#btnClientes, #btnVentas, #btnUsuarios, #btnConfiguracion {
     background-color: transparent;
     color: #a0aec0;
     font-size: 15px;
@@ -63,17 +62,9 @@ QMainWindow {
     border-radius: 8px;
     margin: 2px 12px;
 }
-#btnDashboard:hover, #btnClientes:hover, #btnProductos:hover,
-#btnVentas:hover, #btnReportes:hover, #btnUsuarios:hover, #btnConfiguracion:hover {
+#btnClientes:hover, #btnVentas:hover, #btnUsuarios:hover, #btnConfiguracion:hover {
     background-color: #16213e;
     color: #ffffff;
-}
-
-/* Active state for dashboard (default) */
-#btnDashboard {
-    background-color: #4a90d9;
-    color: #ffffff;
-    font-weight: 600;
 }
 
 #btnCerrarSesion {
@@ -241,32 +232,6 @@ QMainWindow {
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="btnDashboard">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>  Dashboard</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="navSpacer1">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>4</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <widget class="QPushButton" name="btnClientes">
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
@@ -278,32 +243,6 @@ QMainWindow {
        </item>
        <item>
         <spacer name="navSpacer2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>4</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnProductos">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>  Productos</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="navSpacer3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>

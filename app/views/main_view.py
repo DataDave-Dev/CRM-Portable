@@ -12,6 +12,7 @@ from app.services.usuario_service import UsuarioService
 from app.repositories.rol_repository import RolRepository
 from app.views.configuracion_view import ConfiguracionView
 from app.views.clientes_view import ClientesView
+from app.views.ventas_view import VentasView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -32,6 +33,7 @@ class MainView(QMainWindow):
         self._create_lista_usuarios()
         self._create_form_usuarios()
         self._create_clientes()
+        self._create_ventas()
         self._create_configuracion()
 
     def _setup_icons(self):
@@ -66,6 +68,9 @@ class MainView(QMainWindow):
         if hasattr(self, 'btnClientes'):
             self.sidebar_buttons.append(self.btnClientes)
             self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
+        if hasattr(self, 'btnVentas'):
+            self.sidebar_buttons.append(self.btnVentas)
+            self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
         if hasattr(self, 'btnConfiguracion'):
             self.sidebar_buttons.append(self.btnConfiguracion)
             self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
@@ -483,6 +488,23 @@ class MainView(QMainWindow):
 
         if hasattr(self, 'btnClientes'):
             self._resaltar_boton_activo(self.btnClientes)
+
+    def _create_ventas(self):
+        self.ventas_widget = VentasView(self._usuario_actual)
+        self.ventas_widget.hide()
+
+    def _mostrar_seccion_ventas(self):
+        self._ocultar_contenido_actual()
+
+        if self.ventas_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.ventas_widget)
+
+        self.ventas_widget.show()
+        self.ventas_widget.cargar_datos()
+        self.headerPageTitle.setText("Ventas")
+
+        if hasattr(self, 'btnVentas'):
+            self._resaltar_boton_activo(self.btnVentas)
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()

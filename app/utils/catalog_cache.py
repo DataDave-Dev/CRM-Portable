@@ -68,6 +68,23 @@ class CatalogCache:
         )
 
     @classmethod
+    def get_etapas_venta(cls) -> List[Tuple[int, str]]:
+        # obtiene lista de etapas de venta para ComboBox, ordenadas por Orden
+        if cls._is_cache_valid('etapas_venta'):
+            return cls._cache['etapas_venta']
+        conn = get_connection()
+        cursor = conn.execute('SELECT EtapaID, Nombre FROM EtapasVenta ORDER BY Orden, Nombre')
+        result = [(row[0], row[1]) for row in cursor.fetchall()]
+        cls._cache['etapas_venta'] = result
+        cls._cache_time['etapas_venta'] = time.time()
+        return result
+
+    @classmethod
+    def get_motivos_perdida(cls) -> List[Tuple[int, str]]:
+        # obtiene lista de motivos de perdida para ComboBox
+        return cls._get_catalog('motivos_perdida', 'MotivosPerdida', 'MotivoID', 'Nombre')
+
+    @classmethod
     def _get_catalog(
         cls,
         cache_key: str,
