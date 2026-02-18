@@ -1,6 +1,7 @@
 # Punto de entrada del CRM
 
 import sys
+import signal
 from typing import Optional
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
@@ -15,6 +16,11 @@ class CRMApp:
     def __init__(self):
         self._app = QApplication(sys.argv)
         self._app.setQuitOnLastWindowClosed(False)
+        # En Windows con VS Code (ConPTY), AltGr+Q genera Ctrl+Alt+Q y la
+        # pseudo-consola puede interpretar el Ctrl como SIGINT, causando
+        # KeyboardInterrupt al escribir '@'. Como esta es una app GUI, se
+        # ignora SIGINT por completo — el usuario cierra la ventana normalmente.
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         self._setup_view: Optional[SetupView] = None
         self._login_controller: Optional[LoginController] = None
         self._main_controller: Optional[MainController] = None
