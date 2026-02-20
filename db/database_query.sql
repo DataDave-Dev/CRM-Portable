@@ -835,7 +835,7 @@ INSERT INTO Roles (NombreRol, Descripcion) VALUES
 ('Administrador', 'Acceso total al sistema'),
 ('Gerente de Ventas', 'Gestión del equipo de ventas y reportes'),
 ('Vendedor', 'Gestión de contactos, oportunidades y actividades'),
-('Marketing', 'Gestión de campañas y comunicaciones')
+('Marketing', 'Gestión de campañas y comunicaciones');
 
 -- Etapas de venta
 INSERT INTO EtapasVenta (Nombre, Orden, Probabilidad, Color, Descripcion) VALUES
@@ -932,12 +932,12 @@ INSERT INTO Ciudades (Nombre, EstadoID) VALUES
 ('León', 10), ('Querétaro', 11), ('Veracruz', 12), ('Tijuana', 13);
 
 -- Empresas / Clientes
-INSERT INTO Empresas (RazonSocial, NombreComercial, RFC, IndustriaID, TamanoID, SitioWeb, Telefono, Email, Direccion, CiudadID, CodigoPostal, MonedaID, OrigenID, PropietarioID, Activo, CreadoPor) VALUES
-('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA', 'PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 2, 3, 'https://piaga.com.mx/', '8181570333', 'ventas@piaga.com.mx', 'GENERAL NICOLAS BRAVO ORIENTE 502', 1, '67100', 1, 9, 1, 1, 1);
+INSERT INTO Empresas (RazonSocial, NombreComercial, RFC, IndustriaID, TamanoID, SitioWeb, Telefono, Email, Direccion, CiudadID, CodigoPostal, MonedaID, OrigenID, Activo) VALUES
+('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA', 'PIA980324BT2', 2, 3, 'https://piaga.com.mx/', '8181570333', 'ventas@piaga.com.mx', 'GENERAL NICOLAS BRAVO ORIENTE 502', 1, '67100', 1, 9, 1);
 
 -- Contactos
-INSERT INTO Contactos (Nombre, ApellidoPaterno, ApellidoMaterno, Email, TelefonoCelular, Puesto, Departamento, EmpresaID, EsContactoPrincipal, Activo, CreadoPor) VALUES
-('Alonso David', 'De León', 'Rodarte', 'soporte@expertgroup.mx', '8120222986', 'Auxiliar de Sistemas', 'Sistemas', 1, 1, 1, 1);
+INSERT INTO Contactos (Nombre, ApellidoPaterno, ApellidoMaterno, Email, TelefonoCelular, Puesto, Departamento, EmpresaID, EsContactoPrincipal, Activo) VALUES
+('Alonso David', 'De León', 'Rodarte', 'soporte@expertgroup.mx', '8120222986', 'Auxiliar de Sistemas', 'Sistemas', 1, 1, 1);
 
 --- ÍNDICES ---
 
