@@ -933,11 +933,11 @@ INSERT INTO Ciudades (Nombre, EstadoID) VALUES
 
 -- Empresas / Clientes
 INSERT INTO Empresas (RazonSocial, NombreComercial, RFC, IndustriaID, TamanoID, SitioWeb, Telefono, Email, Direccion, CiudadID, CodigoPostal, MonedaID, OrigenID, PropietarioID, Activo, CreadoPor) VALUES
-('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA', 'PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 2, 3, 'https://piaga.com.mx/', '8181570333', 'ventas@piaga.com.mx', 'GENERAL NICOLAS BRAVO ORIENTE 502', 1, '67100', 1, 9, 1, 1, 1)
+('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA', 'PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 2, 3, 'https://piaga.com.mx/', '8181570333', 'ventas@piaga.com.mx', 'GENERAL NICOLAS BRAVO ORIENTE 502', 1, '67100', 1, 9, 1, 1, 1);
 
 -- Contactos
 INSERT INTO Contactos (Nombre, ApellidoPaterno, ApellidoMaterno, Email, TelefonoCelular, Puesto, Departamento, EmpresaID, EsContactoPrincipal, Activo, CreadoPor) VALUES
-('Alonso David', 'De León', 'Rodarte', 'soporte@expertgroup.mx', '8120222986', 'Auxiliar de Sistemas', 'Sistemas', 1, 1, 1, 1)
+('Alonso David', 'De León', 'Rodarte', 'soporte@expertgroup.mx', '8120222986', 'Auxiliar de Sistemas', 'Sistemas', 1, 1, 1, 1);
 
 --- ÍNDICES ---
 
