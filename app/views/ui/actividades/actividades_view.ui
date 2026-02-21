@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ActividadesView</class>
+ <widget class="QWidget" name="ActividadesView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#ActividadesView {
+    background-color: transparent;
+}
+QTabWidget::pane {
+    border: none;
+    background-color: transparent;
+}
+QTabBar::tab {
+    background-color: #f7fafc;
+    color: #718096;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-right: 4px;
+    min-width: 120px;
+    min-height: 20px;
+}
+QTabBar::tab:selected {
+    color: #4a90d9;
+    border-bottom: 3px solid #4a90d9;
+    background-color: transparent;
+}
+QTabBar::tab:hover:!selected {
+    color: #2d3748;
+    background-color: #edf2f7;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QTabWidget" name="actividadesTabs">
+     <property name="currentIndex"><number>0</number></property>
+     <widget class="QWidget" name="tabActividades">
+      <attribute name="title">
+       <string>  Actividades  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabActividadesLayout">
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>16</number></property>
+       <property name="rightMargin"><number>0</number></property>
+       <property name="bottomMargin"><number>0</number></property>
+       <property name="spacing"><number>0</number></property>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

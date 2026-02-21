@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ActividadForm</class>
+ <widget class="QWidget" name="ActividadForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>889</width>
+    <height>860</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#ActividadForm {
+    background-color: transparent;
+}
+QLabel#form_titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#form_subtitulo {
+    font-size: 13px;
+    color: #718096;
+}
+QLabel#seccionPrincipal, QLabel#seccionFechas, QLabel#seccionRelaciones {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1a1a2e;
+    padding-top: 8px;
+}
+QLabel.fieldLabel {
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 600;
+}
+QLineEdit, QComboBox, QSpinBox, QDateEdit {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+    min-height: 34px;
+}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDateEdit:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QDateEdit::drop-down {
+    border: none;
+    border-left: 1px solid #e2e8f0;
+    width: 26px;
+}
+QTextEdit {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+}
+QTextEdit:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QPushButton#btn_guardar {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 28px;
+    min-height: 40px;
+}
+QPushButton#btn_guardar:hover { background-color: #3a7bc8; }
+QPushButton#btn_guardar:pressed { background-color: #2a6bb8; }
+QPushButton#btn_limpiar {
+    background-color: transparent;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    min-height: 40px;
+}
+QPushButton#btn_limpiar:hover { background-color: #f7fafc; color: #2d3748; }
+QPushButton#btn_cancelar {
+    background-color: transparent;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    min-height: 40px;
+}
+QPushButton#btn_cancelar:hover { background-color: #f7fafc; color: #2d3748; }
+QFrame#sectionSeparator {
+    background-color: #e2e8f0;
+    min-height: 1px;
+    max-height: 1px;
+}
+   </string>
+  </property>
+
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>0</number></property>
+
+   <!-- SCROLL AREA -->
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable"><bool>true</bool></property>
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <widget class="QWidget" name="scrollContent">
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>16</number></property>
+       <property name="bottomMargin"><number>16</number></property>
+       <property name="spacing"><number>16</number></property>
+
+       <!-- TITULO DEL FORMULARIO -->
+       <item>
+        <layout class="QVBoxLayout" name="tituloLayout">
+         <property name="spacing"><number>4</number></property>
+         <item>
+          <widget class="QLabel" name="form_titulo">
+           <property name="text"><string>Nueva Actividad</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="form_subtitulo">
+           <property name="text"><string>Completa la informacion de la actividad. Los campos con * son obligatorios.</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARADOR -->
+       <item>
+        <widget class="QFrame" name="sectionSeparator">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION PRINCIPAL -->
+       <item>
+        <widget class="QLabel" name="seccionPrincipal">
+         <property name="text"><string>Informacion Principal</string></property>
+        </widget>
+       </item>
+
+       <!-- Tipo de Actividad y Estado -->
+       <item>
+        <layout class="QHBoxLayout" name="tipoEstadoLayout">
+         <property name="spacing"><number>16</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="tipoLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelTipoActividad">
+             <property name="text"><string>Tipo de Actividad *</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_tipo_actividad"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="estadoLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelEstado">
+             <property name="text"><string>Estado *</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_estado_actividad"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Asunto -->
+       <item>
+        <layout class="QVBoxLayout" name="asuntoLayout">
+         <property name="spacing"><number>6</number></property>
+         <item>
+          <widget class="QLabel" name="labelAsunto">
+           <property name="text"><string>Asunto *</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="input_asunto">
+           <property name="placeholderText"><string>Escribe el asunto de la actividad</string></property>
+           <property name="maxLength"><number>255</number></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Prioridad y Propietario -->
+       <item>
+        <layout class="QHBoxLayout" name="prioridadPropietarioLayout">
+         <property name="spacing"><number>16</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="prioridadLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelPrioridad">
+             <property name="text"><string>Prioridad</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_prioridad"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="propietarioLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelPropietario">
+             <property name="text"><string>Responsable *</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_propietario"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Descripcion -->
+       <item>
+        <layout class="QVBoxLayout" name="descripcionLayout">
+         <property name="spacing"><number>6</number></property>
+         <item>
+          <widget class="QLabel" name="labelDescripcion">
+           <property name="text"><string>Descripcion</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="input_descripcion">
+           <property name="placeholderText"><string>Descripcion detallada de la actividad (opcional)</string></property>
+           <property name="maximumHeight"><number>100</number></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARADOR -->
+       <item>
+        <widget class="QFrame" name="sectionSeparator2">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="styleSheet"><string>background-color: #e2e8f0; min-height: 1px; max-height: 1px;</string></property>
+        </widget>
+       </item>
+
+       <!-- SECCION FECHAS -->
+       <item>
+        <widget class="QLabel" name="seccionFechas">
+         <property name="text"><string>Fechas y Duracion</string></property>
+        </widget>
+       </item>
+
+       <!-- Fecha Inicio y Fin -->
+       <item>
+        <layout class="QHBoxLayout" name="fechasLayout">
+         <property name="spacing"><number>16</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="fechaInicioLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelFechaInicio">
+             <property name="text"><string>Fecha de Inicio</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDateEdit" name="input_fecha_inicio">
+             <property name="calendarPopup"><bool>true</bool></property>
+             <property name="displayFormat"><string>yyyy-MM-dd</string></property>
+             <property name="specialValueText"><string>(Sin fecha)</string></property>
+             <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+             <property name="date"><date><year>2000</year><month>1</month><day>1</day></date></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="fechaFinLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelFechaFin">
+             <property name="text"><string>Fecha de Fin</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDateEdit" name="input_fecha_fin">
+             <property name="calendarPopup"><bool>true</bool></property>
+             <property name="displayFormat"><string>yyyy-MM-dd</string></property>
+             <property name="specialValueText"><string>(Sin fecha)</string></property>
+             <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+             <property name="date"><date><year>2000</year><month>1</month><day>1</day></date></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Fecha Vencimiento y Duracion -->
+       <item>
+        <layout class="QHBoxLayout" name="vencimientoDuracionLayout">
+         <property name="spacing"><number>16</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="fechaVencimientoLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelFechaVencimiento">
+             <property name="text"><string>Fecha de Vencimiento</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDateEdit" name="input_fecha_vencimiento">
+             <property name="calendarPopup"><bool>true</bool></property>
+             <property name="displayFormat"><string>yyyy-MM-dd</string></property>
+             <property name="specialValueText"><string>(Sin fecha)</string></property>
+             <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+             <property name="date"><date><year>2000</year><month>1</month><day>1</day></date></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="duracionLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelDuracion">
+             <property name="text"><string>Duracion (minutos)</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="input_duracion_minutos">
+             <property name="placeholderText"><string>Ej: 30</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Ubicacion -->
+       <item>
+        <layout class="QVBoxLayout" name="ubicacionLayout">
+         <property name="spacing"><number>6</number></property>
+         <item>
+          <widget class="QLabel" name="labelUbicacion">
+           <property name="text"><string>Ubicacion</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="input_ubicacion">
+           <property name="placeholderText"><string>Lugar fisico o URL de reunion (opcional)</string></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SEPARADOR -->
+       <item>
+        <widget class="QFrame" name="sectionSeparator3">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="styleSheet"><string>background-color: #e2e8f0; min-height: 1px; max-height: 1px;</string></property>
+        </widget>
+       </item>
+
+       <!-- SECCION RELACIONES -->
+       <item>
+        <widget class="QLabel" name="seccionRelaciones">
+         <property name="text"><string>Relaciones</string></property>
+        </widget>
+       </item>
+
+       <!-- Contacto y Empresa -->
+       <item>
+        <layout class="QHBoxLayout" name="contactoEmpresaLayout">
+         <property name="spacing"><number>16</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="contactoLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelContacto">
+             <property name="text"><string>Contacto</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_contacto"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="empresaLayout">
+           <property name="spacing"><number>6</number></property>
+           <item>
+            <widget class="QLabel" name="labelEmpresa">
+             <property name="text"><string>Empresa</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="combo_empresa"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Oportunidad -->
+       <item>
+        <layout class="QVBoxLayout" name="oportunidadLayout">
+         <property name="spacing"><number>6</number></property>
+         <item>
+          <widget class="QLabel" name="labelOportunidad">
+           <property name="text"><string>Oportunidad</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="combo_oportunidad"/>
+         </item>
+        </layout>
+       </item>
+
+       <!-- Resultado -->
+       <item>
+        <layout class="QVBoxLayout" name="resultadoLayout">
+         <property name="spacing"><number>6</number></property>
+         <item>
+          <widget class="QLabel" name="labelResultado">
+           <property name="text"><string>Resultado</string></property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="input_resultado">
+           <property name="placeholderText"><string>Resultado o notas de seguimiento (opcional)</string></property>
+           <property name="maximumHeight"><number>100</number></property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+
+       <!-- SPACER -->
+       <item>
+        <spacer name="bottomSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- BOTONES DE ACCION -->
+   <item>
+    <layout class="QHBoxLayout" name="botonesLayout">
+     <property name="leftMargin"><number>0</number></property>
+     <property name="topMargin"><number>16</number></property>
+     <property name="rightMargin"><number>16</number></property>
+     <property name="bottomMargin"><number>0</number></property>
+     <property name="spacing"><number>12</number></property>
+     <item>
+      <spacer name="btnSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_cancelar">
+       <property name="text"><string>Cancelar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_limpiar">
+       <property name="text"><string>Limpiar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_guardar">
+       <property name="text"><string>Guardar Actividad</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
