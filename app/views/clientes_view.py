@@ -5,7 +5,10 @@ from PyQt5.QtWidgets import (
     QWidget, QMessageBox, QTableWidgetItem, QHeaderView
 )
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QDate
 from PyQt5 import uic
+
+_FECHA_NAC_NULA = QDate(1900, 1, 1)
 from app.database.connection import get_connection
 from app.services.empresa_service import EmpresaService
 from app.services.contacto_service import ContactoService
@@ -80,7 +83,16 @@ class ClientesView(QWidget):
         # configurar headers
         h_header = self.tabla_empresas.horizontalHeader()
         if h_header:
-            h_header.setSectionResizeMode(QHeaderView.Stretch)
+            h_header.setStretchLastSection(False)
+            h_header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h_header.setSectionResizeMode(1, QHeaderView.Stretch)           # Razon Social
+            h_header.setSectionResizeMode(2, QHeaderView.Interactive)       # Nombre Comercial
+            h_header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Industria
+            h_header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Telefono
+            h_header.setSectionResizeMode(5, QHeaderView.Interactive)       # Email
+            h_header.setSectionResizeMode(6, QHeaderView.Interactive)       # Propietario
+            h_header.setSectionResizeMode(7, QHeaderView.ResizeToContents)  # Estado
+            h_header.setMinimumSectionSize(60)
         v_header = self.tabla_empresas.verticalHeader()
         if v_header:
             v_header.setVisible(False)
@@ -403,7 +415,16 @@ class ClientesView(QWidget):
         # configurar headers
         h_header = self.tabla_contactos.horizontalHeader()
         if h_header:
-            h_header.setSectionResizeMode(QHeaderView.Stretch)
+            h_header.setStretchLastSection(False)
+            h_header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h_header.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre Completo
+            h_header.setSectionResizeMode(2, QHeaderView.Interactive)       # Email
+            h_header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Telefono Celular
+            h_header.setSectionResizeMode(4, QHeaderView.Interactive)       # Puesto
+            h_header.setSectionResizeMode(5, QHeaderView.Interactive)       # Empresa
+            h_header.setSectionResizeMode(6, QHeaderView.Interactive)       # Propietario
+            h_header.setSectionResizeMode(7, QHeaderView.ResizeToContents)  # Estado
+            h_header.setMinimumSectionSize(60)
         v_header = self.tabla_contactos.verticalHeader()
         if v_header:
             v_header.setVisible(False)
@@ -595,7 +616,8 @@ class ClientesView(QWidget):
         self.ct_input_nombre.setText(contacto.nombre or "")
         self.ct_input_apellido_paterno.setText(contacto.apellido_paterno or "")
         self.ct_input_apellido_materno.setText(contacto.apellido_materno or "")
-        self.ct_input_fecha_nacimiento.setText(contacto.fecha_nacimiento or "")
+        _fecha = QDate.fromString(contacto.fecha_nacimiento, "yyyy-MM-dd") if contacto.fecha_nacimiento else _FECHA_NAC_NULA
+        self.ct_input_fecha_nacimiento.setDate(_fecha if _fecha.isValid() else _FECHA_NAC_NULA)
         self.ct_input_email.setText(contacto.email or "")
         self.ct_input_email_secundario.setText(contacto.email_secundario or "")
         self.ct_input_telefono_oficina.setText(contacto.telefono_oficina or "")
@@ -623,7 +645,7 @@ class ClientesView(QWidget):
             "nombre": self.ct_input_nombre.text(),
             "apellido_paterno": self.ct_input_apellido_paterno.text(),
             "apellido_materno": self.ct_input_apellido_materno.text(),
-            "fecha_nacimiento": self.ct_input_fecha_nacimiento.text(),
+            "fecha_nacimiento": "" if self.ct_input_fecha_nacimiento.date() == _FECHA_NAC_NULA else self.ct_input_fecha_nacimiento.date().toString("yyyy-MM-dd"),
             "email": self.ct_input_email.text(),
             "email_secundario": self.ct_input_email_secundario.text(),
             "telefono_oficina": self.ct_input_telefono_oficina.text(),
@@ -671,7 +693,7 @@ class ClientesView(QWidget):
         self.ct_input_nombre.clear()
         self.ct_input_apellido_paterno.clear()
         self.ct_input_apellido_materno.clear()
-        self.ct_input_fecha_nacimiento.clear()
+        self.ct_input_fecha_nacimiento.setDate(_FECHA_NAC_NULA)
         self.ct_input_email.clear()
         self.ct_input_email_secundario.clear()
         self.ct_input_telefono_oficina.clear()
