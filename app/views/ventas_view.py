@@ -6,7 +6,23 @@ from PyQt5.QtWidgets import (
     QWidget, QMessageBox, QTableWidgetItem, QHeaderView
 )
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QDate
 from PyQt5 import uic
+
+_FECHA_NULA = QDate(2000, 1, 1)
+
+
+def _get_fecha(widget) -> str:
+    d = widget.date()
+    return "" if d == _FECHA_NULA else d.toString("yyyy-MM-dd")
+
+
+def _set_fecha(widget, valor: str):
+    if valor:
+        d = QDate.fromString(valor, "yyyy-MM-dd")
+        widget.setDate(d if d.isValid() else _FECHA_NULA)
+    else:
+        widget.setDate(_FECHA_NULA)
 from app.database.connection import get_connection
 from app.services.oportunidad_service import OportunidadService
 from app.services.producto_service import ProductoService
@@ -102,7 +118,17 @@ class VentasView(QWidget):
 
         h = self.tabla_oportunidades.horizontalHeader()
         if h:
-            h.setSectionResizeMode(QHeaderView.Stretch)
+            h.setStretchLastSection(False)
+            h.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre
+            h.setSectionResizeMode(2, QHeaderView.Interactive)       # Empresa
+            h.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Etapa
+            h.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Monto
+            h.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Probabilidad
+            h.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Fecha Cierre
+            h.setSectionResizeMode(7, QHeaderView.Interactive)       # Propietario
+            h.setSectionResizeMode(8, QHeaderView.ResizeToContents)  # Estado
+            h.setMinimumSectionSize(60)
         v = self.tabla_oportunidades.verticalHeader()
         if v:
             v.setVisible(False)
@@ -318,8 +344,8 @@ class VentasView(QWidget):
         self.op_input_probabilidad.setText(
             str(op.probabilidad_cierre) if op.probabilidad_cierre is not None else ""
         )
-        self.op_input_fecha_cierre_estimada.setText(op.fecha_cierre_estimada or "")
-        self.op_input_fecha_cierre_real.setText(op.fecha_cierre_real or "")
+        _set_fecha(self.op_input_fecha_cierre_estimada, op.fecha_cierre_estimada)
+        _set_fecha(self.op_input_fecha_cierre_real, op.fecha_cierre_real)
         self.op_input_notas_perdida.setText(op.notas_perdida or "")
 
         self._seleccionar_combo(self.op_combo_empresa, op.empresa_id)
@@ -384,8 +410,8 @@ class VentasView(QWidget):
             "monto_estimado": self.op_input_monto_estimado.text(),
             "moneda_id": self.op_combo_moneda.currentData(),
             "probabilidad_cierre": self.op_input_probabilidad.text(),
-            "fecha_cierre_estimada": self.op_input_fecha_cierre_estimada.text(),
-            "fecha_cierre_real": self.op_input_fecha_cierre_real.text(),
+            "fecha_cierre_estimada": _get_fecha(self.op_input_fecha_cierre_estimada),
+            "fecha_cierre_real": _get_fecha(self.op_input_fecha_cierre_real),
             "origen_id": self.op_combo_origen.currentData(),
             "propietario_id": self.op_combo_propietario.currentData(),
             "motivos_perdida_id": self.op_combo_motivo_perdida.currentData() if es_ganada == 0 else None,
@@ -430,9 +456,9 @@ class VentasView(QWidget):
         self.op_combo_moneda.setCurrentIndex(0)
         self.op_input_probabilidad.clear()
         self.op_combo_origen.setCurrentIndex(0)
-        self.op_input_fecha_cierre_estimada.clear()
+        self.op_input_fecha_cierre_estimada.setDate(_FECHA_NULA)
         self.op_combo_estado.setCurrentIndex(0)
-        self.op_input_fecha_cierre_real.clear()
+        self.op_input_fecha_cierre_real.setDate(_FECHA_NULA)
         self.op_combo_motivo_perdida.setCurrentIndex(0)
         self.op_input_notas_perdida.clear()
         self._actualizar_visibilidad_perdida()
@@ -458,7 +484,15 @@ class VentasView(QWidget):
 
         h = self.tabla_productos.horizontalHeader()
         if h:
-            h.setSectionResizeMode(QHeaderView.Stretch)
+            h.setStretchLastSection(False)
+            h.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h.setSectionResizeMode(1, QHeaderView.ResizeToContents)  # Codigo
+            h.setSectionResizeMode(2, QHeaderView.Stretch)           # Nombre
+            h.setSectionResizeMode(3, QHeaderView.Interactive)       # Categoria
+            h.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Precio
+            h.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Moneda
+            h.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Estado
+            h.setMinimumSectionSize(60)
         v = self.tabla_productos.verticalHeader()
         if v:
             v.setVisible(False)
@@ -647,7 +681,16 @@ class VentasView(QWidget):
 
         h = self.tabla_cotizaciones.horizontalHeader()
         if h:
-            h.setSectionResizeMode(QHeaderView.Stretch)
+            h.setStretchLastSection(False)
+            h.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h.setSectionResizeMode(1, QHeaderView.ResizeToContents)  # Numero
+            h.setSectionResizeMode(2, QHeaderView.Stretch)           # Oportunidad
+            h.setSectionResizeMode(3, QHeaderView.Interactive)       # Contacto
+            h.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Fecha Emision
+            h.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Fecha Vigencia
+            h.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Total
+            h.setSectionResizeMode(7, QHeaderView.ResizeToContents)  # Estado
+            h.setMinimumSectionSize(60)
         v = self.tabla_cotizaciones.verticalHeader()
         if v:
             v.setVisible(False)
@@ -811,8 +854,8 @@ class VentasView(QWidget):
         self._cargar_combos_cotizacion()
 
         self.cot_input_numero.setText(cot.numero_cotizacion or "")
-        self.cot_input_fecha_emision.setText(cot.fecha_emision or "")
-        self.cot_input_fecha_vigencia.setText(cot.fecha_vigencia or "")
+        _set_fecha(self.cot_input_fecha_emision, cot.fecha_emision)
+        _set_fecha(self.cot_input_fecha_vigencia, cot.fecha_vigencia)
         self.cot_input_notas.setText(cot.notas or "")
         self.cot_input_terminos.setText(cot.terminos_condiciones or "")
         self._seleccionar_combo(self.cot_combo_oportunidad, cot.oportunidad_id)
@@ -870,8 +913,8 @@ class VentasView(QWidget):
             "oportunidad_id": self.cot_combo_oportunidad.currentData(),
             "contacto_id": self.cot_combo_contacto.currentData(),
             "moneda_id": self.cot_combo_moneda.currentData(),
-            "fecha_emision": self.cot_input_fecha_emision.text(),
-            "fecha_vigencia": self.cot_input_fecha_vigencia.text(),
+            "fecha_emision": _get_fecha(self.cot_input_fecha_emision),
+            "fecha_vigencia": _get_fecha(self.cot_input_fecha_vigencia),
             "estado": self.cot_combo_estado.currentData(),
             "notas": self.cot_input_notas.text(),
             "terminos_condiciones": self.cot_input_terminos.text(),
@@ -901,8 +944,8 @@ class VentasView(QWidget):
         self.cot_combo_oportunidad.setCurrentIndex(0)
         self.cot_combo_contacto.setCurrentIndex(0)
         self.cot_combo_moneda.setCurrentIndex(0)
-        self.cot_input_fecha_emision.setText(datetime.datetime.now().strftime("%Y-%m-%d"))
-        self.cot_input_fecha_vigencia.clear()
+        self.cot_input_fecha_emision.setDate(QDate.currentDate())
+        self.cot_input_fecha_vigencia.setDate(_FECHA_NULA)
         self.cot_combo_estado.setCurrentIndex(0)
         self.cot_input_notas.clear()
         self.cot_input_terminos.clear()

@@ -40,7 +40,7 @@ QLabel.fieldLabel {
 }
 
 /* === INPUTS === */
-QLineEdit, QComboBox {
+QLineEdit, QComboBox, QDateEdit {
     padding: 8px 12px;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
@@ -48,12 +48,17 @@ QLineEdit, QComboBox {
     font-size: 13px;
     min-height: 34px;
 }
-QLineEdit:focus, QComboBox:focus {
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
     border: 1px solid #4a90d9;
     background-color: white;
 }
-QLineEdit:hover, QComboBox:hover {
+QLineEdit:hover, QComboBox:hover, QDateEdit:hover {
     border: 1px solid #cbd5e0;
+}
+QDateEdit::drop-down {
+    border: none;
+    border-left: 1px solid #e2e8f0;
+    width: 26px;
 }
 
 /* === BUTTONS === */
@@ -340,8 +345,12 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="input_fecha_cierre_estimada">
-             <property name="placeholderText"><string>AAAA-MM-DD (opcional)</string></property>
+            <widget class="QDateEdit" name="input_fecha_cierre_estimada">
+             <property name="calendarPopup"><bool>true</bool></property>
+             <property name="displayFormat"><string>yyyy-MM-dd</string></property>
+             <property name="specialValueText"><string>(Sin fecha)</string></property>
+             <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+             <property name="date"><date><year>2000</year><month>1</month><day>1</day></date></property>
             </widget>
            </item>
           </layout>
@@ -398,8 +407,12 @@ QFrame#separator1, QFrame#separator2, QFrame#separator3 {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="input_fecha_cierre_real">
-             <property name="placeholderText"><string>AAAA-MM-DD (si ya cerro)</string></property>
+            <widget class="QDateEdit" name="input_fecha_cierre_real">
+             <property name="calendarPopup"><bool>true</bool></property>
+             <property name="displayFormat"><string>yyyy-MM-dd</string></property>
+             <property name="specialValueText"><string>(Sin fecha)</string></property>
+             <property name="minimumDate"><date><year>2000</year><month>1</month><day>1</day></date></property>
+             <property name="date"><date><year>2000</year><month>1</month><day>1</day></date></property>
             </widget>
            </item>
           </layout>
