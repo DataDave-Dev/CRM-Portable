@@ -85,6 +85,28 @@ class CatalogCache:
         return cls._get_catalog('motivos_perdida', 'MotivosPerdida', 'MotivoID', 'Nombre')
 
     @classmethod
+    def get_tipos_actividad(cls) -> List[Tuple[int, str]]:
+        # obtiene lista de tipos de actividad para ComboBox
+        return cls._get_catalog('tipos_actividad', 'TiposActividad', 'TipoActividadID', 'Nombre')
+
+    @classmethod
+    def get_estados_actividad(cls) -> List[Tuple[int, str]]:
+        # obtiene lista de estados de actividad para ComboBox
+        return cls._get_catalog('estados_actividad', 'EstadosActividad', 'EstadoActividadID', 'Nombre')
+
+    @classmethod
+    def get_prioridades(cls) -> List[Tuple[int, str]]:
+        # obtiene lista de prioridades para ComboBox, ordenadas por nivel
+        if cls._is_cache_valid('prioridades'):
+            return cls._cache['prioridades']
+        conn = get_connection()
+        cursor = conn.execute('SELECT PrioridadID, Nombre FROM Prioridades ORDER BY Nivel')
+        result = [(row[0], row[1]) for row in cursor.fetchall()]
+        cls._cache['prioridades'] = result
+        cls._cache_time['prioridades'] = time.time()
+        return result
+
+    @classmethod
     def _get_catalog(
         cls,
         cache_key: str,

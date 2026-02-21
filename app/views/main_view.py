@@ -3,16 +3,17 @@
 import os
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QLineEdit, QMessageBox,
-    QTableWidgetItem, QHeaderView
+    QTableWidgetItem, QHeaderView, QApplication
 )
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, QEvent
 from PyQt5 import uic
 from app.services.usuario_service import UsuarioService
 from app.repositories.rol_repository import RolRepository
 from app.views.configuracion_view import ConfiguracionView
 from app.views.clientes_view import ClientesView
 from app.views.ventas_view import VentasView
+from app.views.actividades_view import ActividadesView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -34,12 +35,30 @@ class MainView(QMainWindow):
         self._create_form_usuarios()
         self._create_clientes()
         self._create_ventas()
+        self._create_actividades()
         self._create_configuracion()
+
+    def closeEvent(self, event: QEvent):
+        # terminar el proceso completamente al cerrar la ventana principal
+        event.accept()
+        QApplication.quit()
+
+    def _cerrar_sesion(self):
+        resp = QMessageBox.question(
+            self,
+            "Cerrar sesion",
+            "Seguro que deseas salir del sistema?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if resp == QMessageBox.Yes:
+            QApplication.quit()
 
     def _setup_icons(self):
         logout_icon = QIcon(os.path.join(ASSETS_PATH, "logout.svg"))
         self.btnCerrarSesion.setIcon(logout_icon)
         self.btnCerrarSesion.setIconSize(QSize(20, 20))
+        self.btnCerrarSesion.clicked.connect(self._cerrar_sesion)
 
     def _set_user_data(self, usuario):
         nombre_completo = f"{usuario.nombre} {usuario.apellido_paterno}"
@@ -50,12 +69,14 @@ class MainView(QMainWindow):
         self.sidebar_buttons = [
             self.btnClientes,
             self.btnVentas,
+            self.btnActividades,
             self.btnUsuarios,
             self.btnConfiguracion,
         ]
 
         self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
         self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
+        self.btnActividades.clicked.connect(self._mostrar_seccion_actividades)
         self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
         self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
 
@@ -113,7 +134,15 @@ class MainView(QMainWindow):
         # configurar headers de la tabla para ocupar todo el ancho
         h_header = self.tabla_usuarios.horizontalHeader()
         if h_header:
-            h_header.setSectionResizeMode(QHeaderView.Stretch)
+            h_header.setStretchLastSection(False)
+            h_header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
+            h_header.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre Completo
+            h_header.setSectionResizeMode(2, QHeaderView.Interactive)       # Email
+            h_header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # Telefono
+            h_header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Rol
+            h_header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Estado
+            h_header.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Fecha Registro
+            h_header.setMinimumSectionSize(60)
 
         v_header = self.tabla_usuarios.verticalHeader()
         if v_header:
@@ -489,6 +518,23 @@ class MainView(QMainWindow):
 
         if hasattr(self, 'btnVentas'):
             self._resaltar_boton_activo(self.btnVentas)
+
+    def _create_actividades(self):
+        self.actividades_widget = ActividadesView(self._usuario_actual)
+        self.actividades_widget.hide()
+
+    def _mostrar_seccion_actividades(self):
+        self._ocultar_contenido_actual()
+
+        if self.actividades_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.actividades_widget)
+
+        self.actividades_widget.show()
+        self.actividades_widget.cargar_datos()
+        self.headerPageTitle.setText("Actividades")
+
+        if hasattr(self, 'btnActividades'):
+            self._resaltar_boton_activo(self.btnActividades)
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()
