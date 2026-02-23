@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EtiquetaList</class>
+ <widget class="QWidget" name="EtiquetaList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#EtiquetaList {
+    background-color: transparent;
+}
+QLabel#listTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#listSubtitle {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+QPushButton#btn_nueva_etiqueta {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    min-height: 38px;
+}
+QPushButton#btn_nueva_etiqueta:hover { background-color: #3a7bc8; }
+QPushButton#btn_nueva_etiqueta:pressed { background-color: #2a6bb8; }
+QFrame#cardTotal {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #4a90d9;
+}
+QFrame#cardContactos {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #48bb78;
+}
+QFrame#cardEmpresas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #ed8936;
+}
+QLabel#statValueTotal {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4a90d9;
+}
+QLabel#statValueContactos {
+    font-size: 28px;
+    font-weight: bold;
+    color: #48bb78;
+}
+QLabel#statValueEmpresas {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ed8936;
+}
+QLabel#statLabelTotal, QLabel#statLabelContactos, QLabel#statLabelEmpresas {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+QTableWidget#tabla_etiquetas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QTableWidget#tabla_etiquetas QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_etiquetas QHeaderView::section:last {
+    border-right: none;
+}
+QTableWidget#tabla_etiquetas::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_etiquetas::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget#tabla_etiquetas::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>16</number></property>
+
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <item>
+      <layout class="QVBoxLayout" name="titleLayout">
+       <property name="spacing"><number>4</number></property>
+       <item>
+        <widget class="QLabel" name="listTitle">
+         <property name="text"><string>Etiquetas</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="listSubtitle">
+         <property name="text"><string>Organiza contactos y empresas con etiquetas de colores</string></property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0">
+        <size><width>40</width><height>20</height></size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_nueva_etiqueta">
+       <property name="text"><string>+ Nueva Etiqueta</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="statsLayout">
+     <property name="spacing"><number>16</number></property>
+     <item>
+      <widget class="QFrame" name="cardTotal">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardTotalLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueTotal"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelTotal"><property name="text"><string>Total Etiquetas</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="cardContactos">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardContactosLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueContactos"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelContactos"><property name="text"><string>Contactos Etiquetados</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="cardEmpresas">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardEmpresasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueEmpresas"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelEmpresas"><property name="text"><string>Empresas Etiquetadas</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <widget class="QTableWidget" name="tabla_etiquetas">
+     <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+     <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
+     <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+     <property name="showGrid"><bool>true</bool></property>
+     <property name="columnCount"><number>6</number></property>
+     <column><property name="text"><string>ID</string></property></column>
+     <column><property name="text"><string>Nombre</string></property></column>
+     <column><property name="text"><string>Categoria</string></property></column>
+     <column><property name="text"><string>Color</string></property></column>
+     <column><property name="text"><string>Contactos</string></property></column>
+     <column><property name="text"><string>Empresas</string></property></column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

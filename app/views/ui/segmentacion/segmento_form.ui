@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SegmentoForm</class>
+ <widget class="QWidget" name="SegmentoForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>889</width>
+    <height>620</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#SegmentoForm {
+    background-color: transparent;
+}
+QLabel#form_titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#form_subtitulo {
+    font-size: 13px;
+    color: #718096;
+}
+QLabel#seccionPrincipal {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1a1a2e;
+    padding-top: 8px;
+}
+QLabel.fieldLabel {
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 600;
+}
+QLineEdit, QComboBox {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+    min-height: 34px;
+}
+QLineEdit:focus, QComboBox:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QTextEdit {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+    font-family: "Consolas", monospace;
+}
+QTextEdit:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QPushButton#btn_guardar {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 28px;
+    min-height: 40px;
+}
+QPushButton#btn_guardar:hover { background-color: #3a7bc8; }
+QPushButton#btn_guardar:pressed { background-color: #2a6bb8; }
+QPushButton#btn_limpiar, QPushButton#btn_cancelar {
+    background-color: transparent;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    min-height: 40px;
+}
+QPushButton#btn_limpiar:hover, QPushButton#btn_cancelar:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+QFrame#sectionSeparator {
+    background-color: #e2e8f0;
+    min-height: 1px;
+    max-height: 1px;
+}
+QLabel#hintCriterios {
+    font-size: 11px;
+    color: #718096;
+}
+   </string>
+  </property>
+
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>0</number></property>
+
+   <!-- HEADER -->
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <property name="spacing"><number>12</number></property>
+     <item>
+      <layout class="QVBoxLayout" name="titleLayout">
+       <property name="spacing"><number>4</number></property>
+       <item>
+        <widget class="QLabel" name="form_titulo">
+         <property name="text"><string>Nuevo Segmento</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="form_subtitulo">
+         <property name="text"><string>Define un grupo de contactos o empresas con criterios especificos.</string></property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <spacer name="spacerAfterHeader">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+     <property name="sizeType"><enum>QSizePolicy::Fixed</enum></property>
+     <property name="sizeHint" stdset="0"><size><width>0</width><height>16</height></size></property>
+    </spacer>
+   </item>
+
+   <!-- FORM CARD -->
+   <item>
+    <widget class="QFrame" name="formCard">
+     <property name="styleSheet">
+      <string notr="true">
+QFrame#formCard {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+      </string>
+     </property>
+     <layout class="QVBoxLayout" name="formCardLayout">
+      <property name="leftMargin"><number>24</number></property>
+      <property name="topMargin"><number>24</number></property>
+      <property name="rightMargin"><number>24</number></property>
+      <property name="bottomMargin"><number>24</number></property>
+      <property name="spacing"><number>12</number></property>
+
+      <item>
+       <widget class="QLabel" name="seccionPrincipal">
+        <property name="text"><string>Informacion del Segmento</string></property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="sectionSeparator">
+        <property name="frameShape"><enum>QFrame::HLine</enum></property>
+       </widget>
+      </item>
+
+      <!-- Nombre -->
+      <item>
+       <layout class="QVBoxLayout" name="colNombre">
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="labelNombre">
+          <property name="text"><string>Nombre *</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="input_nombre">
+          <property name="placeholderText"><string>Ej: Prospectos del Norte, Clientes Premium...</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <!-- Descripcion + TipoEntidad -->
+      <item>
+       <layout class="QHBoxLayout" name="rowDescTipo">
+        <property name="spacing"><number>16</number></property>
+        <item>
+         <layout class="QVBoxLayout" name="colDescripcion">
+          <property name="spacing"><number>4</number></property>
+          <item>
+           <widget class="QLabel" name="labelDescripcion">
+            <property name="text"><string>Descripcion</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="input_descripcion">
+            <property name="placeholderText"><string>Descripcion breve del segmento...</string></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="colTipo">
+          <property name="spacing"><number>4</number></property>
+          <item>
+           <widget class="QLabel" name="labelTipoEntidad">
+            <property name="text"><string>Tipo de Entidad *</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="combo_tipo_entidad">
+            <item><property name="text"><string>Contactos</string></property></item>
+            <item><property name="text"><string>Empresas</string></property></item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+
+      <!-- Criterios JSON -->
+      <item>
+       <layout class="QVBoxLayout" name="colCriterios">
+        <property name="spacing"><number>4</number></property>
+        <item>
+         <widget class="QLabel" name="labelCriterios">
+          <property name="text"><string>Criterios (JSON)</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="input_criterios_json">
+          <property name="placeholderText"><string>Ej: {"industria": "Tecnologia", "ciudad": "Monterrey"}</string></property>
+          <property name="minimumHeight"><number>80</number></property>
+          <property name="maximumHeight"><number>120</number></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="hintCriterios">
+          <property name="text"><string>Opcional. Campos para Contactos: puesto, departamento, ciudad, empresa, origen, etiqueta_id. Para Empresas: industria, tamano, ciudad, origen, etiqueta_id.</string></property>
+          <property name="wordWrap"><bool>true</bool></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <!-- EsDinamico -->
+      <item>
+       <layout class="QHBoxLayout" name="rowDinamico">
+        <item>
+         <widget class="QCheckBox" name="check_es_dinamico">
+          <property name="text"><string>Segmento dinamico (se actualiza automaticamente)</string></property>
+          <property name="checked"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation"><enum>Qt::Horizontal</enum></property>
+          <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+
+   <item>
+    <spacer name="spacerBottom">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+     <property name="sizeHint" stdset="0"><size><width>0</width><height>20</height></size></property>
+    </spacer>
+   </item>
+
+   <!-- ACTION BUTTONS -->
+   <item>
+    <layout class="QHBoxLayout" name="actionLayout">
+     <property name="topMargin"><number>12</number></property>
+     <property name="spacing"><number>12</number></property>
+     <item>
+      <spacer name="actionSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_limpiar">
+       <property name="text"><string>Limpiar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_cancelar">
+       <property name="text"><string>Cancelar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_guardar">
+       <property name="text"><string>Guardar Segmento</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

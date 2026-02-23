@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EtiquetaForm</class>
+ <widget class="QWidget" name="EtiquetaForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>889</width>
+    <height>820</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#EtiquetaForm {
+    background-color: transparent;
+}
+QLabel#form_titulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#form_subtitulo {
+    font-size: 13px;
+    color: #718096;
+}
+QLabel#seccionPrincipal, QLabel#seccionAsignaciones {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1a1a2e;
+    padding-top: 8px;
+}
+QLabel.fieldLabel {
+    font-size: 13px;
+    color: #2d3748;
+    font-weight: 600;
+}
+QLineEdit, QComboBox {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+    min-height: 34px;
+}
+QLineEdit:focus, QComboBox:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QListWidget {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 13px;
+    padding: 4px;
+}
+QListWidget::item {
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+QListWidget::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QListWidget::item:hover {
+    background-color: #f7fafc;
+}
+QPushButton#btn_guardar {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 28px;
+    min-height: 40px;
+}
+QPushButton#btn_guardar:hover { background-color: #3a7bc8; }
+QPushButton#btn_guardar:pressed { background-color: #2a6bb8; }
+QPushButton#btn_limpiar, QPushButton#btn_cancelar {
+    background-color: transparent;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    min-height: 40px;
+}
+QPushButton#btn_limpiar:hover, QPushButton#btn_cancelar:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+QPushButton#btn_add_contacto, QPushButton#btn_add_empresa {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    min-height: 34px;
+}
+QPushButton#btn_add_contacto:hover { background-color: #38a169; }
+QPushButton#btn_add_empresa:hover { background-color: #38a169; }
+QPushButton#btn_quitar_contacto, QPushButton#btn_quitar_empresa {
+    background-color: transparent;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    min-height: 30px;
+}
+QPushButton#btn_quitar_contacto:hover, QPushButton#btn_quitar_empresa:hover {
+    background-color: #fff5f5;
+}
+QFrame#sectionSeparator, QFrame#sectionSeparator2, QFrame#sectionSeparator3 {
+    background-color: #e2e8f0;
+    min-height: 1px;
+    max-height: 1px;
+}
+   </string>
+  </property>
+
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>0</number></property>
+
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable"><bool>true</bool></property>
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <widget class="QWidget" name="scrollContent">
+      <layout class="QVBoxLayout" name="scrollLayout">
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>0</number></property>
+       <property name="bottomMargin"><number>0</number></property>
+       <property name="spacing"><number>0</number></property>
+
+       <!-- HEADER -->
+       <item>
+        <layout class="QHBoxLayout" name="headerLayout">
+         <property name="spacing"><number>12</number></property>
+         <item>
+          <layout class="QVBoxLayout" name="titleLayout">
+           <property name="spacing"><number>4</number></property>
+           <item>
+            <widget class="QLabel" name="form_titulo">
+             <property name="text"><string>Nueva Etiqueta</string></property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="form_subtitulo">
+             <property name="text"><string>Completa la informacion de la nueva etiqueta.</string></property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="headerSpacer">
+           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           <property name="sizeHint" stdset="0">
+            <size><width>40</width><height>20</height></size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+
+       <item>
+        <spacer name="spacerAfterHeader">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeType"><enum>QSizePolicy::Fixed</enum></property>
+         <property name="sizeHint" stdset="0"><size><width>0</width><height>16</height></size></property>
+        </spacer>
+       </item>
+
+       <!-- FORM CARD -->
+       <item>
+        <widget class="QFrame" name="formCard">
+         <property name="styleSheet">
+          <string notr="true">
+QFrame#formCard {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+          </string>
+         </property>
+         <layout class="QVBoxLayout" name="formCardLayout">
+          <property name="leftMargin"><number>24</number></property>
+          <property name="topMargin"><number>24</number></property>
+          <property name="rightMargin"><number>24</number></property>
+          <property name="bottomMargin"><number>24</number></property>
+          <property name="spacing"><number>12</number></property>
+
+          <!-- Seccion Principal -->
+          <item>
+           <widget class="QLabel" name="seccionPrincipal">
+            <property name="text"><string>Informacion de la Etiqueta</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="sectionSeparator">
+            <property name="frameShape"><enum>QFrame::HLine</enum></property>
+           </widget>
+          </item>
+
+          <!-- Nombre -->
+          <item>
+           <layout class="QHBoxLayout" name="rowNombre">
+            <item>
+             <layout class="QVBoxLayout" name="colNombre">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="labelNombre">
+                <property name="text"><string>Nombre *</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="input_nombre">
+                <property name="placeholderText"><string>Ej: VIP, Prospecto caliente...</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Categoria + Color -->
+          <item>
+           <layout class="QHBoxLayout" name="rowCatColor">
+            <property name="spacing"><number>16</number></property>
+            <item>
+             <layout class="QVBoxLayout" name="colCategoria">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="labelCategoria">
+                <property name="text"><string>Categoria</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="input_categoria">
+                <property name="placeholderText"><string>Ej: Clasificacion, Region...</string></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="colColor">
+              <property name="spacing"><number>4</number></property>
+              <item>
+               <widget class="QLabel" name="labelColor">
+                <property name="text"><string>Color (hex)</string></property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="rowColorInput">
+                <property name="spacing"><number>8</number></property>
+                <item>
+                 <widget class="QLineEdit" name="input_color">
+                  <property name="placeholderText"><string>#4a90d9</string></property>
+                  <property name="maximumWidth"><number>140</number></property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_color_preview">
+                  <property name="minimumSize"><size><width>34</width><height>34</height></size></property>
+                  <property name="maximumSize"><size><width>34</width><height>34</height></size></property>
+                  <property name="styleSheet"><string notr="true">border-radius: 6px; background-color: #e2e8f0; border: 1px solid #cbd5e0;</string></property>
+                  <property name="text"><string></string></property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="colorSpacer">
+                  <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                  <property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+
+          <!-- Seccion Asignaciones (visible solo al editar) -->
+          <item>
+           <widget class="QWidget" name="sectionAsignaciones">
+            <layout class="QVBoxLayout" name="asignacionesLayout">
+             <property name="leftMargin"><number>0</number></property>
+             <property name="topMargin"><number>8</number></property>
+             <property name="rightMargin"><number>0</number></property>
+             <property name="bottomMargin"><number>0</number></property>
+             <property name="spacing"><number>12</number></property>
+
+             <item>
+              <widget class="QLabel" name="seccionAsignaciones">
+               <property name="text"><string>Asignaciones</string></property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="sectionSeparator2">
+               <property name="frameShape"><enum>QFrame::HLine</enum></property>
+              </widget>
+             </item>
+
+             <!-- Contactos Asignados -->
+             <item>
+              <widget class="QLabel" name="labelContactosAsig">
+               <property name="text"><string>Contactos Asignados</string></property>
+               <property name="styleSheet"><string notr="true">font-size: 13px; color: #2d3748; font-weight: 600;</string></property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="rowAddContacto">
+               <property name="spacing"><number>8</number></property>
+               <item>
+                <widget class="QComboBox" name="combo_add_contacto">
+                 <property name="minimumHeight"><number>34</number></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_add_contacto">
+                 <property name="text"><string>Agregar</string></property>
+                 <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QListWidget" name="lista_contactos_asignados">
+               <property name="minimumHeight"><number>100</number></property>
+               <property name="maximumHeight"><number>150</number></property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout">
+               <item>
+                <spacer>
+                 <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                 <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_quitar_contacto">
+                 <property name="text"><string>Quitar seleccionado</string></property>
+                 <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+
+             <item>
+              <widget class="QFrame" name="sectionSeparator3">
+               <property name="frameShape"><enum>QFrame::HLine</enum></property>
+              </widget>
+             </item>
+
+             <!-- Empresas Asignadas -->
+             <item>
+              <widget class="QLabel" name="labelEmpresasAsig">
+               <property name="text"><string>Empresas Asignadas</string></property>
+               <property name="styleSheet"><string notr="true">font-size: 13px; color: #2d3748; font-weight: 600;</string></property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="rowAddEmpresa">
+               <property name="spacing"><number>8</number></property>
+               <item>
+                <widget class="QComboBox" name="combo_add_empresa">
+                 <property name="minimumHeight"><number>34</number></property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_add_empresa">
+                 <property name="text"><string>Agregar</string></property>
+                 <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QListWidget" name="lista_empresas_asignadas">
+               <property name="minimumHeight"><number>100</number></property>
+               <property name="maximumHeight"><number>150</number></property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout">
+               <item>
+                <spacer>
+                 <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                 <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btn_quitar_empresa">
+                 <property name="text"><string>Quitar seleccionado</string></property>
+                 <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+
+            </layout>
+           </widget>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <item>
+        <spacer name="spacerBottom">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint" stdset="0"><size><width>0</width><height>20</height></size></property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- ACTION BUTTONS (outside scroll) -->
+   <item>
+    <layout class="QHBoxLayout" name="actionLayout">
+     <property name="leftMargin"><number>0</number></property>
+     <property name="topMargin"><number>12</number></property>
+     <property name="rightMargin"><number>0</number></property>
+     <property name="bottomMargin"><number>0</number></property>
+     <property name="spacing"><number>12</number></property>
+     <item>
+      <spacer name="actionSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_limpiar">
+       <property name="text"><string>Limpiar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_cancelar">
+       <property name="text"><string>Cancelar</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_guardar">
+       <property name="text"><string>Guardar Etiqueta</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
