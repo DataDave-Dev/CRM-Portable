@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SegmentoList</class>
+ <widget class="QWidget" name="SegmentoList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#SegmentoList {
+    background-color: transparent;
+}
+QLabel#listTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#listSubtitle {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+QPushButton#btn_nuevo_segmento {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    min-height: 38px;
+}
+QPushButton#btn_nuevo_segmento:hover { background-color: #3a7bc8; }
+QPushButton#btn_nuevo_segmento:pressed { background-color: #2a6bb8; }
+QFrame#cardTotal {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #4a90d9;
+}
+QFrame#cardDinamicos {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #48bb78;
+}
+QFrame#cardContactos {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #ed8936;
+}
+QFrame#cardEmpresas {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    border-left: 4px solid #9f7aea;
+}
+QLabel#statValueTotal {
+    font-size: 28px; font-weight: bold; color: #4a90d9;
+}
+QLabel#statValueDinamicos {
+    font-size: 28px; font-weight: bold; color: #48bb78;
+}
+QLabel#statValueContactos {
+    font-size: 28px; font-weight: bold; color: #ed8936;
+}
+QLabel#statValueEmpresas {
+    font-size: 28px; font-weight: bold; color: #9f7aea;
+}
+QLabel#statLabelTotal, QLabel#statLabelDinamicos,
+QLabel#statLabelContactos, QLabel#statLabelEmpresas {
+    font-size: 12px; color: #718096; font-weight: 500;
+}
+QTableWidget#tabla_segmentos {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QTableWidget#tabla_segmentos QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_segmentos QHeaderView::section:last {
+    border-right: none;
+}
+QTableWidget#tabla_segmentos::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget#tabla_segmentos::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget#tabla_segmentos::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <property name="spacing"><number>16</number></property>
+
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <item>
+      <layout class="QVBoxLayout" name="titleLayout">
+       <property name="spacing"><number>4</number></property>
+       <item>
+        <widget class="QLabel" name="listTitle">
+         <property name="text"><string>Segmentos</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="listSubtitle">
+         <property name="text"><string>Grupos de contactos o empresas definidos por criterios</string></property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_nuevo_segmento">
+       <property name="text"><string>+ Nuevo Segmento</string></property>
+       <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="statsLayout">
+     <property name="spacing"><number>16</number></property>
+     <item>
+      <widget class="QFrame" name="cardTotal">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardTotalLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueTotal"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelTotal"><property name="text"><string>Total</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="cardDinamicos">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardDinamicosLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueDinamicos"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelDinamicos"><property name="text"><string>Dinamicos</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="cardContactos">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardContactosLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueContactos"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelContactos"><property name="text"><string>Seg. Contactos</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="cardEmpresas">
+       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
+       <layout class="QVBoxLayout" name="cardEmpresasLayout">
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+        <property name="spacing"><number>4</number></property>
+        <item><widget class="QLabel" name="statValueEmpresas"><property name="text"><string>0</string></property></widget></item>
+        <item><widget class="QLabel" name="statLabelEmpresas"><property name="text"><string>Seg. Empresas</string></property></widget></item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <item>
+    <widget class="QTableWidget" name="tabla_segmentos">
+     <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+     <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
+     <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
+     <property name="showGrid"><bool>true</bool></property>
+     <property name="columnCount"><number>6</number></property>
+     <column><property name="text"><string>ID</string></property></column>
+     <column><property name="text"><string>Nombre</string></property></column>
+     <column><property name="text"><string>Tipo</string></property></column>
+     <column><property name="text"><string>Criterios</string></property></column>
+     <column><property name="text"><string>Dinamico</string></property></column>
+     <column><property name="text"><string>Creado Por</string></property></column>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
