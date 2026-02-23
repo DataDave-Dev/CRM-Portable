@@ -2,7 +2,7 @@
 
 import os
 from PyQt5.QtWidgets import (
-    QWidget, QMessageBox, QTableWidgetItem, QHeaderView
+    QWidget, QMessageBox, QTableWidgetItem, QHeaderView, QListWidgetItem
 )
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QDate
@@ -12,6 +12,7 @@ _FECHA_NAC_NULA = QDate(1900, 1, 1)
 from app.database.connection import get_connection
 from app.services.empresa_service import EmpresaService
 from app.services.contacto_service import ContactoService
+from app.services.etiqueta_service import EtiquetaService
 from app.utils.catalog_cache import CatalogCache
 from app.views.notas_empresa_widget import NotasEmpresaWidget
 from app.views.notas_contacto_widget import NotasContactoWidget
@@ -27,6 +28,7 @@ class ClientesView(QWidget):
         self._usuario_actual = usuario_actual
         self._empresa_service = EmpresaService()
         self._contacto_service = ContactoService()
+        self._etiqueta_service = EtiquetaService()
         self._empresa_editando = None
         self._contacto_editando = None
         self._empresas_cargadas = []
@@ -181,11 +183,19 @@ class ClientesView(QWidget):
         self.emp_btn_guardar = self.form_empresas_widget.btn_guardar
         self.emp_btn_limpiar = self.form_empresas_widget.btn_limpiar
         self.emp_btn_cancelar = self.form_empresas_widget.btn_cancelar
+        self.emp_section_etiquetas = self.form_empresas_widget.sectionEtiquetas
+        self.emp_combo_add_etiqueta = self.form_empresas_widget.combo_add_etiqueta
+        self.emp_btn_add_etiqueta = self.form_empresas_widget.btn_add_etiqueta
+        self.emp_lista_etiquetas = self.form_empresas_widget.lista_etiquetas_asignadas
+        self.emp_btn_quitar_etiqueta = self.form_empresas_widget.btn_quitar_etiqueta
 
         # senales
         self.emp_btn_guardar.clicked.connect(self._guardar_empresa)
         self.emp_btn_limpiar.clicked.connect(self._limpiar_formulario_empresa)
         self.emp_btn_cancelar.clicked.connect(self._mostrar_lista_empresas)
+        self.emp_btn_add_etiqueta.clicked.connect(self._agregar_etiqueta_empresa)
+        self.emp_btn_quitar_etiqueta.clicked.connect(self._quitar_etiqueta_empresa)
+        self.emp_section_etiquetas.hide()
 
         self._cargar_combos_empresa()
         self.form_empresas_widget.hide()
@@ -254,7 +264,8 @@ class ClientesView(QWidget):
         self.emp_btn_guardar.setText("Guardar Empresa")
         self._limpiar_formulario_empresa()
 
-        # ocultar widget de notas (no disponible para nueva empresa)
+        # ocultar secciones no disponibles para nueva empresa
+        self.emp_section_etiquetas.hide()
         self._ocultar_notas_empresa()
 
     def _editar_empresa_seleccionada(self, index):
@@ -302,6 +313,11 @@ class ClientesView(QWidget):
         self._seleccionar_combo(self.emp_combo_moneda, empresa.moneda_id)
         self._seleccionar_combo(self.emp_combo_ciudad, empresa.ciudad_id)
         self._seleccionar_combo(self.emp_combo_propietario, empresa.propietario_id)
+
+        # cargar etiquetas de la empresa
+        self._cargar_combo_etiquetas_empresa()
+        self._cargar_etiquetas_empresa(empresa.empresa_id)
+        self.emp_section_etiquetas.show()
 
         # crear o actualizar widget de notas para empresa existente
         self._mostrar_notas_empresa(empresa.empresa_id)
@@ -391,6 +407,58 @@ class ClientesView(QWidget):
     def _ocultar_notas_empresa(self):
         if self._notas_empresa_widget:
             self._notas_empresa_widget.hide()
+
+    # ---- Etiquetas de empresa ----
+
+    def _cargar_combo_etiquetas_empresa(self):
+        self.emp_combo_add_etiqueta.clear()
+        self.emp_combo_add_etiqueta.addItem("-- Seleccionar etiqueta --", None)
+        for etq_id, nombre in CatalogCache.get_etiquetas():
+            self.emp_combo_add_etiqueta.addItem(nombre, etq_id)
+
+    def _cargar_etiquetas_empresa(self, empresa_id):
+        self.emp_lista_etiquetas.clear()
+        rows, _ = self._etiqueta_service.get_etiquetas_de_empresa(empresa_id)
+        for row in (rows or []):
+            item = QListWidgetItem(row["Nombre"])
+            item.setData(256, row["EtiquetaID"])
+            if row["Color"]:
+                item.setForeground(QColor(row["Color"]))
+            self.emp_lista_etiquetas.addItem(item)
+
+    def _agregar_etiqueta_empresa(self):
+        if not self._empresa_editando:
+            return
+        etiqueta_id = self.emp_combo_add_etiqueta.currentData()
+        if not etiqueta_id:
+            QMessageBox.warning(self, "Aviso", "Selecciona una etiqueta para agregar.")
+            return
+        ok, error = self._etiqueta_service.asignar_empresa(
+            etiqueta_id,
+            self._empresa_editando.empresa_id,
+            self._usuario_actual.usuario_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_etiquetas_empresa(self._empresa_editando.empresa_id)
+
+    def _quitar_etiqueta_empresa(self):
+        if not self._empresa_editando:
+            return
+        item = self.emp_lista_etiquetas.currentItem()
+        if not item:
+            QMessageBox.warning(self, "Aviso", "Selecciona una etiqueta de la lista para quitarla.")
+            return
+        etiqueta_id = item.data(256)
+        ok, error = self._etiqueta_service.quitar_empresa(
+            etiqueta_id,
+            self._empresa_editando.empresa_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_etiquetas_empresa(self._empresa_editando.empresa_id)
 
     # ==========================================
     # CONTACTOS - LISTA
@@ -520,11 +588,19 @@ class ClientesView(QWidget):
         self.ct_btn_guardar = self.form_contactos_widget.btn_guardar
         self.ct_btn_limpiar = self.form_contactos_widget.btn_limpiar
         self.ct_btn_cancelar = self.form_contactos_widget.btn_cancelar
+        self.ct_section_etiquetas = self.form_contactos_widget.sectionEtiquetas
+        self.ct_combo_add_etiqueta = self.form_contactos_widget.combo_add_etiqueta
+        self.ct_btn_add_etiqueta = self.form_contactos_widget.btn_add_etiqueta
+        self.ct_lista_etiquetas = self.form_contactos_widget.lista_etiquetas_asignadas
+        self.ct_btn_quitar_etiqueta = self.form_contactos_widget.btn_quitar_etiqueta
 
         # senales
         self.ct_btn_guardar.clicked.connect(self._guardar_contacto)
         self.ct_btn_limpiar.clicked.connect(self._limpiar_formulario_contacto)
         self.ct_btn_cancelar.clicked.connect(self._mostrar_lista_contactos)
+        self.ct_btn_add_etiqueta.clicked.connect(self._agregar_etiqueta_contacto)
+        self.ct_btn_quitar_etiqueta.clicked.connect(self._quitar_etiqueta_contacto)
+        self.ct_section_etiquetas.hide()
 
         self._cargar_combos_contacto()
         self.form_contactos_widget.hide()
@@ -585,7 +661,8 @@ class ClientesView(QWidget):
         self._cargar_combos_contacto()
         self._limpiar_formulario_contacto()
 
-        # ocultar widget de notas (no disponible para nuevo contacto)
+        # ocultar secciones no disponibles para nuevo contacto
+        self.ct_section_etiquetas.hide()
         self._ocultar_notas_contacto()
 
     def _editar_contacto_seleccionado(self, index):
@@ -636,6 +713,11 @@ class ClientesView(QWidget):
         self._seleccionar_combo(self.ct_combo_ciudad, contacto.ciudad_id)
         self._seleccionar_combo(self.ct_combo_origen, contacto.origen_id)
         self._seleccionar_combo(self.ct_combo_propietario, contacto.propietario_id)
+
+        # cargar etiquetas del contacto
+        self._cargar_combo_etiquetas_contacto()
+        self._cargar_etiquetas_contacto(contacto.contacto_id)
+        self.ct_section_etiquetas.show()
 
         # crear o actualizar widget de notas para contacto existente
         self._mostrar_notas_contacto(contacto.contacto_id)
@@ -693,7 +775,7 @@ class ClientesView(QWidget):
         self.ct_input_nombre.clear()
         self.ct_input_apellido_paterno.clear()
         self.ct_input_apellido_materno.clear()
-        self.ct_input_fecha_nacimiento.setDate(_FECHA_NAC_NULA)
+        self.ct_input_fecha_nacimiento.setDate(QDate.currentDate())
         self.ct_input_email.clear()
         self.ct_input_email_secundario.clear()
         self.ct_input_telefono_oficina.clear()
@@ -730,6 +812,58 @@ class ClientesView(QWidget):
     def _ocultar_notas_contacto(self):
         if self._notas_contacto_widget:
             self._notas_contacto_widget.hide()
+
+    # ---- Etiquetas de contacto ----
+
+    def _cargar_combo_etiquetas_contacto(self):
+        self.ct_combo_add_etiqueta.clear()
+        self.ct_combo_add_etiqueta.addItem("-- Seleccionar etiqueta --", None)
+        for etq_id, nombre in CatalogCache.get_etiquetas():
+            self.ct_combo_add_etiqueta.addItem(nombre, etq_id)
+
+    def _cargar_etiquetas_contacto(self, contacto_id):
+        self.ct_lista_etiquetas.clear()
+        rows, _ = self._etiqueta_service.get_etiquetas_de_contacto(contacto_id)
+        for row in (rows or []):
+            item = QListWidgetItem(row["Nombre"])
+            item.setData(256, row["EtiquetaID"])
+            if row["Color"]:
+                item.setForeground(QColor(row["Color"]))
+            self.ct_lista_etiquetas.addItem(item)
+
+    def _agregar_etiqueta_contacto(self):
+        if not self._contacto_editando:
+            return
+        etiqueta_id = self.ct_combo_add_etiqueta.currentData()
+        if not etiqueta_id:
+            QMessageBox.warning(self, "Aviso", "Selecciona una etiqueta para agregar.")
+            return
+        ok, error = self._etiqueta_service.asignar_contacto(
+            etiqueta_id,
+            self._contacto_editando.contacto_id,
+            self._usuario_actual.usuario_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_etiquetas_contacto(self._contacto_editando.contacto_id)
+
+    def _quitar_etiqueta_contacto(self):
+        if not self._contacto_editando:
+            return
+        item = self.ct_lista_etiquetas.currentItem()
+        if not item:
+            QMessageBox.warning(self, "Aviso", "Selecciona una etiqueta de la lista para quitarla.")
+            return
+        etiqueta_id = item.data(256)
+        ok, error = self._etiqueta_service.quitar_contacto(
+            etiqueta_id,
+            self._contacto_editando.contacto_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_etiquetas_contacto(self._contacto_editando.contacto_id)
 
     # ==========================================
     # UTILIDADES

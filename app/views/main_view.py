@@ -14,6 +14,7 @@ from app.views.configuracion_view import ConfiguracionView
 from app.views.clientes_view import ClientesView
 from app.views.ventas_view import VentasView
 from app.views.actividades_view import ActividadesView
+from app.views.segmentacion_view import SegmentacionView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -36,6 +37,7 @@ class MainView(QMainWindow):
         self._create_clientes()
         self._create_ventas()
         self._create_actividades()
+        self._create_segmentacion()
         self._create_configuracion()
 
     def closeEvent(self, event: QEvent):
@@ -70,6 +72,7 @@ class MainView(QMainWindow):
             self.btnClientes,
             self.btnVentas,
             self.btnActividades,
+            self.btnSegmentacion,
             self.btnUsuarios,
             self.btnConfiguracion,
         ]
@@ -77,6 +80,7 @@ class MainView(QMainWindow):
         self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
         self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
         self.btnActividades.clicked.connect(self._mostrar_seccion_actividades)
+        self.btnSegmentacion.clicked.connect(self._mostrar_seccion_segmentacion)
         self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
         self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
 
@@ -535,6 +539,23 @@ class MainView(QMainWindow):
 
         if hasattr(self, 'btnActividades'):
             self._resaltar_boton_activo(self.btnActividades)
+
+    def _create_segmentacion(self):
+        self.segmentacion_widget = SegmentacionView(self._usuario_actual)
+        self.segmentacion_widget.hide()
+
+    def _mostrar_seccion_segmentacion(self):
+        self._ocultar_contenido_actual()
+
+        if self.segmentacion_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.segmentacion_widget)
+
+        self.segmentacion_widget.show()
+        self.segmentacion_widget.cargar_datos()
+        self.headerPageTitle.setText("Segmentacion")
+
+        if hasattr(self, 'btnSegmentacion'):
+            self._resaltar_boton_activo(self.btnSegmentacion)
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()

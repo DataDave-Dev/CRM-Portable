@@ -342,9 +342,9 @@ class ActividadesView(QWidget):
     def _limpiar_formulario_actividad(self):
         self.act_input_asunto.clear()
         self.act_input_descripcion.clear()
-        self.act_input_fecha_inicio.setDate(_FECHA_NULA)
-        self.act_input_fecha_fin.setDate(_FECHA_NULA)
-        self.act_input_fecha_vencimiento.setDate(_FECHA_NULA)
+        self.act_input_fecha_inicio.setDate(QDate.currentDate())
+        self.act_input_fecha_fin.setDate(QDate.currentDate())
+        self.act_input_fecha_vencimiento.setDate(QDate.currentDate())
         self.act_input_duracion.clear()
         self.act_input_ubicacion.clear()
         self.act_input_resultado.clear()
