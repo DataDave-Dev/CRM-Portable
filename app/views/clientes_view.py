@@ -13,6 +13,7 @@ from app.database.connection import get_connection
 from app.services.empresa_service import EmpresaService
 from app.services.contacto_service import ContactoService
 from app.services.etiqueta_service import EtiquetaService
+from app.services.segmento_service import SegmentoService
 from app.utils.catalog_cache import CatalogCache
 from app.views.notas_empresa_widget import NotasEmpresaWidget
 from app.views.notas_contacto_widget import NotasContactoWidget
@@ -29,6 +30,7 @@ class ClientesView(QWidget):
         self._empresa_service = EmpresaService()
         self._contacto_service = ContactoService()
         self._etiqueta_service = EtiquetaService()
+        self._segmento_service = SegmentoService()
         self._empresa_editando = None
         self._contacto_editando = None
         self._empresas_cargadas = []
@@ -188,6 +190,11 @@ class ClientesView(QWidget):
         self.emp_btn_add_etiqueta = self.form_empresas_widget.btn_add_etiqueta
         self.emp_lista_etiquetas = self.form_empresas_widget.lista_etiquetas_asignadas
         self.emp_btn_quitar_etiqueta = self.form_empresas_widget.btn_quitar_etiqueta
+        self.emp_section_segmentos = self.form_empresas_widget.sectionSegmentos
+        self.emp_combo_add_segmento = self.form_empresas_widget.combo_add_segmento
+        self.emp_btn_add_segmento = self.form_empresas_widget.btn_add_segmento
+        self.emp_lista_segmentos = self.form_empresas_widget.lista_segmentos_asignados
+        self.emp_btn_quitar_segmento = self.form_empresas_widget.btn_quitar_segmento
 
         # senales
         self.emp_btn_guardar.clicked.connect(self._guardar_empresa)
@@ -195,7 +202,10 @@ class ClientesView(QWidget):
         self.emp_btn_cancelar.clicked.connect(self._mostrar_lista_empresas)
         self.emp_btn_add_etiqueta.clicked.connect(self._agregar_etiqueta_empresa)
         self.emp_btn_quitar_etiqueta.clicked.connect(self._quitar_etiqueta_empresa)
+        self.emp_btn_add_segmento.clicked.connect(self._agregar_segmento_empresa)
+        self.emp_btn_quitar_segmento.clicked.connect(self._quitar_segmento_empresa)
         self.emp_section_etiquetas.hide()
+        self.emp_section_segmentos.hide()
 
         self._cargar_combos_empresa()
         self.form_empresas_widget.hide()
@@ -266,6 +276,7 @@ class ClientesView(QWidget):
 
         # ocultar secciones no disponibles para nueva empresa
         self.emp_section_etiquetas.hide()
+        self.emp_section_segmentos.hide()
         self._ocultar_notas_empresa()
 
     def _editar_empresa_seleccionada(self, index):
@@ -318,6 +329,11 @@ class ClientesView(QWidget):
         self._cargar_combo_etiquetas_empresa()
         self._cargar_etiquetas_empresa(empresa.empresa_id)
         self.emp_section_etiquetas.show()
+
+        # cargar segmentos de la empresa
+        self._cargar_combo_segmentos_empresa()
+        self._cargar_segmentos_empresa(empresa.empresa_id)
+        self.emp_section_segmentos.show()
 
         # crear o actualizar widget de notas para empresa existente
         self._mostrar_notas_empresa(empresa.empresa_id)
@@ -460,6 +476,59 @@ class ClientesView(QWidget):
         else:
             self._cargar_etiquetas_empresa(self._empresa_editando.empresa_id)
 
+    # ---- Segmentos de empresa ----
+
+    def _cargar_combo_segmentos_empresa(self):
+        self.emp_combo_add_segmento.clear()
+        self.emp_combo_add_segmento.addItem("-- Seleccionar segmento --", None)
+        segmentos, _ = self._segmento_service.obtener_por_tipo("Empresas")
+        for seg in (segmentos or []):
+            self.emp_combo_add_segmento.addItem(seg.nombre, seg.segmento_id)
+
+    def _cargar_segmentos_empresa(self, empresa_id):
+        self.emp_lista_segmentos.clear()
+        rows, _ = self._segmento_service.get_segmentos_de_empresa(empresa_id)
+        for row in (rows or []):
+            item = QListWidgetItem(row["Nombre"])
+            item.setData(256, row["SegmentoID"])
+            self.emp_lista_segmentos.addItem(item)
+
+    def _agregar_segmento_empresa(self):
+        if not self._empresa_editando:
+            return
+        segmento_id = self.emp_combo_add_segmento.currentData()
+        if not segmento_id:
+            QMessageBox.warning(self, "Aviso", "Selecciona un segmento para agregar.")
+            return
+        ok, error = self._segmento_service.agregar_miembro(
+            segmento_id,
+            self._empresa_editando.empresa_id,
+            "Empresas",
+            self._usuario_actual.usuario_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_segmentos_empresa(self._empresa_editando.empresa_id)
+
+    def _quitar_segmento_empresa(self):
+        if not self._empresa_editando:
+            return
+        item = self.emp_lista_segmentos.currentItem()
+        if not item:
+            QMessageBox.warning(self, "Aviso", "Selecciona un segmento de la lista para quitarlo.")
+            return
+        segmento_id = item.data(256)
+        ok, error = self._segmento_service.quitar_miembro(
+            segmento_id,
+            self._empresa_editando.empresa_id,
+            "Empresas",
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_segmentos_empresa(self._empresa_editando.empresa_id)
+
     # ==========================================
     # CONTACTOS - LISTA
     # ==========================================
@@ -593,6 +662,11 @@ class ClientesView(QWidget):
         self.ct_btn_add_etiqueta = self.form_contactos_widget.btn_add_etiqueta
         self.ct_lista_etiquetas = self.form_contactos_widget.lista_etiquetas_asignadas
         self.ct_btn_quitar_etiqueta = self.form_contactos_widget.btn_quitar_etiqueta
+        self.ct_section_segmentos = self.form_contactos_widget.sectionSegmentos
+        self.ct_combo_add_segmento = self.form_contactos_widget.combo_add_segmento
+        self.ct_btn_add_segmento = self.form_contactos_widget.btn_add_segmento
+        self.ct_lista_segmentos = self.form_contactos_widget.lista_segmentos_asignados
+        self.ct_btn_quitar_segmento = self.form_contactos_widget.btn_quitar_segmento
 
         # senales
         self.ct_btn_guardar.clicked.connect(self._guardar_contacto)
@@ -600,7 +674,10 @@ class ClientesView(QWidget):
         self.ct_btn_cancelar.clicked.connect(self._mostrar_lista_contactos)
         self.ct_btn_add_etiqueta.clicked.connect(self._agregar_etiqueta_contacto)
         self.ct_btn_quitar_etiqueta.clicked.connect(self._quitar_etiqueta_contacto)
+        self.ct_btn_add_segmento.clicked.connect(self._agregar_segmento_contacto)
+        self.ct_btn_quitar_segmento.clicked.connect(self._quitar_segmento_contacto)
         self.ct_section_etiquetas.hide()
+        self.ct_section_segmentos.hide()
 
         self._cargar_combos_contacto()
         self.form_contactos_widget.hide()
@@ -663,6 +740,7 @@ class ClientesView(QWidget):
 
         # ocultar secciones no disponibles para nuevo contacto
         self.ct_section_etiquetas.hide()
+        self.ct_section_segmentos.hide()
         self._ocultar_notas_contacto()
 
     def _editar_contacto_seleccionado(self, index):
@@ -718,6 +796,11 @@ class ClientesView(QWidget):
         self._cargar_combo_etiquetas_contacto()
         self._cargar_etiquetas_contacto(contacto.contacto_id)
         self.ct_section_etiquetas.show()
+
+        # cargar segmentos del contacto
+        self._cargar_combo_segmentos_contacto()
+        self._cargar_segmentos_contacto(contacto.contacto_id)
+        self.ct_section_segmentos.show()
 
         # crear o actualizar widget de notas para contacto existente
         self._mostrar_notas_contacto(contacto.contacto_id)
@@ -864,6 +947,59 @@ class ClientesView(QWidget):
             QMessageBox.critical(self, "Error", error)
         else:
             self._cargar_etiquetas_contacto(self._contacto_editando.contacto_id)
+
+    # ---- Segmentos de contacto ----
+
+    def _cargar_combo_segmentos_contacto(self):
+        self.ct_combo_add_segmento.clear()
+        self.ct_combo_add_segmento.addItem("-- Seleccionar segmento --", None)
+        segmentos, _ = self._segmento_service.obtener_por_tipo("Contactos")
+        for seg in (segmentos or []):
+            self.ct_combo_add_segmento.addItem(seg.nombre, seg.segmento_id)
+
+    def _cargar_segmentos_contacto(self, contacto_id):
+        self.ct_lista_segmentos.clear()
+        rows, _ = self._segmento_service.get_segmentos_de_contacto(contacto_id)
+        for row in (rows or []):
+            item = QListWidgetItem(row["Nombre"])
+            item.setData(256, row["SegmentoID"])
+            self.ct_lista_segmentos.addItem(item)
+
+    def _agregar_segmento_contacto(self):
+        if not self._contacto_editando:
+            return
+        segmento_id = self.ct_combo_add_segmento.currentData()
+        if not segmento_id:
+            QMessageBox.warning(self, "Aviso", "Selecciona un segmento para agregar.")
+            return
+        ok, error = self._segmento_service.agregar_miembro(
+            segmento_id,
+            self._contacto_editando.contacto_id,
+            "Contactos",
+            self._usuario_actual.usuario_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_segmentos_contacto(self._contacto_editando.contacto_id)
+
+    def _quitar_segmento_contacto(self):
+        if not self._contacto_editando:
+            return
+        item = self.ct_lista_segmentos.currentItem()
+        if not item:
+            QMessageBox.warning(self, "Aviso", "Selecciona un segmento de la lista para quitarlo.")
+            return
+        segmento_id = item.data(256)
+        ok, error = self._segmento_service.quitar_miembro(
+            segmento_id,
+            self._contacto_editando.contacto_id,
+            "Contactos",
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_segmentos_contacto(self._contacto_editando.contacto_id)
 
     # ==========================================
     # UTILIDADES
