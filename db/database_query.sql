@@ -407,19 +407,43 @@ CREATE TABLE IF NOT EXISTS EmpresaEtiquetas (
     UNIQUE (EmpresaID, EtiquetaID)
 );
 
--- Segmentos guardados (filtros predefinidos)
+-- Segmentos (grupos de contactos o empresas con asignacion manual)
 CREATE TABLE IF NOT EXISTS Segmentos (
     SegmentoID          INTEGER PRIMARY KEY AUTOINCREMENT,
     Nombre              TEXT NOT NULL,
     Descripcion         TEXT,
     TipoEntidad         TEXT NOT NULL,
-    CriteriosJSON       TEXT,
-    CantidadRegistros   INTEGER,
-    EsDinamico          INTEGER DEFAULT 1,
+    CantidadRegistros   INTEGER DEFAULT 0,
     CreadoPor           INTEGER NOT NULL,
     FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
     FechaModificacion   TEXT DEFAULT (datetime('now', 'localtime')),
     FOREIGN KEY (CreadoPor) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Miembros contactos de cada segmento (asignacion manual)
+CREATE TABLE IF NOT EXISTS SegmentoContactos (
+    SegmentoContactoID  INTEGER PRIMARY KEY AUTOINCREMENT,
+    SegmentoID          INTEGER NOT NULL,
+    ContactoID          INTEGER NOT NULL,
+    FechaAsignacion     TEXT DEFAULT (datetime('now', 'localtime')),
+    AsignadoPor         INTEGER,
+    FOREIGN KEY (SegmentoID) REFERENCES Segmentos(SegmentoID) ON DELETE CASCADE,
+    FOREIGN KEY (ContactoID) REFERENCES Contactos(ContactoID) ON DELETE CASCADE,
+    FOREIGN KEY (AsignadoPor) REFERENCES Usuarios(UsuarioID),
+    UNIQUE (SegmentoID, ContactoID)
+);
+
+-- Miembros empresas de cada segmento (asignacion manual)
+CREATE TABLE IF NOT EXISTS SegmentoEmpresas (
+    SegmentoEmpresaID   INTEGER PRIMARY KEY AUTOINCREMENT,
+    SegmentoID          INTEGER NOT NULL,
+    EmpresaID           INTEGER NOT NULL,
+    FechaAsignacion     TEXT DEFAULT (datetime('now', 'localtime')),
+    AsignadoPor         INTEGER,
+    FOREIGN KEY (SegmentoID) REFERENCES Segmentos(SegmentoID) ON DELETE CASCADE,
+    FOREIGN KEY (EmpresaID) REFERENCES Empresas(EmpresaID) ON DELETE CASCADE,
+    FOREIGN KEY (AsignadoPor) REFERENCES Usuarios(UsuarioID),
+    UNIQUE (SegmentoID, EmpresaID)
 );
 
 --- MÓDULO 5: COMUNICACIÓN / CAMPAÑAS ---

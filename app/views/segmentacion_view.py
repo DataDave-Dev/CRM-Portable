@@ -331,7 +331,6 @@ class SegmentacionView(QWidget):
         self.etq_input_categoria.setText(etiqueta.categoria or "")
         self.etq_input_color.setText(etiqueta.color or "")
 
-        # mostrar secciones de asignacion
         self._cargar_combos_asignacion()
         self._cargar_asignaciones(etiqueta.etiqueta_id)
         self.etq_section_asignaciones.show()
@@ -404,7 +403,6 @@ class SegmentacionView(QWidget):
         self.btn_nuevo_segmento = self.lista_segmentos_widget.btn_nuevo_segmento
         self.tabla_segmentos = self.lista_segmentos_widget.tabla_segmentos
         self.stat_seg_total = self.lista_segmentos_widget.statValueTotal
-        self.stat_seg_dinamicos = self.lista_segmentos_widget.statValueDinamicos
         self.stat_seg_contactos = self.lista_segmentos_widget.statValueContactos
         self.stat_seg_empresas = self.lista_segmentos_widget.statValueEmpresas
 
@@ -417,9 +415,7 @@ class SegmentacionView(QWidget):
             h.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # ID
             h.setSectionResizeMode(1, QHeaderView.Stretch)           # Nombre
             h.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Tipo
-            h.setSectionResizeMode(3, QHeaderView.Interactive)       # Criterios
-            h.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # Dinamico
-            h.setSectionResizeMode(5, QHeaderView.Interactive)       # Creado Por
+            h.setSectionResizeMode(3, QHeaderView.Interactive)       # Creado Por
             h.setMinimumSectionSize(60)
         v = self.tabla_segmentos.verticalHeader()
         if v:
@@ -437,12 +433,10 @@ class SegmentacionView(QWidget):
 
             self._segmentos_cargados = segmentos or []
             total = len(self._segmentos_cargados)
-            dinamicos = sum(1 for s in self._segmentos_cargados if s.es_dinamico == 1)
             de_contactos = sum(1 for s in self._segmentos_cargados if s.tipo_entidad == "Contactos")
             de_empresas = sum(1 for s in self._segmentos_cargados if s.tipo_entidad == "Empresas")
 
             self.stat_seg_total.setText(str(total))
-            self.stat_seg_dinamicos.setText(str(dinamicos))
             self.stat_seg_contactos.setText(str(de_contactos))
             self.stat_seg_empresas.setText(str(de_empresas))
 
@@ -453,17 +447,7 @@ class SegmentacionView(QWidget):
                 self.tabla_segmentos.setItem(r, 0, QTableWidgetItem(str(seg.segmento_id)))
                 self.tabla_segmentos.setItem(r, 1, QTableWidgetItem(seg.nombre))
                 self.tabla_segmentos.setItem(r, 2, QTableWidgetItem(seg.tipo_entidad or ""))
-                criterios_preview = (seg.criterios_json or "")[:60]
-                if len(seg.criterios_json or "") > 60:
-                    criterios_preview += "..."
-                self.tabla_segmentos.setItem(r, 3, QTableWidgetItem(criterios_preview))
-                dinamico_str = "Si" if seg.es_dinamico == 1 else "No"
-                item_din = QTableWidgetItem(dinamico_str)
-                item_din.setForeground(
-                    QColor(34, 139, 34) if seg.es_dinamico == 1 else QColor(150, 150, 150)
-                )
-                self.tabla_segmentos.setItem(r, 4, item_din)
-                self.tabla_segmentos.setItem(r, 5, QTableWidgetItem(seg.nombre_creador or ""))
+                self.tabla_segmentos.setItem(r, 3, QTableWidgetItem(seg.nombre_creador or ""))
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudieron cargar los segmentos: {str(e)}")
@@ -488,8 +472,6 @@ class SegmentacionView(QWidget):
         self.seg_input_nombre = self.form_segmentos_widget.input_nombre
         self.seg_input_descripcion = self.form_segmentos_widget.input_descripcion
         self.seg_combo_tipo = self.form_segmentos_widget.combo_tipo_entidad
-        self.seg_input_criterios = self.form_segmentos_widget.input_criterios_json
-        self.seg_check_dinamico = self.form_segmentos_widget.check_es_dinamico
         self.seg_btn_guardar = self.form_segmentos_widget.btn_guardar
         self.seg_btn_limpiar = self.form_segmentos_widget.btn_limpiar
         self.seg_btn_cancelar = self.form_segmentos_widget.btn_cancelar
@@ -526,7 +508,7 @@ class SegmentacionView(QWidget):
             return
 
         self._segmento_editando = segmento
-        self._cargar_tabla_miembros(segmento)
+        self._cargar_vista_miembros(segmento)
 
         self.lista_segmentos_widget.hide()
         self.form_segmentos_widget.hide()
@@ -537,8 +519,6 @@ class SegmentacionView(QWidget):
             "nombre": self.seg_input_nombre.text().strip(),
             "descripcion": self.seg_input_descripcion.text().strip(),
             "tipo_entidad": self.seg_combo_tipo.currentText(),
-            "criterios_json": self.seg_input_criterios.toPlainText().strip(),
-            "es_dinamico": self.seg_check_dinamico.isChecked(),
         }
 
         if self._segmento_editando:
@@ -569,8 +549,6 @@ class SegmentacionView(QWidget):
         self.seg_input_nombre.clear()
         self.seg_input_descripcion.clear()
         self.seg_combo_tipo.setCurrentIndex(0)
-        self.seg_input_criterios.clear()
-        self.seg_check_dinamico.setChecked(True)
         self.seg_input_nombre.setFocus()
 
     # ==========================================
@@ -586,9 +564,10 @@ class SegmentacionView(QWidget):
         self.mem_subtitulo = self.members_segmento_widget.mem_subtitulo
         self.mem_stat_miembros = self.members_segmento_widget.statValueMiembros
         self.mem_info_tipo = self.members_segmento_widget.mem_info_tipo
-        self.mem_info_criterios = self.members_segmento_widget.mem_info_criterios
-        self.mem_info_dinamico = self.members_segmento_widget.mem_info_dinamico
         self.mem_tabla = self.members_segmento_widget.tabla_miembros
+        self.mem_combo_add = self.members_segmento_widget.combo_add_miembro
+        self.mem_btn_add = self.members_segmento_widget.btn_add_miembro
+        self.mem_btn_quitar = self.members_segmento_widget.btn_quitar_miembro
         self.mem_btn_editar = self.members_segmento_widget.btn_editar_segmento
         self.mem_btn_eliminar = self.members_segmento_widget.btn_eliminar_segmento
         self.mem_btn_volver = self.members_segmento_widget.btn_volver_segmentos
@@ -596,6 +575,8 @@ class SegmentacionView(QWidget):
         self.mem_btn_editar.clicked.connect(self._editar_desde_miembros)
         self.mem_btn_eliminar.clicked.connect(self._eliminar_desde_miembros)
         self.mem_btn_volver.clicked.connect(self._mostrar_lista_segmentos)
+        self.mem_btn_add.clicked.connect(self._agregar_miembro_segmento)
+        self.mem_btn_quitar.clicked.connect(self._quitar_miembro_segmento)
 
         v = self.mem_tabla.verticalHeader()
         if v:
@@ -605,19 +586,35 @@ class SegmentacionView(QWidget):
         self.members_segmento_widget.hide()
         self.tabSegmentosLayout.addWidget(self.members_segmento_widget)
 
-    def _cargar_tabla_miembros(self, segmento):
+    def _cargar_vista_miembros(self, segmento):
         self.mem_titulo.setText(segmento.nombre)
-        tipo_label = segmento.tipo_entidad or "-"
-        dinamico_label = "Dinamico" if segmento.es_dinamico == 1 else "Estatico"
-        self.mem_subtitulo.setText(f"Segmento de {tipo_label} · {dinamico_label}")
-        self.mem_info_tipo.setText(tipo_label)
-        self.mem_info_dinamico.setText(dinamico_label)
+        self.mem_subtitulo.setText(f"Segmento de {segmento.tipo_entidad or '-'}")
+        self.mem_info_tipo.setText(segmento.tipo_entidad or "-")
 
-        criterios_str = segmento.criterios_json or ""
-        self.mem_info_criterios.setText(
-            criterios_str[:120] if criterios_str else "Sin criterios (todos los registros activos)"
-        )
+        self._cargar_combo_miembros(segmento)
+        self._cargar_tabla_miembros(segmento)
 
+    def _cargar_combo_miembros(self, segmento):
+        conn = get_connection()
+        self.mem_combo_add.clear()
+
+        if segmento.tipo_entidad == "Contactos":
+            self.mem_combo_add.addItem("-- Seleccionar contacto --", None)
+            cursor = conn.execute(
+                "SELECT ContactoID, (Nombre || ' ' || ApellidoPaterno) AS NC "
+                "FROM Contactos WHERE Activo = 1 ORDER BY Nombre"
+            )
+            for row in cursor.fetchall():
+                self.mem_combo_add.addItem(row["NC"], row["ContactoID"])
+        else:
+            self.mem_combo_add.addItem("-- Seleccionar empresa --", None)
+            cursor = conn.execute(
+                "SELECT EmpresaID, RazonSocial FROM Empresas WHERE Activo = 1 ORDER BY RazonSocial"
+            )
+            for row in cursor.fetchall():
+                self.mem_combo_add.addItem(row["RazonSocial"], row["EmpresaID"])
+
+    def _cargar_tabla_miembros(self, segmento):
         miembros, error = self._segmento_service.obtener_miembros(segmento)
         if error:
             QMessageBox.critical(self, "Error", error)
@@ -652,7 +649,52 @@ class SegmentacionView(QWidget):
             self.mem_tabla.insertRow(r)
             for col, key in enumerate(col_keys):
                 val = str(m.get(key, "") or "")
-                self.mem_tabla.setItem(r, col, QTableWidgetItem(val))
+                item = QTableWidgetItem(val)
+                if col == 0:
+                    item.setData(256, m.get("ID"))
+                self.mem_tabla.setItem(r, col, item)
+
+    def _agregar_miembro_segmento(self):
+        if not self._segmento_editando:
+            return
+        entidad_id = self.mem_combo_add.currentData()
+        if not entidad_id:
+            QMessageBox.warning(self, "Aviso", "Selecciona un elemento para agregar.")
+            return
+        ok, error = self._segmento_service.agregar_miembro(
+            self._segmento_editando.segmento_id,
+            entidad_id,
+            self._segmento_editando.tipo_entidad,
+            self._usuario_actual.usuario_id,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_tabla_miembros(self._segmento_editando)
+
+    def _quitar_miembro_segmento(self):
+        if not self._segmento_editando:
+            return
+        selected = self.mem_tabla.selectedItems()
+        if not selected:
+            QMessageBox.warning(self, "Aviso", "Selecciona una fila para quitar.")
+            return
+        row = self.mem_tabla.currentRow()
+        id_item = self.mem_tabla.item(row, 0)
+        if not id_item:
+            return
+        entidad_id = id_item.data(256)
+        if not entidad_id:
+            return
+        ok, error = self._segmento_service.quitar_miembro(
+            self._segmento_editando.segmento_id,
+            entidad_id,
+            self._segmento_editando.tipo_entidad,
+        )
+        if error:
+            QMessageBox.critical(self, "Error", error)
+        else:
+            self._cargar_tabla_miembros(self._segmento_editando)
 
     def _editar_desde_miembros(self):
         if not self._segmento_editando:
@@ -666,8 +708,6 @@ class SegmentacionView(QWidget):
 
         self.seg_input_nombre.setText(segmento.nombre)
         self.seg_input_descripcion.setText(segmento.descripcion or "")
-        self.seg_input_criterios.setPlainText(segmento.criterios_json or "")
-        self.seg_check_dinamico.setChecked(segmento.es_dinamico == 1)
 
         for i in range(self.seg_combo_tipo.count()):
             if self.seg_combo_tipo.itemText(i) == segmento.tipo_entidad:

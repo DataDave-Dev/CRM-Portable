@@ -4,10 +4,8 @@ Servicio de gestion de segmentos para el sistema CRM.
 Validaciones:
     - nombre: requerido, max 255 caracteres
     - tipo_entidad: 'Contactos' o 'Empresas'
-    - criterios_json: JSON valido si se proporciona
 """
 
-import json
 from app.repositories.segmento_repository import SegmentoRepository
 from app.models.Segmento import Segmento
 from app.utils.logger import AppLogger
@@ -49,8 +47,6 @@ class SegmentoService:
             nombre=datos["nombre"].strip(),
             descripcion=datos.get("descripcion", "").strip() or None,
             tipo_entidad=datos.get("tipo_entidad", "Contactos"),
-            criterios_json=datos.get("criterios_json", "").strip() or None,
-            es_dinamico=1 if datos.get("es_dinamico") else 0,
             creado_por=usuario_id,
         )
         try:
@@ -72,8 +68,6 @@ class SegmentoService:
             nombre=datos["nombre"].strip(),
             descripcion=datos.get("descripcion", "").strip() or None,
             tipo_entidad=datos.get("tipo_entidad", "Contactos"),
-            criterios_json=datos.get("criterios_json", "").strip() or None,
-            es_dinamico=1 if datos.get("es_dinamico") else 0,
         )
         try:
             logger.info(f"Actualizando segmento {segmento_id}: '{segmento.nombre}'")
@@ -88,11 +82,29 @@ class SegmentoService:
         try:
             miembros = self._repo.get_miembros(segmento)
             self._repo.update_cantidad_registros(segmento.segmento_id, len(miembros))
-            logger.debug(f"Segmento {segmento.segmento_id}: {len(miembros)} miembros encontrados")
+            logger.debug(f"Segmento {segmento.segmento_id}: {len(miembros)} miembros")
             return miembros, None
         except Exception as e:
             AppLogger.log_exception(logger, f"Error al obtener miembros del segmento {segmento.segmento_id}")
             return None, sanitize_error_message(e)
+
+    def agregar_miembro(self, segmento_id, entidad_id, tipo_entidad, usuario_id):
+        try:
+            self._repo.add_miembro(segmento_id, entidad_id, tipo_entidad, usuario_id)
+            logger.info(f"Miembro {entidad_id} agregado al segmento {segmento_id}")
+            return True, None
+        except Exception as e:
+            AppLogger.log_exception(logger, f"Error al agregar miembro al segmento {segmento_id}")
+            return False, sanitize_error_message(e)
+
+    def quitar_miembro(self, segmento_id, entidad_id, tipo_entidad):
+        try:
+            self._repo.remove_miembro(segmento_id, entidad_id, tipo_entidad)
+            logger.info(f"Miembro {entidad_id} quitado del segmento {segmento_id}")
+            return True, None
+        except Exception as e:
+            AppLogger.log_exception(logger, f"Error al quitar miembro del segmento {segmento_id}")
+            return False, sanitize_error_message(e)
 
     def eliminar_segmento(self, segmento_id):
         try:
@@ -114,12 +126,5 @@ class SegmentoService:
         tipo = datos.get("tipo_entidad", "")
         if tipo not in _TIPOS_ENTIDAD:
             return f"El tipo de entidad debe ser uno de: {', '.join(_TIPOS_ENTIDAD)}"
-
-        criterios = datos.get("criterios_json", "").strip()
-        if criterios:
-            try:
-                json.loads(criterios)
-            except json.JSONDecodeError:
-                return "Los criterios deben ser JSON valido"
 
         return None

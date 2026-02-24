@@ -42,12 +42,6 @@ QFrame#cardTotal {
     border-radius: 8px;
     border-left: 4px solid #4a90d9;
 }
-QFrame#cardDinamicos {
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    border-left: 4px solid #48bb78;
-}
 QFrame#cardContactos {
     background-color: white;
     border: 1px solid #e2e8f0;
@@ -63,16 +57,13 @@ QFrame#cardEmpresas {
 QLabel#statValueTotal {
     font-size: 28px; font-weight: bold; color: #4a90d9;
 }
-QLabel#statValueDinamicos {
-    font-size: 28px; font-weight: bold; color: #48bb78;
-}
 QLabel#statValueContactos {
     font-size: 28px; font-weight: bold; color: #ed8936;
 }
 QLabel#statValueEmpresas {
     font-size: 28px; font-weight: bold; color: #9f7aea;
 }
-QLabel#statLabelTotal, QLabel#statLabelDinamicos,
+QLabel#statLabelTotal,
 QLabel#statLabelContactos, QLabel#statLabelEmpresas {
     font-size: 12px; color: #718096; font-weight: 500;
 }
@@ -129,7 +120,7 @@ QTableWidget#tabla_segmentos::item:hover {
        </item>
        <item>
         <widget class="QLabel" name="listSubtitle">
-         <property name="text"><string>Grupos de contactos o empresas definidos por criterios</string></property>
+         <property name="text"><string>Grupos de contactos o empresas con asignacion manual de miembros</string></property>
         </widget>
        </item>
       </layout>
@@ -163,20 +154,6 @@ QTableWidget#tabla_segmentos::item:hover {
         <property name="spacing"><number>4</number></property>
         <item><widget class="QLabel" name="statValueTotal"><property name="text"><string>0</string></property></widget></item>
         <item><widget class="QLabel" name="statLabelTotal"><property name="text"><string>Total</string></property></widget></item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QFrame" name="cardDinamicos">
-       <property name="maximumSize"><size><width>16777215</width><height>80</height></size></property>
-       <layout class="QVBoxLayout" name="cardDinamicosLayout">
-        <property name="leftMargin"><number>16</number></property>
-        <property name="topMargin"><number>12</number></property>
-        <property name="rightMargin"><number>16</number></property>
-        <property name="bottomMargin"><number>12</number></property>
-        <property name="spacing"><number>4</number></property>
-        <item><widget class="QLabel" name="statValueDinamicos"><property name="text"><string>0</string></property></widget></item>
-        <item><widget class="QLabel" name="statLabelDinamicos"><property name="text"><string>Dinamicos</string></property></widget></item>
        </layout>
       </widget>
      </item>
@@ -217,12 +194,10 @@ QTableWidget#tabla_segmentos::item:hover {
      <property name="selectionMode"><enum>QAbstractItemView::SingleSelection</enum></property>
      <property name="selectionBehavior"><enum>QAbstractItemView::SelectRows</enum></property>
      <property name="showGrid"><bool>true</bool></property>
-     <property name="columnCount"><number>6</number></property>
+     <property name="columnCount"><number>4</number></property>
      <column><property name="text"><string>ID</string></property></column>
      <column><property name="text"><string>Nombre</string></property></column>
      <column><property name="text"><string>Tipo</string></property></column>
-     <column><property name="text"><string>Criterios</string></property></column>
-     <column><property name="text"><string>Dinamico</string></property></column>
      <column><property name="text"><string>Creado Por</string></property></column>
     </widget>
    </item>

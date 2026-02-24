@@ -10,9 +10,7 @@ class Segmento:
         nombre="",
         descripcion=None,
         tipo_entidad="Contactos",
-        criterios_json=None,
         cantidad_registros=None,
-        es_dinamico=1,
         creado_por=None,
         fecha_creacion=None,
         fecha_modificacion=None,
@@ -23,9 +21,7 @@ class Segmento:
         self.nombre = nombre
         self.descripcion = descripcion
         self.tipo_entidad = tipo_entidad
-        self.criterios_json = criterios_json
         self.cantidad_registros = cantidad_registros
-        self.es_dinamico = es_dinamico
         self.creado_por = creado_por
         self.fecha_creacion = fecha_creacion or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.fecha_modificacion = fecha_modificacion
