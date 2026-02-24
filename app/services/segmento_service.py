@@ -116,6 +116,28 @@ class SegmentoService:
             AppLogger.log_exception(logger, f"Error al eliminar segmento {segmento_id}")
             return False, sanitize_error_message(e)
 
+    def obtener_por_tipo(self, tipo_entidad):
+        try:
+            segmentos = self._repo.find_all_by_tipo(tipo_entidad)
+            return segmentos, None
+        except Exception as e:
+            AppLogger.log_exception(logger, f"Error al obtener segmentos de tipo {tipo_entidad}")
+            return None, sanitize_error_message(e)
+
+    def get_segmentos_de_contacto(self, contacto_id):
+        try:
+            return self._repo.get_segmentos_de_contacto(contacto_id), None
+        except Exception as e:
+            AppLogger.log_exception(logger, f"Error al obtener segmentos del contacto {contacto_id}")
+            return None, sanitize_error_message(e)
+
+    def get_segmentos_de_empresa(self, empresa_id):
+        try:
+            return self._repo.get_segmentos_de_empresa(empresa_id), None
+        except Exception as e:
+            AppLogger.log_exception(logger, f"Error al obtener segmentos de la empresa {empresa_id}")
+            return None, sanitize_error_message(e)
+
     def _validar_datos(self, datos):
         nombre = datos.get("nombre", "").strip()
         if not nombre:
