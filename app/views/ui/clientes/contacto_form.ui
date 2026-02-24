@@ -115,7 +115,7 @@ QPushButton#btn_limpiar:hover, QPushButton#btn_cancelar:hover {
 }
 
 /* === SEPARATOR === */
-QFrame#separator1, QFrame#separator2, QFrame#separator3, QFrame#separator4, QFrame#separator5, QFrame#separator6 {
+QFrame#separator1, QFrame#separator2, QFrame#separator3, QFrame#separator4, QFrame#separator5, QFrame#separator6, QFrame#separator7 {
     color: #e2e8f0;
 }
 
@@ -156,6 +156,49 @@ QPushButton#btn_quitar_etiqueta:hover {
     background-color: #fff5f5;
 }
 QListWidget#lista_etiquetas_asignadas {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f7fafc;
+    font-size: 13px;
+}
+
+/* === SEGMENTOS SECTION === */
+QLabel#seccionSegmentos {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1a1a2e;
+    padding-top: 8px;
+}
+QPushButton#btn_add_segmento {
+    background-color: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    min-height: 34px;
+    min-width: 80px;
+}
+QPushButton#btn_add_segmento:hover {
+    background-color: #3a7bc8;
+}
+QPushButton#btn_add_segmento:pressed {
+    background-color: #2a6bb8;
+}
+QPushButton#btn_quitar_segmento {
+    background-color: white;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+    border-radius: 6px;
+    font-size: 13px;
+    padding: 6px 14px;
+    min-height: 30px;
+}
+QPushButton#btn_quitar_segmento:hover {
+    background-color: #fff5f5;
+}
+QListWidget#lista_segmentos_asignados {
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     background-color: #f7fafc;
@@ -675,6 +718,69 @@ QListWidget#lista_etiquetas_asignadas {
             </item>
             <item>
              <spacer name="etiquetasQuitarSpacer">
+              <property name="orientation"><enum>Qt::Horizontal</enum></property>
+              <property name="sizeHint" stdset="0">
+               <size><width>40</width><height>20</height></size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- SEPARATOR 7 -->
+       <item>
+        <widget class="QFrame" name="separator7">
+         <property name="frameShape"><enum>QFrame::HLine</enum></property>
+         <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+        </widget>
+       </item>
+
+       <!-- SECCION: Segmentos (solo visible al editar) -->
+       <item>
+        <widget class="QWidget" name="sectionSegmentos">
+         <layout class="QVBoxLayout" name="segmentosLayout">
+          <property name="spacing"><number>8</number></property>
+          <property name="leftMargin"><number>0</number></property>
+          <property name="topMargin"><number>0</number></property>
+          <property name="rightMargin"><number>0</number></property>
+          <property name="bottomMargin"><number>0</number></property>
+          <item>
+           <widget class="QLabel" name="seccionSegmentos">
+            <property name="text"><string>Segmentos</string></property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="segmentosAddRow">
+            <property name="spacing"><number>8</number></property>
+            <item>
+             <widget class="QComboBox" name="combo_add_segmento"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_add_segmento">
+              <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+              <property name="text"><string>Agregar</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QListWidget" name="lista_segmentos_asignados">
+            <property name="maximumHeight"><number>120</number></property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="segmentosQuitarRow">
+            <item>
+             <widget class="QPushButton" name="btn_quitar_segmento">
+              <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+              <property name="text"><string>Quitar seleccionado</string></property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="segmentosQuitarSpacer">
               <property name="orientation"><enum>Qt::Horizontal</enum></property>
               <property name="sizeHint" stdset="0">
                <size><width>40</width><height>20</height></size>
