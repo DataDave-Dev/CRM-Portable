@@ -198,6 +198,49 @@ class SegmentoRepository:
             )
         conn.commit()
 
+    def find_all_by_tipo(self, tipo_entidad):
+        conn = get_connection()
+        cursor = conn.execute(
+            """
+            SELECT s.*,
+                   (u.Nombre || ' ' || u.ApellidoPaterno) AS NombreCreador
+            FROM Segmentos s
+            LEFT JOIN Usuarios u ON s.CreadoPor = u.UsuarioID
+            WHERE s.TipoEntidad = ?
+            ORDER BY s.Nombre
+            """,
+            (tipo_entidad,),
+        )
+        return [self._row_to_segmento(row) for row in cursor.fetchall()]
+
+    def get_segmentos_de_contacto(self, contacto_id):
+        conn = get_connection()
+        cursor = conn.execute(
+            """
+            SELECT s.SegmentoID, s.Nombre, s.Descripcion, s.TipoEntidad
+            FROM SegmentoContactos sc
+            INNER JOIN Segmentos s ON sc.SegmentoID = s.SegmentoID
+            WHERE sc.ContactoID = ?
+            ORDER BY s.Nombre
+            """,
+            (contacto_id,),
+        )
+        return [dict(row) for row in cursor.fetchall()]
+
+    def get_segmentos_de_empresa(self, empresa_id):
+        conn = get_connection()
+        cursor = conn.execute(
+            """
+            SELECT s.SegmentoID, s.Nombre, s.Descripcion, s.TipoEntidad
+            FROM SegmentoEmpresas se
+            INNER JOIN Segmentos s ON se.SegmentoID = s.SegmentoID
+            WHERE se.EmpresaID = ?
+            ORDER BY s.Nombre
+            """,
+            (empresa_id,),
+        )
+        return [dict(row) for row in cursor.fetchall()]
+
     @staticmethod
     def _row_to_segmento(row):
         def safe(key):
