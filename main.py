@@ -136,5 +136,4 @@ if __name__ == "__main__":
         app = CRMApp()
         app.run()
     except KeyboardInterrupt:
-        # el usuario presiono Ctrl+C desde la consola: salir limpiamente
         sys.exit(0)
