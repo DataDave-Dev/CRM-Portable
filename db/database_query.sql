@@ -521,6 +521,26 @@ CREATE TABLE IF NOT EXISTS CampanaClics (
     FOREIGN KEY (DestinatarioID) REFERENCES CampanaDestinatarios(DestinatarioID)
 );
 
+-- Configuracion de cuentas de correo saliente
+CREATE TABLE IF NOT EXISTS ConfiguracionCorreo (
+    ConfigID            INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nombre              TEXT NOT NULL,
+    Proveedor           TEXT NOT NULL DEFAULT 'SMTP',
+    Host                TEXT,
+    Puerto              INTEGER DEFAULT 587,
+    UsarTLS             INTEGER DEFAULT 1,
+    UsarSSL             INTEGER DEFAULT 0,
+    EmailRemitente      TEXT NOT NULL,
+    NombreRemitente     TEXT,
+    Usuario             TEXT,
+    Contrasena          TEXT,
+    ApiKey              TEXT,
+    Activa              INTEGER DEFAULT 0,
+    Notas               TEXT,
+    FechaCreacion       TEXT DEFAULT (datetime('now', 'localtime')),
+    FechaModificacion   TEXT DEFAULT (datetime('now', 'localtime'))
+);
+
 --- MÓDULO 6: REPORTES (Vistas para análisis) ---
 
 -- Vista: Pipeline de ventas actual

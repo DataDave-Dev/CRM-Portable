@@ -15,6 +15,7 @@ from app.views.clientes_view import ClientesView
 from app.views.ventas_view import VentasView
 from app.views.actividades_view import ActividadesView
 from app.views.segmentacion_view import SegmentacionView
+from app.views.comunicacion_view import ComunicacionView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -38,6 +39,7 @@ class MainView(QMainWindow):
         self._create_ventas()
         self._create_actividades()
         self._create_segmentacion()
+        self._create_comunicacion()
         self._create_configuracion()
 
     def closeEvent(self, event: QEvent):
@@ -73,6 +75,7 @@ class MainView(QMainWindow):
             self.btnVentas,
             self.btnActividades,
             self.btnSegmentacion,
+            self.btnComunicacion,
             self.btnUsuarios,
             self.btnConfiguracion,
         ]
@@ -81,6 +84,7 @@ class MainView(QMainWindow):
         self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
         self.btnActividades.clicked.connect(self._mostrar_seccion_actividades)
         self.btnSegmentacion.clicked.connect(self._mostrar_seccion_segmentacion)
+        self.btnComunicacion.clicked.connect(self._mostrar_seccion_comunicacion)
         self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
         self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
 
@@ -556,6 +560,23 @@ class MainView(QMainWindow):
 
         if hasattr(self, 'btnSegmentacion'):
             self._resaltar_boton_activo(self.btnSegmentacion)
+
+    def _create_comunicacion(self):
+        self.comunicacion_widget = ComunicacionView(self._usuario_actual)
+        self.comunicacion_widget.hide()
+
+    def _mostrar_seccion_comunicacion(self):
+        self._ocultar_contenido_actual()
+
+        if self.comunicacion_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.comunicacion_widget)
+
+        self.comunicacion_widget.show()
+        self.comunicacion_widget.cargar_datos()
+        self.headerPageTitle.setText("Comunicación")
+
+        if hasattr(self, 'btnComunicacion'):
+            self._resaltar_boton_activo(self.btnComunicacion)
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()
