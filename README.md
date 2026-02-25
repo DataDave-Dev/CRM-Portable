@@ -125,7 +125,7 @@ CRM-Portable/
 
 ## Base de datos
 
-El esquema SQLite contiene **41 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
+El esquema SQLite contiene **42 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
 
 | Módulo | Tablas principales | Descripción |
 |---|---|---|
