@@ -1,6 +1,7 @@
 # Vista para configuracion inicial del sistema - creacion del primer usuario administrador
 
 import os
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 from PyQt5 import uic
 from app.services.usuario_service import UsuarioService
@@ -10,6 +11,8 @@ UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "auth", "setup_view.ui")
 
 
 class SetupView(QWidget):
+
+    setup_complete = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -107,7 +110,8 @@ class SetupView(QWidget):
             self.lblError.setText(error)
             return
 
-        # usuario creado exitosamente - cerrar ventana de setup
+        # usuario creado exitosamente - notificar y cerrar ventana de setup
+        self.setup_complete.emit()
         self.close()
 
     def show_error(self, mensaje):

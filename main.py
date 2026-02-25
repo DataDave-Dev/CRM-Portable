@@ -82,8 +82,8 @@ class CRMApp:
         """
         self._setup_view = SetupView()
         self._setup_view.show()
-        # al terminar el setup y cerrarse la ventana, avanzar al login
-        self._setup_view.destroyed.connect(self._show_login)
+        # al terminar el setup exitosamente, avanzar al login
+        self._setup_view.setup_complete.connect(self._show_login)
 
     def _show_login(self):
         """
