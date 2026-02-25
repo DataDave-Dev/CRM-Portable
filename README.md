@@ -279,11 +279,6 @@ El proyecto incluye las siguientes mejoras de seguridad implementadas:
 - Validación de foreign keys antes de insertar
 - Mensajes amigables sin exponer detalles técnicos
 
-### Próximas Mejoras Planeadas
-- Rate limiting en login
-- Encriptación de base de datos con SQLCipher
-- Autenticación de dos factores (2FA)
-
 ---
 
 ## Mejoras de Rendimiento
