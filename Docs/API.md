@@ -12,6 +12,9 @@ Esta documentación describe la API pública de todos los servicios del sistema 
 6. [NotaContactoService](#notacontactoservice)
 7. [NotaEmpresaService](#notaempresaservice)
 8. [CatalogoService](#catalogoservice)
+9. [ActividadService](#actividadservice)
+10. [SegmentoService](#segmentoservice)
+11. [CampanaService](#campanaservice)
 
 ---
 
@@ -629,6 +632,216 @@ if error:
 
 ---
 
+---
+
+## ActividadService
+
+**Ubicación**: `app/services/actividad_service.py`
+
+**Propósito**: Gestión de actividades (llamadas, reuniones, tareas, etc.).
+
+### Métodos
+
+- `obtener_todas()` → `(list[Actividad], None)`
+- `obtener_por_id(actividad_id)` → `(Actividad, None)`
+- `crear_actividad(datos, usuario_actual_id)` → `(Actividad, None)`
+- `actualizar_actividad(actividad_id, datos)` → `(Actividad, None)`
+- `eliminar_actividad(actividad_id)` → `(True, None)`
+
+#### Campos de Actividad
+
+- `titulo` (str, requerido): Título de la actividad
+- `tipo_id` (int, requerido): ID del tipo de actividad
+- `estado_id` (int, opcional): ID del estado
+- `prioridad_id` (int, opcional): ID de la prioridad
+- `fecha_inicio` (str, opcional): Fecha inicio formato AAAA-MM-DD HH:MM
+- `fecha_fin` (str, opcional): Fecha fin formato AAAA-MM-DD HH:MM
+- `descripcion` (str, opcional): Descripción detallada
+- `empresa_id` (int, opcional): Empresa relacionada
+- `contacto_id` (int, opcional): Contacto relacionado
+- `asignado_a` (int, opcional): ID del usuario asignado
+
+**Ejemplo**:
+```python
+from app.services.actividad_service import ActividadService
+
+service = ActividadService()
+datos = {
+    "titulo": "Llamada de seguimiento",
+    "tipo_id": 1,
+    "prioridad_id": 2,
+    "fecha_inicio": "2026-03-01 10:00",
+    "contacto_id": 5,
+    "descripcion": "Llamar para confirmar propuesta enviada"
+}
+actividad, error = service.crear_actividad(datos, usuario_actual_id=1)
+```
+
+---
+
+## SegmentoService
+
+**Ubicación**: `app/services/segmento_service.py`
+
+**Propósito**: Gestión de segmentos de contactos y etiquetas.
+
+### Métodos de Segmentos
+
+- `obtener_segmentos()` → `(list[Segmento], None)`
+- `obtener_por_id(segmento_id)` → `(Segmento, None)`
+- `crear_segmento(datos, usuario_id)` → `(Segmento, None)`
+- `actualizar_segmento(segmento_id, datos)` → `(Segmento, None)`
+- `eliminar_segmento(segmento_id)` → `(True, None)`
+- `get_contactos_segmento(segmento_id)` → `(list[dict], None)`
+- `agregar_contacto(segmento_id, contacto_id)` → `(True, None)`
+- `quitar_contacto(segmento_id, contacto_id)` → `(True, None)`
+
+### Métodos de Etiquetas
+
+- `obtener_etiquetas()` → `(list[Etiqueta], None)`
+- `crear_etiqueta(datos)` → `(Etiqueta, None)`
+- `eliminar_etiqueta(etiqueta_id)` → `(True, None)`
+
+#### Campos de Segmento
+
+- `nombre` (str, requerido): Nombre del segmento
+- `descripcion` (str, opcional): Descripción del segmento
+- `criterios` (str, opcional): Criterios de selección en texto libre
+- `activo` (int, opcional): 1=activo, 0=inactivo (default: 1)
+
+**Ejemplo**:
+```python
+from app.services.segmento_service import SegmentoService
+
+service = SegmentoService()
+datos = {"nombre": "Clientes Premium", "descripcion": "Clientes con compras > $100k"}
+segmento, error = service.crear_segmento(datos, usuario_id=1)
+
+# Agregar contacto al segmento
+ok, error = service.agregar_contacto(segmento.segmento_id, contacto_id=42)
+```
+
+---
+
+## CampanaService
+
+**Ubicación**: `app/services/campana_service.py`
+
+**Propósito**: Gestión integral de comunicación por email: plantillas, campañas y configuración de correo.
+
+### Métodos de Plantillas
+
+- `obtener_plantillas()` → `(list[Plantilla], None)`
+- `obtener_plantillas_activas()` → `(list[Plantilla], None)`
+- `crear_plantilla(datos, usuario_id)` → `(Plantilla, None)`
+- `actualizar_plantilla(plantilla_id, datos)` → `(Plantilla, None)`
+- `eliminar_plantilla(plantilla_id)` → `(True, None)`
+
+#### Campos de Plantilla
+
+- `nombre` (str, requerido): Nombre identificador de la plantilla
+- `asunto` (str, requerido): Asunto del correo
+- `contenido_html` (str, requerido): Cuerpo HTML del correo
+- `contenido_texto` (str, opcional): Versión texto plano alternativa
+- `categoria` (str, opcional): Categoría (Ej: Marketing, Transaccional)
+- `activa` (int, opcional): 1=activa, 0=inactiva (default: 1)
+
+### Métodos de Campañas
+
+- `obtener_campanas()` → `(list[Campana], None)`
+- `crear_campana(datos, usuario_id)` → `(Campana, None)`
+- `actualizar_campana(campana_id, datos)` → `(Campana, None)`
+- `cambiar_estado(campana_id, estado)` → `(True, None)`
+- `eliminar_campana(campana_id)` → `(True, None)`
+- `get_destinatarios(campana_id)` → `(list[dict], None)`
+- `agregar_destinatario(campana_id, contacto_id, email)` → `(True, None)`
+- `cargar_desde_segmento(campana_id, segmento_id)` → `(int, None)` — retorna cantidad de destinatarios cargados
+- `eliminar_destinatario(destinatario_id)` → `(True, None)`
+
+#### Campos de Campaña
+
+- `nombre` (str, requerido): Nombre de la campaña
+- `descripcion` (str, opcional): Objetivo y alcance
+- `tipo` (str, opcional): `Email`, `SMS`, `Push`, etc.
+- `estado` (str, opcional): `Borrador`, `Programada`, `En Progreso`, `Completada`, `Cancelada`
+- `plantilla_id` (int, opcional): ID de la plantilla de correo
+- `segmento_id` (int, opcional): Segmento de contactos destinatarios
+- `fecha_programada` (str, opcional): Fecha de envío programado
+- `presupuesto` (float, opcional): Presupuesto asignado
+
+### Métodos de Configuración de Correo
+
+- `obtener_configs_correo()` → `(list[ConfiguracionCorreo], None)`
+- `crear_config_correo(datos)` → `(ConfiguracionCorreo, None)`
+- `actualizar_config_correo(config_id, datos)` → `(ConfiguracionCorreo, None)`
+- `activar_config_correo(config_id)` → `(True, None)` — desactiva las demás
+- `eliminar_config_correo(config_id)` → `(True, None)`
+
+#### Campos de ConfiguracionCorreo
+
+- `nombre` (str, requerido): Nombre identificador (Ej: "Gmail Corporativo")
+- `proveedor` (str, requerido): `SMTP`, `Gmail`, `Outlook`, `Yahoo`, `SendGrid`, `Mailgun`
+- `host` (str, opcional): Servidor SMTP (Ej: smtp.gmail.com)
+- `puerto` (int, opcional): Puerto SMTP (default: 587)
+- `usar_tls` (int, opcional): 1=TLS activo (default: 1)
+- `usar_ssl` (int, opcional): 1=SSL activo (default: 0)
+- `email_remitente` (str, requerido): Correo desde el que se envía
+- `nombre_remitente` (str, opcional): Nombre visible del remitente
+- `usuario` (str, opcional): Usuario SMTP
+- `contrasena` (str, opcional): Contraseña o App Password
+- `api_key` (str, opcional): API Key para proveedores como SendGrid/Mailgun
+- `activa` (int, opcional): 1=configuración activa para envíos
+
+**Ejemplo**:
+```python
+from app.services.campana_service import CampanaService
+
+service = CampanaService()
+
+# Crear plantilla
+plantilla, error = service.crear_plantilla({
+    "nombre": "Bienvenida",
+    "asunto": "Bienvenido a nuestro servicio",
+    "contenido_html": "<h1>Hola {{nombre}}</h1><p>Gracias por registrarte.</p>",
+    "categoria": "Transaccional"
+}, usuario_id=1)
+
+# Crear campaña
+campana, error = service.crear_campana({
+    "nombre": "Campaña Q1 2026",
+    "tipo": "Email",
+    "plantilla_id": plantilla.plantilla_id,
+    "segmento_id": 3
+}, usuario_id=1)
+
+# Cargar destinatarios desde segmento
+n, error = service.cargar_desde_segmento(campana.campana_id, segmento_id=3)
+print(f"{n} destinatarios cargados")
+
+# Configurar cuenta de correo
+config, error = service.crear_config_correo({
+    "nombre": "Gmail Empresa",
+    "proveedor": "Gmail",
+    "host": "smtp.gmail.com",
+    "puerto": 587,
+    "usar_tls": True,
+    "email_remitente": "ventas@empresa.com",
+    "usuario": "ventas@empresa.com",
+    "contrasena": "app_password_aqui",
+    "activa": True
+})
+```
+
+### Propiedades de catálogo
+
+```python
+service.tipos_campana    # Lista de tipos disponibles
+service.estados_campana  # Lista de estados disponibles
+service.proveedores_correo  # Lista de proveedores soportados
+```
+
+---
+
 ## Resumen de validaciones por servicio
 
 | Servicio | Validaciones principales |
@@ -640,6 +853,9 @@ if error:
 | **NotaContactoService** | Contenido requerido 1-5000 chars, título ≤200 chars, sanitización XSS |
 | **NotaEmpresaService** | Igual que NotaContactoService |
 | **CatalogoService** | Campos requeridos según config, unicidad en unique_column, protección contra eliminación con referencias |
+| **ActividadService** | Título requerido, tipo_id requerido |
+| **SegmentoService** | Nombre requerido |
+| **CampanaService** | Plantilla: nombre + asunto + HTML requeridos. Campaña: nombre requerido. Config: nombre + proveedor + email_remitente requeridos |
 
 ---
 

@@ -72,27 +72,42 @@ Configuración en `.vscode/settings.json`:
 ```
 Proyecto Equipo #1/
 ├── app/
-│   ├── assets/              # Recursos SVG
+│   ├── assets/              # Recursos SVG (iconos de la UI)
 │   ├── config/              # Configuración
 │   │   ├── settings.py      # Configuración general
 │   │   └── catalogos.py     # Definición de catálogos
 │   ├── database/            # Capa de base de datos
-│   │   ├── connection.py    # Singleton de conexión
+│   │   ├── connection.py    # Conexión thread-local a SQLite
 │   │   └── initializer.py   # Inicialización de esquema
-│   ├── models/              # Modelos de datos
-│   ├── repositories/        # Capa de acceso a datos
-│   ├── services/            # Lógica de negocio
-│   ├── controllers/         # Controladores MVC
+│   ├── models/              # Modelos de datos (DTOs)
+│   │   ├── Usuario.py, Rol.py, Catalogo.py
+│   │   ├── Empresa.py, Contacto.py
+│   │   ├── NotaContacto.py, NotaEmpresa.py
+│   │   ├── Oportunidad.py, Producto.py, Cotizacion.py
+│   │   ├── Actividad.py
+│   │   ├── Segmento.py, Etiqueta.py
+│   │   ├── Plantilla.py, Campana.py
+│   │   └── ConfiguracionCorreo.py
+│   ├── repositories/        # Capa de acceso a datos (CRUD + SQL)
+│   ├── services/            # Lógica de negocio y validaciones
+│   ├── controllers/         # Controladores MVC (login, main)
 │   ├── views/               # Vistas PyQt5
-│   └── utils/               # Utilidades
-│       ├── validators.py    # Validaciones
+│   │   ├── ui/              # Archivos .ui de Qt Designer
+│   │   │   ├── main/, auth/, users/
+│   │   │   ├── clientes/, ventas/, catalogos/
+│   │   │   ├── actividades/, segmentacion/
+│   │   │   ├── comunicacion/, configuracion/, geografia/
+│   └── utils/               # Utilidades transversales
+│       ├── validators.py    # Validaciones (email, RFC, teléfono)
 │       ├── sanitizer.py     # Sanitización XSS
-│       ├── logger.py        # Sistema de logging
-│       ├── catalog_cache.py # Caché de catálogos
-│       └── db_retry.py      # Retry y error handling
+│       ├── logger.py        # Sistema de logging con filtrado
+│       ├── catalog_cache.py # Caché en memoria con TTL
+│       └── db_retry.py      # Retry y sanitización de errores
 ├── tests/                   # Tests unitarios
 ├── docs/                    # Documentación
 ├── db/                      # Base de datos
+│   ├── database_query.sql   # Esquema completo (41+ tablas)
+│   └── crm.db               # BD generada (no commitear)
 └── logs/                    # Archivos de log (generados)
 ```
 

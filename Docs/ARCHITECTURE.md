@@ -162,20 +162,25 @@ El sistema está organizado en 7 capas principales:
 **Responsabilidad**: Interfaz gráfica de usuario
 
 **Componentes**:
-- `LoginView`: Pantalla de autenticación
+- `LoginView` / `SetupView`: Autenticación y configuración inicial
 - `MainView`: Ventana principal con menú y navegación
 - `ConfiguracionView`: Gestión de configuración
-- `CatalogoListWidget`: Lista genérica de catálogos
-- `CatalogoFormDialog`: Formulario genérico CRUD
+- `CatalogoListWidget` / `CatalogoFormDialog`: Catálogos genéricos
 - `GeografiaWidget`: Jerarquía de países/estados/ciudades
-- `NotasContactoWidget`: Gestión de notas de contacto
-- `NotasEmpresaWidget`: Gestión de notas de empresa
+- `ClientesView`: Gestión de empresas, contactos y notas (módulo 1)
+- `NotasContactoWidget` / `NotasEmpresaWidget`: Notas internas
+- `VentasView`: Pipeline, oportunidades, cotizaciones y productos (módulo 2)
+- `OportunidadProductosWidget` / `HistorialEtapasWidget` / `CotizacionDetalleWidget`: Widgets de ventas
+- `ActividadesView`: Gestión de actividades (módulo 3)
+- `SegmentacionView`: Segmentos, etiquetas y asignación de contactos (módulo 4)
+- `ComunicacionView`: Plantillas, campañas y configuración de correo (módulo 5)
 
 **Principios**:
 - No contiene lógica de negocio
-- Delega toda operación al controller
+- Delega toda operación al controller o directamente al servicio
 - Usa signals/slots para comunicación desacoplada
 - Validaciones básicas de UI (QValidator, maxLength)
+- UI construida con archivos `.ui` cargados por `uic.loadUi()` o de forma programática
 
 ### Capa 2: Control (Controllers)
 
@@ -203,6 +208,13 @@ El sistema está organizado en 7 capas principales:
 - `NotaContactoService`: CRUD de notas de contacto
 - `NotaEmpresaService`: CRUD de notas de empresa
 - `CatalogoService`: CRUD genérico de catálogos
+- `ProductoService`: CRUD de catálogo de productos/servicios
+- `OportunidadService`: Pipeline de ventas con historial de etapas
+- `CotizacionService`: Cotizaciones con detalle y cálculo de IVA
+- `ActividadService`: CRUD de actividades con asignación y estados
+- `SegmentoService`: Segmentos con asignación de contactos
+- `EtiquetaService`: Etiquetas para contactos y segmentos
+- `CampanaService`: Plantillas, campañas de email y configuración de correo
 
 **Principios**:
 - Valida datos de negocio (formato, requeridos, unicidad)
@@ -217,19 +229,24 @@ El sistema está organizado en 7 capas principales:
 **Responsabilidad**: Acceso a base de datos
 
 **Componentes**:
-- `UsuarioRepository`
-- `EmpresaRepository`
-- `ContactoRepository`
-- `NotaContactoRepository`
-- `NotaEmpresaRepository`
-- `CatalogoRepository` (genérico)
-- `AuditoriaRepository`
+- `UsuarioRepository`, `RolRepository`
+- `EmpresaRepository`, `ContactoRepository`
+- `NotaContactoRepository`, `NotaEmpresaRepository`
+- `CatalogoRepository` (genérico), `AuditoriaRepository`
+- `ProductoRepository`
+- `OportunidadRepository`, `OportunidadProductoRepository`
+- `HistorialEtapasRepository`
+- `CotizacionRepository`, `CotizacionDetalleRepository`
+- `ActividadRepository`
+- `SegmentoRepository`, `EtiquetaRepository`
+- `PlantillaRepository`, `CampanaRepository`
+- `ConfigCorreoRepository`
 
 **Principios**:
 - Queries parametrizadas (prevención SQL injection)
 - Retorna modelos de dominio
 - Maneja transacciones
-- Usa singleton de conexión
+- Usa conexión thread-local (`get_connection()`)
 - No contiene lógica de negocio
 
 ### Capa 5: Models (Domain Entities)
@@ -237,18 +254,21 @@ El sistema está organizado en 7 capas principales:
 **Responsabilidad**: Representación de entidades
 
 **Componentes**:
-- `Usuario`
-- `Rol`
-- `Empresa`
-- `Contacto`
-- `NotaContacto`
-- `NotaEmpresa`
+- `Usuario`, `Rol`
+- `Empresa`, `Contacto`
+- `NotaContacto`, `NotaEmpresa`
 - `Catalogo` (genérico)
+- `Producto`, `Oportunidad`, `Cotizacion`
+- `Actividad`
+- `Segmento`, `Etiqueta`
+- `Plantilla`, `Campana`
+- `ConfiguracionCorreo`
 
 **Principios**:
 - POJOs/DTOs simples
 - Sin lógica de negocio
-- Sin dependencias
+- Sin dependencias externas
+- Algunas propiedades calculadas (ej: `Campana.porcentaje_apertura`)
 
 ### Capa 6: Utilities
 
@@ -272,10 +292,11 @@ El sistema está organizado en 7 capas principales:
 
 **Características**:
 - SQLite con modo WAL (Write-Ahead Logging)
-- 40+ tablas normalizadas
+- 41+ tablas normalizadas
 - Triggers para timestamps y auditoría
-- Vistas para reportes
+- Vistas para reportes de pipeline, rendimiento y conversión
 - Foreign keys con integridad referencial
+- Conexión thread-local via `get_connection()` (no singleton de instancia)
 
 ---
 
@@ -627,42 +648,51 @@ except Exception as e:
 ### Diagrama de componentes
 
 ```
-┌────────────────────────────────────────────────────┐
-│                   APLICACIÓN CRM                    │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐ │
-│  │  Login   │  │   Main   │  │  Configuración   │ │
-│  │  View    │  │  View    │  │      View        │ │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘ │
-│       │             │                  │           │
-│  ┌────┴──────────────┴──────────────────┴─────┐   │
-│  │            Controllers Layer               │   │
-│  └────────────────────┬───────────────────────┘   │
-│                       │                           │
-│  ┌────────────────────┴───────────────────────┐   │
-│  │      Services Layer (Business Logic)      │   │
-│  │  - Auth  - Usuario  - Empresa  - Contacto │   │
-│  │  - Notas - Catálogos                      │   │
-│  └────────────────────┬───────────────────────┘   │
-│                       │                           │
-│  ┌────────────────────┴───────────────────────┐   │
-│  │    Repositories Layer (Data Access)       │   │
-│  │  - Usuario - Empresa - Contacto - Notas   │   │
-│  │  - Catálogos - Auditoría                  │   │
-│  └────────────────────┬───────────────────────┘   │
-│                       │                           │
-│  ┌────────────────────┴───────────────────────┐   │
-│  │         Utils (Cross-cutting)             │   │
-│  │  - Logger  - Sanitizer  - Validators      │   │
-│  │  - Cache   - DB Retry                     │   │
-│  └───────────────────────────────────────────┘   │
-│                       │                           │
-│                       ↓                           │
-│              ┌─────────────────┐                  │
-│              │  SQLite (WAL)   │                  │
-│              │   crm.db        │                  │
-│              └─────────────────┘                  │
-└────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                      APLICACIÓN CRM                       │
+│                                                           │
+│  ┌────────┐ ┌────────┐ ┌──────────┐ ┌─────────────────┐ │
+│  │ Login  │ │  Main  │ │ Clientes │ │     Ventas      │ │
+│  │  View  │ │  View  │ │  View    │ │      View       │ │
+│  └───┬────┘ └───┬────┘ └────┬─────┘ └────────┬────────┘ │
+│      │          │           │                 │          │
+│  ┌───┴──────────┴───────────┴─────────────────┴──────┐  │
+│  │  ┌─────────────┐ ┌───────────────┐ ┌───────────┐  │  │
+│  │  │ Actividades │ │ Segmentación  │ │Comunicación│  │  │
+│  │  │    View     │ │     View      │ │    View    │  │  │
+│  │  └──────┬──────┘ └──────┬────────┘ └─────┬─────┘  │  │
+│  └─────────┼───────────────┼────────────────┼────────┘  │
+│            │               │                │           │
+│  ┌─────────┴───────────────┴────────────────┴────────┐  │
+│  │               Controllers Layer                   │  │
+│  └────────────────────────┬───────────────────────────┘  │
+│                           │                             │
+│  ┌────────────────────────┴───────────────────────────┐  │
+│  │          Services Layer (Business Logic)           │  │
+│  │  Auth · Usuario · Empresa · Contacto · Notas       │  │
+│  │  Producto · Oportunidad · Cotizacion               │  │
+│  │  Actividad · Segmento · Etiqueta · Campana         │  │
+│  └────────────────────────┬───────────────────────────┘  │
+│                           │                             │
+│  ┌────────────────────────┴───────────────────────────┐  │
+│  │         Repositories Layer (Data Access)           │  │
+│  │  Usuario · Empresa · Contacto · Notas · Catálogo   │  │
+│  │  Producto · Oportunidad · Cotizacion · Actividad   │  │
+│  │  Segmento · Etiqueta · Plantilla · Campana         │  │
+│  │  ConfigCorreo · Auditoria                          │  │
+│  └────────────────────────┬───────────────────────────┘  │
+│                           │                             │
+│  ┌────────────────────────┴───────────────────────────┐  │
+│  │              Utils (Cross-cutting)                 │  │
+│  │    Logger · Sanitizer · Validators                 │  │
+│  │    CatalogCache · DB Retry                         │  │
+│  └────────────────────────┬───────────────────────────┘  │
+│                           ↓                             │
+│                  ┌─────────────────┐                    │
+│                  │  SQLite (WAL)   │                    │
+│                  │   crm.db        │                    │
+│                  └─────────────────┘                    │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---

@@ -51,57 +51,71 @@ CRM-Portable/
 │   │   ├── settings.py
 │   │   └── catalogos.py
 │   ├── database/                   # Capa de base de datos
-│   │   ├── connection.py           # Conexión singleton a SQLite
+│   │   ├── connection.py           # Conexión thread-local a SQLite
 │   │   └── initializer.py         # Creación de esquema y datos iniciales
 │   ├── models/                     # Modelos de datos
-│   │   ├── Usuario.py
-│   │   ├── Rol.py
-│   │   ├── Catalogo.py
-│   │   ├── Oportunidad.py
-│   │   ├── Producto.py
-│   │   └── Cotizacion.py
+│   │   ├── Usuario.py, Rol.py, Catalogo.py
+│   │   ├── Empresa.py, Contacto.py
+│   │   ├── NotaContacto.py, NotaEmpresa.py
+│   │   ├── Oportunidad.py, Producto.py, Cotizacion.py
+│   │   ├── Actividad.py
+│   │   ├── Segmento.py, Etiqueta.py
+│   │   ├── Plantilla.py, Campana.py
+│   │   └── ConfiguracionCorreo.py
 │   ├── repositories/               # Capa de acceso a datos (CRUD)
-│   │   ├── usuario_repository.py
-│   │   ├── rol_repository.py
-│   │   ├── catalogo_repository.py
-│   │   ├── oportunidad_repository.py
-│   │   ├── oportunidad_producto_repository.py
+│   │   ├── usuario_repository.py, rol_repository.py
+│   │   ├── empresa_repository.py, contacto_repository.py
+│   │   ├── nota_contacto_repository.py, nota_empresa_repository.py
+│   │   ├── catalogo_repository.py, auditoria_repository.py
+│   │   ├── oportunidad_repository.py, oportunidad_producto_repository.py
 │   │   ├── historial_etapas_repository.py
 │   │   ├── producto_repository.py
-│   │   ├── cotizacion_repository.py
-│   │   └── cotizacion_detalle_repository.py
+│   │   ├── cotizacion_repository.py, cotizacion_detalle_repository.py
+│   │   ├── actividad_repository.py
+│   │   ├── segmento_repository.py, etiqueta_repository.py
+│   │   ├── plantilla_repository.py, campana_repository.py
+│   │   └── config_correo_repository.py
 │   ├── services/                   # Capa de lógica de negocio
-│   │   ├── auth_service.py
-│   │   ├── usuario_service.py
+│   │   ├── auth_service.py, usuario_service.py
+│   │   ├── empresa_service.py, contacto_service.py
+│   │   ├── nota_contacto_service.py, nota_empresa_service.py
 │   │   ├── catalogo_service.py
-│   │   ├── oportunidad_service.py
-│   │   ├── producto_service.py
-│   │   └── cotizacion_service.py
+│   │   ├── oportunidad_service.py, producto_service.py
+│   │   ├── cotizacion_service.py
+│   │   ├── actividad_service.py
+│   │   ├── segmento_service.py, etiqueta_service.py
+│   │   └── campana_service.py
 │   ├── controllers/                # Controladores MVC
 │   │   ├── login_controller.py
 │   │   └── main_controller.py
 │   └── views/                      # Vistas e interfaz gráfica
 │       ├── ui/                     # Archivos .ui (Qt Designer)
-│       │   ├── main/, auth/, users/   # UI principal, login y usuarios
-│       │   ├── clientes/           # UI módulo de clientes (empresas, contactos, notas)
-│       │   ├── catalogos/          # UI catálogos por módulo (ventas, actividades, empresas, sistema)
+│       │   ├── main/, auth/, users/       # UI principal, login y usuarios
+│       │   ├── clientes/                  # UI módulo de clientes (empresas, contactos, notas)
+│       │   ├── catalogos/                 # UI catálogos (ventas, actividades, empresas, sistema)
+│       │   ├── actividades/               # UI módulo de actividades (3 archivos)
+│       │   ├── segmentacion/              # UI módulo de segmentación (5 archivos)
+│       │   ├── comunicacion/              # UI módulo de comunicación (1 archivo)
 │       │   ├── configuracion/, geografia/
-│       │   └── ventas/             # UI módulo de ventas (10 archivos)
-│       ├── login_view.py
-│       ├── main_view.py
-│       ├── configuracion_view.py
-│       ├── catalogo_list_widget.py
-│       ├── catalogo_form_dialog.py
+│       │   └── ventas/                    # UI módulo de ventas (10 archivos)
+│       ├── login_view.py, setup_view.py
+│       ├── main_view.py, configuracion_view.py
+│       ├── catalogo_list_widget.py, catalogo_form_dialog.py
 │       ├── geografia_widget.py
+│       ├── clientes_view.py
+│       ├── notas_contacto_widget.py, notas_empresa_widget.py
 │       ├── ventas_view.py
 │       ├── oportunidad_productos_widget.py
 │       ├── historial_etapas_widget.py
-│       └── cotizacion_detalle_widget.py
+│       ├── cotizacion_detalle_widget.py
+│       ├── actividades_view.py
+│       ├── segmentacion_view.py
+│       └── comunicacion_view.py
 ├── db/                             # Base de datos y esquema SQL
-│   ├── database_query.sql          # Esquema completo (40+ tablas)
+│   ├── database_query.sql          # Esquema completo (41+ tablas)
 │   └── crm.db                     # Archivo SQLite generado
-├── tests/                          # Pruebas (pendiente)
-├── Docs/                           # Documentación del proyecto
+├── tests/                          # Pruebas unitarias
+├── docs/                           # Documentación del proyecto
 ├── main.py                         # Punto de entrada de la aplicación
 ├── requirements.txt                # Dependencias de Python
 └── README.md
@@ -111,7 +125,7 @@ CRM-Portable/
 
 ## Base de datos
 
-El esquema SQLite contiene **40 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
+El esquema SQLite contiene **41 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
 
 | Módulo | Tablas principales | Descripción |
 |---|---|---|
@@ -119,7 +133,9 @@ El esquema SQLite contiene **40 tablas**, 7 vistas, triggers e índices. A conti
 | Contactos | `Empresas`, `Contactos` | Gestión de cuentas y personas |
 | Ventas | `Oportunidades`, `Cotizaciones`, `Productos` | Pipeline comercial |
 | Actividades | `Actividades`, `TiposActividad` | Llamadas, reuniones, tareas |
-| Campañas | `Campanas`, `Segmentos`, `Etiquetas` | Marketing y segmentación |
+| Segmentación | `Segmentos`, `SegmentoContactos`, `Etiquetas` | Agrupación de contactos |
+| Comunicación | `PlantillasCorreo`, `Campanas`, `CampanaDestinatarios` | Campañas de email masivo |
+| Config. Correo | `ConfiguracionCorreo` | Cuentas SMTP/API para envíos |
 | Geografía | `Paises`, `Estados`, `Ciudades` | Jerarquía geográfica |
 | Catálogos | `Industrias`, `Monedas`, `Prioridades`, etc. | Tablas de configuración |
 | Auditoría | `LogAuditoria`, `Notificaciones` | Trazabilidad y alertas |
@@ -176,7 +192,7 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] **Gestión de contactos**: CRUD con validación de múltiples emails y teléfonos
 - [x] **Notas de contacto y empresa**: CRUD con sanitización XSS y auditoría
 - [x] **Catálogos genéricos**: 13 tipos de catálogo con caché inteligente
-- [x] **Jerarquía geográfica**: Paises, Estados, Ciudades con dependencias
+- [x] **Jerarquía geográfica**: Países, Estados, Ciudades con dependencias
 - [x] **Sistema de logging**: Logs rotativos con filtrado de datos sensibles
 - [x] **Sistema de auditoría**: Tracking completo de CREATE/UPDATE/DELETE
 - [x] **Configuración**: Navegación por pestañas con vistas especializadas
@@ -185,8 +201,11 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] **Productos en Oportunidades**: Líneas de productos vinculadas a cada oportunidad con subtotales
 - [x] **Cotizaciones**: CRUD con número auto-generado (COT-AAAA-NNNN), estados y cálculo de IVA (16%)
 - [x] **Detalle de Cotizaciones**: Líneas de producto con cantidad, precio, descuento y subtotal
-- [ ] Gestión de actividades
-- [ ] Campañas de marketing
+- [x] **Gestión de actividades**: CRUD completo con tipos, prioridades, estados, fechas y asignación
+- [x] **Segmentación de contactos**: Segmentos dinámicos con etiquetas y asignación manual/masiva
+- [x] **Plantillas de correo**: CRUD de plantillas HTML y texto plano por categoría
+- [x] **Campañas de comunicación**: Gestión de campañas de email con destinatarios y métricas
+- [x] **Configuración de correo**: Cuentas SMTP/API (Gmail, Outlook, SendGrid, Mailgun) para envío masivo
 - [ ] Reportes y dashboards
 - [ ] Gestión de documentos
 - [ ] Recordatorios y notificaciones
