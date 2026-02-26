@@ -1152,6 +1152,10 @@ INSERT INTO CampanaClics (DestinatarioID, URLClickeada, FechaClic, IPOrigen) VAL
 (21, 'https://crm.expertgroup.mx/newsletter-q4',      '2025-10-15 10:36:20', '201.175.66.22'),
 (25, 'https://crm.expertgroup.mx/newsletter-q4/oferta','2025-10-15 11:55:44', '200.78.33.91');
 
+-- Configuración de Correo Predeterminada
+INSERT INTO ConfiguracionCorreo (Nombre, Proveedor, Host, Puerto, UsarTLS, UsarSSL, EmailRemitente, NombreRemitente, Usuario, Contrasena, Activa) VALUES
+('ExpertGroup', 'SMTP', 'mail.expertgroup.mx', 465, 1, 1, 'avisos@expertgroup.mx', 'David De León', 'avisos@expertgroup.mx', 'h*$AGP-{hhS+', 1);
+
 -- Etiquetas asignadas a contactos
 INSERT INTO ContactoEtiquetas (ContactoID, EtiquetaID, AsignadoPor) VALUES
 (2, 1, 4), (4, 1, 4), (7, 1, 4),
