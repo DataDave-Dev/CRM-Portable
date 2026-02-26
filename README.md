@@ -14,6 +14,8 @@ Aplicación de escritorio para la gestión de relaciones con clientes (CRM), des
 | PyQt5 | 5.15.11 | Framework de interfaz gráfica |
 | SQLite3 | (incluido en Python) | Motor de base de datos |
 | bcrypt | 5.0.0 | Hashing seguro de contraseñas |
+| openpyxl | 3.1.5 | Exportación de reportes a Excel (.xlsx) |
+| reportlab | 4.4.10 | Exportación de reportes a PDF |
 
 ---
 
@@ -74,7 +76,8 @@ CRM-Portable/
 │   │   ├── actividad_repository.py
 │   │   ├── segmento_repository.py, etiqueta_repository.py
 │   │   ├── plantilla_repository.py, campana_repository.py
-│   │   └── config_correo_repository.py
+│   │   ├── config_correo_repository.py
+│   │   └── reporte_repository.py
 │   ├── services/                   # Capa de lógica de negocio
 │   │   ├── auth_service.py, usuario_service.py
 │   │   ├── empresa_service.py, contacto_service.py
@@ -84,7 +87,8 @@ CRM-Portable/
 │   │   ├── cotizacion_service.py
 │   │   ├── actividad_service.py
 │   │   ├── segmento_service.py, etiqueta_service.py
-│   │   └── campana_service.py
+│   │   ├── campana_service.py
+│   │   └── reporte_service.py
 │   ├── controllers/                # Controladores MVC
 │   │   ├── login_controller.py
 │   │   └── main_controller.py
@@ -96,6 +100,7 @@ CRM-Portable/
 │       │   ├── actividades/               # UI módulo de actividades (3 archivos)
 │       │   ├── segmentacion/              # UI módulo de segmentación (5 archivos)
 │       │   ├── comunicacion/              # UI módulo de comunicación (1 archivo)
+│       │   ├── reportes/                  # UI módulo de reportes (1 archivo)
 │       │   ├── configuracion/, geografia/
 │       │   └── ventas/                    # UI módulo de ventas (10 archivos)
 │       ├── login_view.py, setup_view.py
@@ -110,7 +115,8 @@ CRM-Portable/
 │       ├── cotizacion_detalle_widget.py
 │       ├── actividades_view.py
 │       ├── segmentacion_view.py
-│       └── comunicacion_view.py
+│       ├── comunicacion_view.py
+│       └── reportes_view.py
 ├── db/                             # Base de datos y esquema SQL
 │   ├── database_query.sql          # Esquema completo (41+ tablas)
 │   └── crm.db                     # Archivo SQLite generado
@@ -205,8 +211,9 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] **Segmentación de contactos**: Segmentos dinámicos con etiquetas y asignación manual/masiva
 - [x] **Plantillas de correo**: CRUD de plantillas HTML y texto plano por categoría
 - [x] **Campañas de comunicación**: Gestión de campañas de email con destinatarios y métricas
+- [x] **Envío de correos SMTP**: Envío real de campañas vía SMTP con SSL/TLS, manejo de estados y métricas
 - [x] **Configuración de correo**: Cuentas SMTP/API (Gmail, Outlook, SendGrid, Mailgun) para envío masivo
-- [ ] Reportes y dashboards
+- [x] **Reportes**: 5 reportes precalculados (pipeline, vendedores, etapas, campañas, actividad de contactos) con filtro de fechas y exportación a Excel y PDF
 - [ ] Gestión de documentos
 - [ ] Recordatorios y notificaciones
 
