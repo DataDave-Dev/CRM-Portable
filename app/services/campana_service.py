@@ -255,9 +255,7 @@ class CampanaService:
             return False, sanitize_error_message(e)
 
     def _actualizar_total_destinatarios(self, campana_id):
-        destinatarios, _ = self.get_destinatarios(campana_id)
-        if destinatarios is not None:
-            self._campana_repo.update_metricas(campana_id, total_destinatarios=len(destinatarios))
+        self._campana_repo.sincronizar_metricas(campana_id)
 
     def _validar_campana(self, datos):
         nombre = datos.get("nombre", "").strip()
@@ -397,6 +395,113 @@ class CampanaService:
                 return "El puerto debe ser un numero valido"
 
         return None
+
+    # ==========================================
+    # ENVIO DE CORREOS
+    # ==========================================
+
+    def enviar_campana(self, campana_id):
+        """
+        Envía los correos pendientes de la campaña usando la configuración activa.
+        Returns: (enviados: int, fallidos: int, error_message: str | None)
+        """
+        import smtplib
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+
+        campana = self._campana_repo.find_by_id(campana_id)
+        if not campana:
+            return 0, 0, "Campaña no encontrada"
+
+        if not campana.plantilla_id:
+            return 0, 0, "La campaña no tiene una plantilla de correo asignada"
+
+        plantilla = self._plantilla_repo.find_by_id(campana.plantilla_id)
+        if not plantilla:
+            return 0, 0, "La plantilla asignada no existe en la base de datos"
+
+        config = self._config_repo.find_activa()
+        if not config:
+            return 0, 0, (
+                "No hay una configuración de correo activa.\n"
+                "Ve a la pestaña 'Config. Correo' y activa una configuración SMTP."
+            )
+        if not config.host:
+            return 0, 0, "La configuración activa no tiene un servidor (host) SMTP configurado"
+
+        destinatarios = self._campana_repo.get_destinatarios(campana_id)
+        pendientes = [d for d in destinatarios if d.get("EstadoEnvio") == "Pendiente"]
+
+        if not pendientes:
+            return 0, 0, "No hay destinatarios con estado 'Pendiente' en esta campaña"
+
+        enviados = 0
+        fallidos = 0
+        conn_error = None
+
+        try:
+            if config.usar_ssl:
+                smtp = smtplib.SMTP_SSL(config.host, config.puerto, timeout=15)
+            else:
+                smtp = smtplib.SMTP(config.host, config.puerto, timeout=15)
+                if config.usar_tls:
+                    smtp.starttls()
+
+            if config.usuario and config.contrasena:
+                smtp.login(config.usuario, config.contrasena)
+
+            from_addr = config.email_remitente
+            from_name = config.nombre_remitente or from_addr
+            from_header = f"{from_name} <{from_addr}>"
+
+            for dest in pendientes:
+                try:
+                    msg = MIMEMultipart("alternative")
+                    msg["Subject"] = plantilla.asunto
+                    msg["From"] = from_header
+                    msg["To"] = dest["EmailDestino"]
+
+                    if plantilla.contenido_texto:
+                        msg.attach(MIMEText(plantilla.contenido_texto, "plain", "utf-8"))
+                    if plantilla.contenido_html:
+                        msg.attach(MIMEText(plantilla.contenido_html, "html", "utf-8"))
+
+                    smtp.sendmail(from_addr, [dest["EmailDestino"]], msg.as_string())
+                    self._campana_repo.marcar_enviado(dest["DestinatarioID"])
+                    enviados += 1
+                    logger.info(
+                        f"Correo enviado a {dest['EmailDestino']} "
+                        f"(destinatario {dest['DestinatarioID']}, campaña {campana_id})"
+                    )
+                except Exception as e:
+                    self._campana_repo.marcar_fallido(dest["DestinatarioID"])
+                    fallidos += 1
+                    logger.error(
+                        f"Error enviando a {dest['EmailDestino']}: {e}"
+                    )
+
+            smtp.quit()
+
+        except Exception as e:
+            conn_error = sanitize_error_message(e)
+            logger.error(f"Error de conexión SMTP para campaña {campana_id}: {e}")
+            return enviados, fallidos, f"Error de conexión SMTP: {conn_error}"
+
+        # Sincronizar TotalDestinatarios y TotalEnviados con el conteo real en BD
+        self._campana_repo.sincronizar_metricas(campana_id)
+
+        # Determinar nuevo estado según los pendientes restantes
+        todos_dest = self._campana_repo.get_destinatarios(campana_id)
+        aun_pendientes = sum(1 for d in todos_dest if d.get("EstadoEnvio") == "Pendiente")
+        total_enviados_real = sum(1 for d in todos_dest if d.get("EstadoEnvio") == "Enviado")
+
+        if aun_pendientes == 0 and total_enviados_real > 0:
+            self._campana_repo.update_estado(campana_id, "Completada")
+        elif enviados > 0:
+            self._campana_repo.update_estado(campana_id, "En Progreso")
+
+        logger.info(f"Campaña {campana_id} enviada: {enviados} exitosos, {fallidos} fallidos")
+        return enviados, fallidos, None
 
     @property
     def tipos_campana(self):

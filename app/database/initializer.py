@@ -123,9 +123,13 @@ def has_users():
     # fetchone() devuelve la primera (y unica) fila del resultado.
     # Como row_factory = sqlite3.Row, podemos acceder por indice [0] para
     # obtener el valor numerico del COUNT.
-    cursor = conn.execute("SELECT COUNT(*) FROM Usuarios")
+    # Solo consideramos que el sistema está configurado si existe al menos
+    # un usuario con rol Administrador (RolID=1). Los usuarios de prueba
+    # (vendedores, marketing) se incluyen en los datos semilla pero no deben
+    # impedir que el SetupView se ejecute en el primer arranque real.
+    cursor = conn.execute("SELECT COUNT(*) FROM Usuarios WHERE RolID = 1")
 
     # cursor.fetchone()[0] extrae el numero entero del resultado.
-    # Comparamos con 0: si es mayor, hay al menos un usuario => True.
-    # Si es igual a 0, la tabla esta vacia => False.
+    # Comparamos con 0: si es mayor, hay al menos un administrador => True.
+    # Si es igual a 0, no hay admins registrados => False (mostrar SetupView).
     return cursor.fetchone()[0] > 0

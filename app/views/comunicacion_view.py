@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QTableWidget, QTableWidgetItem, QHeaderView, QFrame,
     QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QCheckBox,
-    QSpinBox, QMessageBox, QSizePolicy, QScrollArea
+    QSpinBox, QMessageBox, QSizePolicy, QScrollArea, QApplication
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -577,7 +577,12 @@ class ComunicacionView(QWidget):
         self._det_btn_volver.setStyleSheet(_STYLE_BTN_SECONDARY)
         self._det_btn_volver.setCursor(Qt.PointingHandCursor)
         self._det_btn_volver.clicked.connect(self._mostrar_lista_campanas)
+        self._det_btn_enviar = QPushButton("Enviar Correos")
+        self._det_btn_enviar.setStyleSheet(_STYLE_BTN_PRIMARY)
+        self._det_btn_enviar.setCursor(Qt.PointingHandCursor)
+        self._det_btn_enviar.clicked.connect(self._enviar_correos_campana)
         det_hdr.addWidget(self._det_btn_volver)
+        det_hdr.addWidget(self._det_btn_enviar)
         det_hdr.addWidget(self._det_btn_editar)
         det_hdr.addWidget(self._det_btn_eliminar)
         dlay.addLayout(det_hdr)
@@ -1188,6 +1193,72 @@ class ComunicacionView(QWidget):
             if campana_act:
                 self._campana_detalle = campana_act
                 self._lbl_met_dest.setText(str(campana_act.total_destinatarios))
+
+    def _enviar_correos_campana(self):
+        if not self._campana_detalle:
+            return
+        campana = self._campana_detalle
+
+        if not campana.plantilla_id:
+            QMessageBox.warning(
+                self, "Sin plantilla",
+                "Esta campaña no tiene una plantilla de correo asignada.\n"
+                "Edita la campaña y asigna una plantilla antes de enviar."
+            )
+            return
+
+        destinatarios, _ = self._service.get_destinatarios(campana.campana_id)
+        pendientes = [d for d in (destinatarios or []) if d.get("EstadoEnvio") == "Pendiente"]
+
+        if not pendientes:
+            QMessageBox.information(
+                self, "Sin pendientes",
+                "No hay destinatarios con estado 'Pendiente' en esta campaña.\n"
+                "Todos los correos ya fueron enviados o no hay destinatarios."
+            )
+            return
+
+        resp = QMessageBox.question(
+            self, "Enviar Correos",
+            f"Se enviarán correos a {len(pendientes)} destinatario(s) pendiente(s).\n\n"
+            f"Campaña: {campana.nombre}\n"
+            f"Plantilla: {campana.nombre_plantilla or '—'}\n\n"
+            "El sistema usará la configuración de correo activa.\n"
+            "¿Deseas continuar?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if resp != QMessageBox.Yes:
+            return
+
+        self._det_btn_enviar.setEnabled(False)
+        self._det_btn_enviar.setText("Enviando...")
+        QApplication.processEvents()
+
+        enviados, fallidos, error = self._service.enviar_campana(campana.campana_id)
+
+        self._det_btn_enviar.setEnabled(True)
+        self._det_btn_enviar.setText("Enviar Correos")
+
+        if error and enviados == 0:
+            QMessageBox.critical(self, "Error al enviar", error)
+        else:
+            msg = f"Envío completado:\n  Enviados: {enviados}\n  Fallidos: {fallidos}"
+            if fallidos > 0:
+                msg += "\n\nLos destinatarios fallidos quedaron marcados como 'Fallido'."
+            QMessageBox.information(self, "Envío Finalizado", msg)
+
+        # Refrescar detalle y tabla
+        campana_act, _ = self._service.obtener_campana(campana.campana_id)
+        if campana_act:
+            self._campana_detalle = campana_act
+            self._lbl_met_env.setText(str(campana_act.total_enviados))
+            color = _ESTADO_COLORES.get(campana_act.estado, "#718096")
+            self._det_estado_lbl.setText(campana_act.estado or "")
+            self._det_estado_lbl.setStyleSheet(
+                f"font-size: 13px; color: {color}; font-weight: 600;"
+            )
+        self._cargar_tabla_destinatarios(campana.campana_id)
 
     def _editar_campana_desde_detalle(self):
         if not self._campana_detalle:

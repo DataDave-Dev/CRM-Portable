@@ -120,6 +120,25 @@ class CampanaRepository:
             )
         conn.commit()
 
+    def sincronizar_metricas(self, campana_id):
+        """Recalcula TotalDestinatarios y TotalEnviados contando directamente en CampanaDestinatarios."""
+        conn = get_connection()
+        conn.execute(
+            """
+            UPDATE Campanas SET
+                TotalDestinatarios = (
+                    SELECT COUNT(*) FROM CampanaDestinatarios WHERE CampanaID = ?
+                ),
+                TotalEnviados = (
+                    SELECT COUNT(*) FROM CampanaDestinatarios
+                    WHERE CampanaID = ? AND EstadoEnvio = 'Enviado'
+                )
+            WHERE CampanaID = ?
+            """,
+            (campana_id, campana_id, campana_id),
+        )
+        conn.commit()
+
     def delete(self, campana_id):
         conn = get_connection()
         conn.execute("DELETE FROM CampanaDestinatarios WHERE CampanaID = ?", (campana_id,))
@@ -194,6 +213,19 @@ class CampanaRepository:
             """
             UPDATE CampanaDestinatarios SET
                 EstadoEnvio = 'Enviado',
+                FechaEnvio = datetime('now', 'localtime')
+            WHERE DestinatarioID = ?
+            """,
+            (destinatario_id,),
+        )
+        conn.commit()
+
+    def marcar_fallido(self, destinatario_id):
+        conn = get_connection()
+        conn.execute(
+            """
+            UPDATE CampanaDestinatarios SET
+                EstadoEnvio = 'Fallido',
                 FechaEnvio = datetime('now', 'localtime')
             WHERE DestinatarioID = ?
             """,
