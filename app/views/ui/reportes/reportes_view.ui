@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ReportesView</class>
+ <widget class="QWidget" name="ReportesView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#ReportesView {
+    background-color: transparent;
+}
+
+/* === Encabezado de módulo === */
+QLabel#lblTitulo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#lblSubtitulo {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+
+/* === Barra de filtro === */
+QLabel#lblPeriodo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+}
+QLabel#lblAl {
+    font-size: 13px;
+    color: #718096;
+}
+QLabel#lblFiltroInfo {
+    font-size: 11px;
+    color: #a0aec0;
+}
+QDateEdit {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    background-color: white;
+    color: #2d3748;
+    min-width: 110px;
+}
+QDateEdit:focus {
+    border-color: #4a90d9;
+}
+QDateEdit::drop-down {
+    width: 20px;
+    border: none;
+}
+
+/* === Tabs — estilo estándar (igual que todos los módulos) === */
+QTabWidget::pane {
+    border: none;
+    background-color: transparent;
+}
+QTabBar::tab {
+    background-color: #f7fafc;
+    color: #718096;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-right: 4px;
+    min-width: 120px;
+    min-height: 20px;
+}
+QTabBar::tab:selected {
+    color: #4a90d9;
+    border-bottom: 3px solid #4a90d9;
+    background-color: transparent;
+}
+QTabBar::tab:hover:!selected {
+    color: #2d3748;
+    background-color: #edf2f7;
+}
+
+/* === Tablas dinámicas — misma paleta que las list widgets === */
+QTableWidget {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <property name="spacing">
+      <number>16</number>
+     </property>
+     <item>
+      <layout class="QVBoxLayout" name="headerTitleLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="lblTitulo">
+         <property name="text">
+          <string>Reportes</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblSubtitulo">
+         <property name="text">
+          <string>Consulta y exporta reportes de todas las áreas del CRM</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="separator">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #e2e8f0;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="filterLayout">
+     <property name="spacing">
+      <number>8</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="lblPeriodo">
+       <property name="text">
+        <string>Período:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateEdit" name="dtDesde">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblAl">
+       <property name="text">
+        <string>al</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateEdit" name="dtHasta">
+       <property name="displayFormat">
+        <string>dd/MM/yyyy</string>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblFiltroInfo">
+       <property name="text">
+        <string>* Aplica a: Pipeline (creación), Campañas (envío) y Actividad (último contacto)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="filterSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="reportesTabs">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabPipeline">
+      <attribute name="title">
+       <string>  Pipeline de Ventas  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabPipelineLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>16</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>16</number>
+       </property>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabVendedores">
+      <attribute name="title">
+       <string>  Vendedores  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabVendedoresLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>16</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>16</number>
+       </property>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabEtapas">
+      <attribute name="title">
+       <string>  Etapas  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabEtapasLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>16</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>16</number>
+       </property>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabCampanas">
+      <attribute name="title">
+       <string>  Campañas  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabCampanasLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>16</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>16</number>
+       </property>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabActividad">
+      <attribute name="title">
+       <string>  Actividad  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="tabActividadLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>16</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>16</number>
+       </property>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
