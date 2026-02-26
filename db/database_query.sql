@@ -1101,6 +1101,57 @@ INSERT INTO Campanas (Nombre, Descripcion, Tipo, Estado, PlantillaID, SegmentoID
 ('Newsletter Q4 2025',                    'Resumen de novedades del cuarto trimestre 2025',          'Email', 'Enviada',  3, NULL,'2025-10-15',120, 120, 115, 62, 25, 5, 3, 5),
 ('Lanzamiento Módulo Reportes Marzo 2026','Presentación del nuevo módulo de reportes avanzados',     'Email', 'Borrador', 2, 2, NULL,          0,   0,   0,  0,  0, 0, 0, 5);
 
+-- Destinatarios de campañas (CampanaID 1 = Bienvenida Prospectos Enero 2026)
+INSERT INTO CampanaDestinatarios (CampanaID, ContactoID, EmailDestino, EstadoEnvio, FechaEnvio, FechaApertura, CantidadAperturas, FechaPrimerClic, CantidadClics, SeDesuscribio) VALUES
+(1, 2,  'rgarcia@piaga.com.mx',      'Abierto',    '2026-01-15 08:02:11', '2026-01-15 09:14:33', 1, '2026-01-15 09:15:02', 1, 0),
+(1, 3,  'dflores@piaga.com.mx',      'Entregado',  '2026-01-15 08:02:14', NULL,                  0, NULL,                  0, 0),
+(1, 4,  'etorres@gim.com.mx',        'Abierto',    '2026-01-15 08:02:18', '2026-01-15 11:30:45', 2, '2026-01-15 11:31:10', 1, 0),
+(1, 5,  'smartinez@gim.com.mx',      'Rebotado',   '2026-01-15 08:02:21', NULL,                  0, NULL,                  0, 0),
+(1, 7,  'pmorales@vanguardia.mx',    'Abierto',    '2026-01-15 08:02:29', '2026-01-16 07:55:12', 1, NULL,                  0, 0),
+(1, 8,  'hjimenez@vanguardia.mx',    'Entregado',  '2026-01-15 08:02:32', NULL,                  0, NULL,                  0, 0),
+(1, 9,  'lreyes@distnorte.mx',       'Abierto',    '2026-01-15 08:02:35', '2026-01-15 13:05:50', 1, '2026-01-15 13:06:22', 1, 0),
+(1, 12, 'framos@agroexport.mx',      'Desuscrito', '2026-01-15 08:02:38', '2026-01-16 10:20:03', 1, NULL,                  0, 1),
+-- Destinatarios de campañas (CampanaID 2 = Promo Manufactura Febrero 2026)
+(2, 2,  'rgarcia@piaga.com.mx',      'Abierto',    '2026-02-01 09:00:05', '2026-02-01 10:22:18', 1, '2026-02-01 10:22:55', 1, 0),
+(2, 4,  'etorres@gim.com.mx',        'Rebotado',   '2026-02-01 09:00:08', NULL,                  0, NULL,                  0, 0),
+(2, 6,  'dlopez@techsolutions.mx',   'Abierto',    '2026-02-01 09:00:12', '2026-02-01 14:10:33', 2, '2026-02-01 14:11:05', 1, 0),
+(2, 7,  'pmorales@vanguardia.mx',    'Entregado',  '2026-02-01 09:00:15', NULL,                  0, NULL,                  0, 0),
+(2, 10, 'achavez@minerasp.mx',       'Abierto',    '2026-02-01 09:00:19', '2026-02-02 08:44:57', 1, NULL,                  0, 0),
+(2, 11, 'gnunez@transreyes.mx',      'Entregado',  '2026-02-01 09:00:22', NULL,                  0, NULL,                  0, 0),
+(2, 12, 'framos@agroexport.mx',      'Abierto',    '2026-02-01 09:00:25', '2026-02-01 17:03:41', 1, '2026-02-01 17:04:10', 1, 0),
+-- Destinatarios de campañas (CampanaID 3 = Newsletter Q4 2025)
+(3, 1,  'soporte@expertgroup.mx',    'Abierto',    '2025-10-15 07:30:01', '2025-10-15 08:45:22', 1, '2025-10-15 08:46:00', 1, 0),
+(3, 2,  'rgarcia@piaga.com.mx',      'Abierto',    '2025-10-15 07:30:04', '2025-10-15 09:12:05', 3, '2025-10-15 09:12:40', 2, 0),
+(3, 3,  'dflores@piaga.com.mx',      'Entregado',  '2025-10-15 07:30:07', NULL,                  0, NULL,                  0, 0),
+(3, 4,  'etorres@gim.com.mx',        'Abierto',    '2025-10-15 07:30:10', '2025-10-15 12:00:14', 2, '2025-10-15 12:00:55', 1, 0),
+(3, 5,  'smartinez@gim.com.mx',      'Rebotado',   '2025-10-15 07:30:13', NULL,                  0, NULL,                  0, 0),
+(3, 6,  'dlopez@techsolutions.mx',   'Abierto',    '2025-10-15 07:30:16', '2025-10-15 10:35:48', 1, '2025-10-15 10:36:20', 1, 0),
+(3, 7,  'pmorales@vanguardia.mx',    'Abierto',    '2025-10-15 07:30:19', '2025-10-16 08:05:33', 2, NULL,                  0, 0),
+(3, 8,  'hjimenez@vanguardia.mx',    'Entregado',  '2025-10-15 07:30:22', NULL,                  0, NULL,                  0, 0),
+(3, 9,  'lreyes@distnorte.mx',       'Desuscrito', '2025-10-15 07:30:25', '2025-10-15 15:20:11', 1, NULL,                  0, 1),
+(3, 10, 'achavez@minerasp.mx',       'Abierto',    '2025-10-15 07:30:28', '2025-10-15 11:55:09', 1, '2025-10-15 11:55:44', 1, 0),
+(3, 11, 'gnunez@transreyes.mx',      'Entregado',  '2025-10-15 07:30:31', NULL,                  0, NULL,                  0, 0),
+(3, 12, 'framos@agroexport.mx',      'Abierto',    '2025-10-15 07:30:34', '2025-10-16 09:14:27', 1, NULL,                  0, 0),
+(3, 13, 'vcruz@agroexport.mx',       'Rebotado',   '2025-10-15 07:30:37', NULL,                  0, NULL,                  0, 0);
+
+-- Clics en campañas
+INSERT INTO CampanaClics (DestinatarioID, URLClickeada, FechaClic, IPOrigen) VALUES
+-- Campaña 1 clics
+(1,  'https://crm.expertgroup.mx/bienvenida',    '2026-01-15 09:15:02', '187.189.42.10'),
+(3,  'https://crm.expertgroup.mx/bienvenida',    '2026-01-15 11:31:10', '200.52.113.5'),
+(7,  'https://crm.expertgroup.mx/bienvenida',    '2026-01-15 13:06:22', '189.217.8.44'),
+-- Campaña 2 clics
+(9,  'https://crm.expertgroup.mx/promo-manufactura',  '2026-02-01 10:22:55', '187.189.42.10'),
+(11, 'https://crm.expertgroup.mx/promo-manufactura',  '2026-02-01 14:11:05', '201.175.66.22'),
+(15, 'https://crm.expertgroup.mx/promo-manufactura',  '2026-02-01 17:04:10', '190.210.44.100'),
+-- Campaña 3 clics
+(16, 'https://crm.expertgroup.mx/newsletter-q4',      '2025-10-15 08:46:00', '10.0.1.55'),
+(17, 'https://crm.expertgroup.mx/newsletter-q4',      '2025-10-15 09:12:40', '187.189.42.10'),
+(17, 'https://crm.expertgroup.mx/newsletter-q4/oferta','2025-10-15 09:13:05', '187.189.42.10'),
+(19, 'https://crm.expertgroup.mx/newsletter-q4',      '2025-10-15 12:00:55', '200.52.113.5'),
+(21, 'https://crm.expertgroup.mx/newsletter-q4',      '2025-10-15 10:36:20', '201.175.66.22'),
+(25, 'https://crm.expertgroup.mx/newsletter-q4/oferta','2025-10-15 11:55:44', '200.78.33.91');
+
 -- Etiquetas asignadas a contactos
 INSERT INTO ContactoEtiquetas (ContactoID, EtiquetaID, AsignadoPor) VALUES
 (2, 1, 4), (4, 1, 4), (7, 1, 4),
