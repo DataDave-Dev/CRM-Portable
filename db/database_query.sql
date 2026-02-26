@@ -881,6 +881,13 @@ INSERT INTO Roles (NombreRol, Descripcion) VALUES
 ('Vendedor', 'Gestión de contactos, oportunidades y actividades'),
 ('Marketing', 'Gestión de campañas y comunicaciones');
 
+-- Usuarios de prueba (contraseña de todos: Test1234)
+INSERT INTO Usuarios (UsuarioID, Nombre, ApellidoPaterno, ApellidoMaterno, Email, Telefono, ContrasenaHash, RolID, Activo) VALUES
+(2, 'María',  'González',  'Soto',   'mgonzalez@crm.com',  '8181110001', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 3, 1),
+(3, 'Carlos', 'Ramírez',   'Torres', 'cramirez@crm.com',   '8182220002', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 3, 1),
+(4, 'Lucía',  'Hernández', 'Garza',  'lhernandez@crm.com', '8183330003', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 2, 1),
+(5, 'Pedro',  'Sánchez',   'Medina', 'psanchez@crm.com',   '8184440004', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 4, 1);
+
 -- Etapas de venta
 INSERT INTO EtapasVenta (Nombre, Orden, Probabilidad, Color, Descripcion) VALUES
 ('Prospecto', 1, 10.00, '#3498DB', 'Contacto inicial identificado'),
@@ -976,12 +983,129 @@ INSERT INTO Ciudades (Nombre, EstadoID) VALUES
 ('León', 10), ('Querétaro', 11), ('Veracruz', 12), ('Tijuana', 13);
 
 -- Empresas / Clientes
-INSERT INTO Empresas (RazonSocial, NombreComercial, RFC, IndustriaID, TamanoID, SitioWeb, Telefono, Email, Direccion, CiudadID, CodigoPostal, MonedaID, OrigenID, Activo) VALUES
-('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA', 'PIA980324BT2', 2, 3, 'https://piaga.com.mx/', '8181570333', 'ventas@piaga.com.mx', 'GENERAL NICOLAS BRAVO ORIENTE 502', 1, '67100', 1, 9, 1);
+INSERT INTO Empresas (RazonSocial, NombreComercial, RFC, IndustriaID, TamanoID, SitioWeb, Telefono, Email, Direccion, CiudadID, CodigoPostal, MonedaID, OrigenID, PropietarioID, Activo) VALUES
+('PINTURAS INDUSTRIALES Y AUTOMOTRICES GARCIA', 'PIAGA',        'PIA980324BT2', 2,  3, 'https://piaga.com.mx/',          '8181570333', 'ventas@piaga.com.mx',           'GENERAL NICOLAS BRAVO ORIENTE 502', 1,  '67100', 1, 9, 2, 1),
+('GRUPO INDUSTRIAL MONTERREY SA DE CV',         'GIM',          'GIM910512KL4', 3,  4, 'https://gim.com.mx',             '8183450000', 'contacto@gim.com.mx',           'AV. FUNDIDORA 501',                 1,  '64010', 1, 2, 4, 1),
+('TECHSOLUTIONS NORTE SA DE CV',                'TechSolutions', 'TSN010830AB3', 10, 3, 'https://techsolutions.mx',       '8180010200', 'hola@techsolutions.mx',         'AV. LAZARO CARDENAS 2400 L-12',     2,  '66267', 1, 1, 2, 1),
+('CONSTRUCTORA VANGUARDIA SA DE CV',            'Vanguardia',   'CVG860214PQ9', 4,  4, 'https://vanguardiaconstruye.mx', '3311234567', 'ventas@vanguardiaconstruye.mx', 'AV. AMERICAS 1800 PISO 4',          8,  '44630', 1, 5, 4, 1),
+('DISTRIBUIDORA DEL NORTE SA DE CV',            'DistNorte',    'DNO990710WR1', 14, 3, 'https://distnorte.mx',           '8442340010', 'compras@distnorte.mx',          'BLVD. V. CARRANZA 2709',            11, '25070', 1, 8, 3, 1),
+('MINERA SAN PEDRO SA DE CV',                   'MinSanPedro',  'MSP750324XT5', 5,  5, 'https://minerasanpedro.mx',      '6141234567', 'operaciones@minerasanpedro.mx', 'KM 14.5 CARRETERA CHIHUAHUA-DEL',   13, '31010', 1, 9, 2, 1),
+('TRANSPORTES REYES SA DE CV',                  'TransReyes',   'TRE880620VN8', 7,  2, NULL,                             '5550001234', 'logistica@transreyes.mx',       'CALZ. DE LA VIGA 1820',             7,  '09440', 1, 4, 3, 1),
+('AGRO EXPORTACIONES SA DE CV',                 'AgroExport',   'AEX030418JM2', 8,  3, 'https://agroexport.mx',          '6621009988', 'export@agroexport.mx',          'BLVD. SOLIDARIDAD 3000',            14, '83180', 1, 5, 4, 1);
 
 -- Contactos
-INSERT INTO Contactos (Nombre, ApellidoPaterno, ApellidoMaterno, Email, TelefonoCelular, Puesto, Departamento, EmpresaID, EsContactoPrincipal, Activo) VALUES
-('Alonso David', 'De León', 'Rodarte', 'soporte@expertgroup.mx', '8120222986', 'Auxiliar de Sistemas', 'Sistemas', 1, 1, 1);
+INSERT INTO Contactos (Nombre, ApellidoPaterno, ApellidoMaterno, Email, TelefonoCelular, Puesto, Departamento, EmpresaID, EsContactoPrincipal, PropietarioID, Activo) VALUES
+('Alonso David', 'De León',   'Rodarte',   'soporte@expertgroup.mx',     '8120222986', 'Auxiliar de Sistemas',     'Sistemas',      1, 1, 2, 1),
+('Roberto',      'García',    'Ávila',     'rgarcia@piaga.com.mx',       '8181000002', 'Director General',         'Dirección',     1, 0, 2, 1),
+('Daniela',      'Flores',    'Ríos',      'dflores@piaga.com.mx',       '8189900003', 'Jefa de Compras',          'Compras',       1, 0, 2, 1),
+('Enrique',      'Torres',    'Mendoza',   'etorres@gim.com.mx',         '8183450001', 'Gerente de Operaciones',   'Operaciones',   2, 1, 4, 1),
+('Sofía',        'Martínez',  'Salinas',   'smartinez@gim.com.mx',       '8183450002', 'Directora de Finanzas',    'Finanzas',      2, 0, 4, 1),
+('Diego',        'López',     'Vega',      'dlopez@techsolutions.mx',    '8180010204', 'CTO',                      'Tecnología',    3, 1, 2, 1),
+('Patricia',     'Morales',   'Castillo',  'pmorales@vanguardia.mx',     '3311234568', 'Directora de Proyectos',   'Proyectos',     4, 1, 4, 1),
+('Héctor',       'Jiménez',   'Ruiz',      'hjimenez@vanguardia.mx',     '3311234569', 'Jefe de Compras',          'Compras',       4, 0, 4, 1),
+('Laura',        'Reyes',     'Domínguez', 'lreyes@distnorte.mx',        '8442340012', 'Gerente Comercial',        'Ventas',        5, 1, 3, 1),
+('Arturo',       'Chávez',    'Peña',      'achavez@minerasp.mx',        '6141234568', 'Director de Operaciones',  'Operaciones',   6, 1, 2, 1),
+('Gabriela',     'Núñez',     'Vargas',    'gnunez@transreyes.mx',       '5550001235', 'Coordinadora Logística',   'Logística',     7, 1, 3, 1),
+('Fernando',     'Ramos',     'Ortega',    'framos@agroexport.mx',       '6621009989', 'Gerente de Exportaciones', 'Exportaciones', 8, 1, 4, 1),
+('Valentina',    'Cruz',      'León',      'vcruz@agroexport.mx',        '6621009990', 'Asistente Ejecutiva',      'Dirección',     8, 0, 4, 1);
+
+-- Etiquetas
+INSERT INTO Etiquetas (EtiquetaID, Nombre, Color, Categoria) VALUES
+(1, 'Cliente Premium',    '#D3AF37', 'Clientes'),
+(2, 'Prospecto Caliente', '#E74C3C', 'Ventas'),
+(3, 'Industria Grande',   '#3498DB', 'Segmentación');
+
+-- Oportunidades
+INSERT INTO Oportunidades (Nombre, EmpresaID, ContactoID, EtapaID, MontoEstimado, MonedaID, ProbabilidadCierre, FechaCierreEstimada, PropietarioID, FechaCreacion) VALUES
+('Contrato mantenimiento pintura 2026',   1,  3, 4,   85000, 1, 60, '2026-03-31', 2, '2026-01-10'),
+('Implementación ERP módulos industria',  2,  4, 3,  350000, 1, 40, '2026-04-30', 3, '2026-01-20'),
+('Consultoría infraestructura TI',        3,  6, 2,  120000, 1, 20, '2026-05-15', 2, '2026-02-01'),
+('Equipos construcción pesada Q1 2026',   4,  7, 5,  450000, 1, 80, '2026-03-15', 4, '2026-01-15'),
+('Software gestión de inventario',        5,  9, 4,   95000, 1, 60, '2026-04-01', 3, '2026-02-10'),
+('Equipos de seguridad industrial',       6, 10, 1,  200000, 1, 10, '2026-06-30', 2, '2026-02-05');
+
+INSERT INTO Oportunidades (Nombre, EmpresaID, ContactoID, EtapaID, MontoEstimado, MonedaID, ProbabilidadCierre, FechaCierreEstimada, PropietarioID, FechaCreacion) VALUES
+('Sistema GPS flotilla transporte',      7, 11, 3,   45000, 1, 40, '2026-04-30', 3, '2025-11-20'),
+('Plataforma gestión agrícola integral', 8, 12, 2,  180000, 1, 20, '2026-06-01', 4, '2025-12-01');
+
+INSERT INTO Oportunidades (Nombre, EmpresaID, ContactoID, EtapaID, MontoEstimado, MonedaID, ProbabilidadCierre, FechaCierreEstimada, FechaCierreReal, PropietarioID, EsGanada, FechaCreacion) VALUES
+('Pintura base industrial 2025',         1,  2, 6,  320000, 1, 100, '2025-06-30', '2025-06-01', 2, 1, '2025-03-15'),
+('Automatización línea de producción',   2,  5, 6,  850000, 1, 100, '2025-10-31', '2025-09-30', 4, 1, '2025-05-10'),
+('Migración y virtualización servidores',3,  6, 6,  240000, 1, 100, '2025-11-30', '2025-10-15', 3, 1, '2025-08-20'),
+('Grúas y equipo pesado 2025',           4,  8, 6, 1200000, 1, 100, '2025-08-31', '2025-07-30', 4, 1, '2025-02-01');
+
+INSERT INTO Oportunidades (Nombre, EmpresaID, ContactoID, EtapaID, MontoEstimado, MonedaID, ProbabilidadCierre, FechaCierreEstimada, FechaCierreReal, PropietarioID, EsGanada, MotivosPerdidaID, FechaCreacion) VALUES
+('Licencias software gestión retail',    5,  9, 7,   75000, 1, 0, '2025-08-31', '2025-08-01', 3, 0, 1, '2025-06-15'),
+('Equipamiento explosivo minero Q2',     6, 10, 7,  550000, 1, 0, '2025-07-31', '2025-06-30', 2, 0, 2, '2025-04-20'),
+('Flotilla GPS completa 30 unidades',    7, 11, 7,  180000, 1, 0, '2025-12-31', '2025-11-20', 3, 0, 1, '2025-09-10');
+
+-- Actividades
+INSERT INTO Actividades (TipoActividadID, Asunto, ContactoID, EmpresaID, OportunidadID, PropietarioID, PrioridadID, EstadoActividadID, FechaInicio, FechaFin, FechaCreacion) VALUES
+(1, 'Llamada inicial prospección PIAGA',           1,  1,  1, 2, 2, 3, '2026-01-08', '2026-01-08', '2026-01-08'),
+(2, 'Reunión presentación solución PIAGA',         3,  1,  1, 2, 3, 3, '2026-01-12', '2026-01-12', '2026-01-12'),
+(3, 'Envío propuesta comercial PIAGA',             3,  1,  1, 2, 2, 3, '2026-01-15', '2026-01-15', '2026-01-15'),
+(1, 'Follow-up oportunidad ERP GIM',              4,  2,  2, 3, 3, 3, '2026-01-22', '2026-01-22', '2026-01-22'),
+(2, 'Demo sistema ERP módulos',                   4,  2,  2, 3, 3, 3, '2026-01-28', '2026-01-28', '2026-01-28'),
+(3, 'Envío especificaciones técnicas GIM',        5,  2,  2, 3, 2, 3, '2026-02-02', '2026-02-02', '2026-02-02'),
+(1, 'Llamada calificación TechSolutions',         6,  3,  3, 2, 2, 3, '2026-02-03', '2026-02-03', '2026-02-03'),
+(4, 'Preparar análisis de requerimientos TI',     6,  3,  3, 2, 2, 1, '2026-02-20', NULL,         '2026-02-03'),
+(5, 'Visita instalaciones Vanguardia',            7,  4,  4, 4, 3, 3, '2026-01-20', '2026-01-20', '2026-01-20'),
+(2, 'Negociación contrato equipos pesados',       7,  4,  4, 4, 4, 3, '2026-01-25', '2026-01-25', '2026-01-25'),
+(3, 'Envío contrato borrador Vanguardia',         7,  4,  4, 4, 3, 3, '2026-02-05', '2026-02-05', '2026-02-05'),
+(1, 'Seguimiento propuesta DistNorte',            9,  5,  5, 3, 2, 3, '2026-02-12', '2026-02-12', '2026-02-12'),
+(3, 'Propuesta formal software inventario',       9,  5,  5, 3, 2, 3, '2026-02-15', '2026-02-15', '2026-02-15'),
+(1, 'Llamada prospección MinSanPedro',           10,  6,  6, 2, 1, 3, '2026-02-06', '2026-02-06', '2026-02-06'),
+(3, 'Envío catálogo equipos de seguridad',       10,  6,  6, 2, 1, 3, '2026-02-18', '2026-02-18', '2026-02-18'),
+(5, 'Visita instalaciones TransReyes',           11,  7,  7, 3, 2, 3, '2025-11-25', '2025-11-25', '2025-11-25'),
+(1, 'Seguimiento sistema GPS flotilla',          11,  7,  7, 3, 2, 3, '2025-12-05', '2025-12-05', '2025-12-05'),
+(3, 'Envío cotización plataforma agrícola',      12,  8,  8, 4, 2, 3, '2025-12-05', '2025-12-05', '2025-12-05'),
+(2, 'Reunión presentación AgroExport',           12,  8,  8, 4, 3, 3, '2025-12-15', '2025-12-15', '2025-12-15'),
+(1, 'Llamada cierre PIAGA pintura 2025',          2,  1,  9, 2, 4, 3, '2025-05-28', '2025-05-28', '2025-05-28'),
+(2, 'Reunión firma contrato GIM automatización',  4,  2, 10, 4, 4, 3, '2025-09-28', '2025-09-28', '2025-09-28'),
+(6, 'WhatsApp confirmación cierre TechSolutions', 6,  3, 11, 3, 3, 3, '2025-10-12', '2025-10-12', '2025-10-12'),
+(2, 'Reunión firma grúas Vanguardia',             7,  4, 12, 4, 4, 3, '2025-07-25', '2025-07-25', '2025-07-25'),
+(4, 'Análisis pérdida DistNorte licencias',       9,  5, 13, 3, 2, 3, '2025-08-03', '2025-08-03', '2025-08-03'),
+(4, 'Análisis pérdida TransReyes GPS',           11,  7, 15, 3, 2, 3, '2025-11-22', '2025-11-22', '2025-11-22');
+
+-- Plantillas de correo electrónico
+INSERT INTO PlantillasCorreo (Nombre, Asunto, ContenidoHTML, ContenidoTexto, Categoria, Activa, CreadoPor) VALUES
+('Bienvenida Cliente Nuevo',
+ 'Bienvenido a nuestros servicios — CRM',
+ '<h1>¡Bienvenido!</h1><p>Gracias por confiar en nosotros. Estamos a tus órdenes.</p>',
+ 'Gracias por confiar en nosotros. Estamos a tus órdenes.',
+ 'Onboarding', 1, 2),
+('Seguimiento de Propuesta',
+ '¿Tuviste oportunidad de revisar nuestra propuesta?',
+ '<h2>Seguimiento</h2><p>Nos gustaría saber si pudiste revisar la propuesta que te enviamos.</p>',
+ 'Nos gustaría saber si pudiste revisar nuestra propuesta.',
+ 'Ventas', 1, 2),
+('Newsletter Mensual Novedades',
+ 'Novedades del mes — CRM',
+ '<h1>Novedades del mes</h1><p>Conoce las últimas noticias, lanzamientos y promociones.</p>',
+ 'Conoce las últimas noticias de nuestra empresa.',
+ 'Marketing', 1, 5);
+
+-- Segmentos y sus miembros
+INSERT INTO Segmentos (Nombre, Descripcion, TipoEntidad, CantidadRegistros, CreadoPor) VALUES
+('Industria Manufactura y Construcción', 'Empresas del sector industrial con oportunidades activas', 'contacto', 5, 4),
+('Tomadores de Decisión TI',            'Directores y gerentes del sector tecnología',               'contacto', 2, 4);
+
+INSERT INTO SegmentoContactos (SegmentoID, ContactoID, AsignadoPor) VALUES
+(1, 2, 4), (1, 4, 4), (1, 7, 4), (1, 8, 4), (1, 12, 4),
+(2, 6, 4), (2, 10, 4);
+
+-- Campañas de comunicación
+INSERT INTO Campanas (Nombre, Descripcion, Tipo, Estado, PlantillaID, SegmentoID, FechaEnvio, TotalDestinatarios, TotalEnviados, TotalEntregados, TotalAbiertos, TotalClics, TotalRebotados, TotalDesuscripciones, PropietarioID) VALUES
+('Bienvenida Prospectos Enero 2026',      'Correo de bienvenida a prospectos captados en enero',     'Email', 'Enviada',  1, 1, '2026-01-15', 45,  45,  43, 28, 12, 2, 1, 5),
+('Promo Manufactura Febrero 2026',        'Descuentos especiales en soluciones para manufactura',    'Email', 'Enviada',  2, 1, '2026-02-01', 38,  38,  36, 20,  8, 2, 0, 5),
+('Newsletter Q4 2025',                    'Resumen de novedades del cuarto trimestre 2025',          'Email', 'Enviada',  3, NULL,'2025-10-15',120, 120, 115, 62, 25, 5, 3, 5),
+('Lanzamiento Módulo Reportes Marzo 2026','Presentación del nuevo módulo de reportes avanzados',     'Email', 'Borrador', 2, 2, NULL,          0,   0,   0,  0,  0, 0, 0, 5);
+
+-- Etiquetas asignadas a contactos
+INSERT INTO ContactoEtiquetas (ContactoID, EtiquetaID, AsignadoPor) VALUES
+(2, 1, 4), (4, 1, 4), (7, 1, 4),
+(6, 2, 2), (10, 2, 2),
+(4, 3, 4), (7, 3, 4), (10, 3, 4);
 
 --- ÍNDICES ---
 
