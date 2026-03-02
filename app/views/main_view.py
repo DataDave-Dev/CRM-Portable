@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem, QHeaderView, QApplication
 )
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtCore import QSize, QEvent
+from PyQt5.QtCore import QSize, QEvent, QTimer
 from PyQt5 import uic
 from app.services.usuario_service import UsuarioService
 from app.repositories.rol_repository import RolRepository
@@ -17,6 +17,10 @@ from app.views.actividades_view import ActividadesView
 from app.views.segmentacion_view import SegmentacionView
 from app.views.comunicacion_view import ComunicacionView
 from app.views.reportes_view import ReportesView
+from app.views.notificaciones_view import NotificacionesView
+from app.views.notificacion_popup import NotificacionPopup
+from app.services.notificacion_service import NotificacionService
+from app.views.dashboard_view import DashboardView
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -31,9 +35,12 @@ class MainView(QMainWindow):
         self._usuario_service = UsuarioService()
         self._rol_repository = RolRepository()
         self._usuario_editando = None  # None = modo crear, Usuario = modo editar
+        self._notif_service = NotificacionService()
+        self._popup_abierto = False
         self._setup_icons()
         self._set_user_data(usuario)
         self._setup_navigation()
+        self._create_dashboard()
         self._create_lista_usuarios()
         self._create_form_usuarios()
         self._create_clientes()
@@ -42,7 +49,10 @@ class MainView(QMainWindow):
         self._create_segmentacion()
         self._create_comunicacion()
         self._create_reportes()
+        self._create_notificaciones()
         self._create_configuracion()
+        self._setup_notif_timer()
+        self._mostrar_seccion_dashboard()
 
     def closeEvent(self, event: QEvent):
         # terminar el proceso completamente al cerrar la ventana principal
@@ -73,22 +83,26 @@ class MainView(QMainWindow):
 
     def _setup_navigation(self):
         self.sidebar_buttons = [
+            self.btnDashboard,
             self.btnClientes,
             self.btnVentas,
             self.btnActividades,
             self.btnSegmentacion,
             self.btnComunicacion,
             self.btnReportes,
+            self.btnNotificaciones,
             self.btnUsuarios,
             self.btnConfiguracion,
         ]
 
+        self.btnDashboard.clicked.connect(self._mostrar_seccion_dashboard)
         self.btnClientes.clicked.connect(self._mostrar_seccion_clientes)
         self.btnVentas.clicked.connect(self._mostrar_seccion_ventas)
         self.btnActividades.clicked.connect(self._mostrar_seccion_actividades)
         self.btnSegmentacion.clicked.connect(self._mostrar_seccion_segmentacion)
         self.btnComunicacion.clicked.connect(self._mostrar_seccion_comunicacion)
         self.btnReportes.clicked.connect(self._mostrar_seccion_reportes)
+        self.btnNotificaciones.clicked.connect(self._mostrar_seccion_notificaciones)
         self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
         self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
 
@@ -125,6 +139,23 @@ class MainView(QMainWindow):
         # aplicar estilo activo al botón seleccionado
         if boton_activo:
             boton_activo.setStyleSheet(estilo_activo)
+
+    def _create_dashboard(self):
+        self.dashboard_widget = DashboardView(self._usuario_actual)
+        self.dashboard_widget.hide()
+
+    def _mostrar_seccion_dashboard(self):
+        self._ocultar_contenido_actual()
+
+        if self.dashboard_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.dashboard_widget)
+
+        self.dashboard_widget.show()
+        self.dashboard_widget.cargar_datos()
+        self.headerPageTitle.setText("Dashboard")
+
+        if hasattr(self, 'btnDashboard'):
+            self._resaltar_boton_activo(self.btnDashboard)
 
     def _create_lista_usuarios(self):
         # cargar la lista de usuarios desde el archivo .ui (editable con Qt Designer)
@@ -598,6 +629,83 @@ class MainView(QMainWindow):
 
         if hasattr(self, 'btnReportes'):
             self._resaltar_boton_activo(self.btnReportes)
+
+    def _create_notificaciones(self):
+        self.notificaciones_widget = NotificacionesView(self._usuario_actual)
+        self.notificaciones_widget.hide()
+
+    def _mostrar_seccion_notificaciones(self):
+        self._ocultar_contenido_actual()
+
+        if self.notificaciones_widget.parent() != self.contentArea:
+            self.contentLayout.addWidget(self.notificaciones_widget)
+
+        self.notificaciones_widget.show()
+        self.notificaciones_widget.cargar_datos()
+        self.headerPageTitle.setText("Notificaciones")
+
+        if hasattr(self, 'btnNotificaciones'):
+            self._resaltar_boton_activo(self.btnNotificaciones)
+
+    # ==========================================
+    # TIMER DE NOTIFICACIONES AUTOMATICAS
+    # ==========================================
+
+    def _setup_notif_timer(self):
+        # Revisar notificaciones al iniciar (con pequeño delay para que la UI cargue)
+        QTimer.singleShot(3000, self._revisar_notificaciones)
+
+        # Revisión periódica cada 2 minutos
+        self._notif_timer = QTimer(self)
+        self._notif_timer.setInterval(120_000)
+        self._notif_timer.timeout.connect(self._revisar_notificaciones)
+        self._notif_timer.start()
+
+    def _revisar_notificaciones(self):
+        """
+        Revisa notificaciones no leidas y recordatorios vencidos.
+        - Notificaciones sin leer -> muestra popup.
+        - Recordatorios vencidos  -> envia email y los marca como leidos.
+        """
+        if self._popup_abierto:
+            return
+
+        usuario = self._usuario_actual
+
+        # Procesar recordatorios vencidos (envia correo + marca como leido)
+        try:
+            nombre = f"{usuario.nombre} {usuario.apellido_paterno}"
+            procesados, err_email = self._notif_service.procesar_recordatorios_vencidos(
+                usuario.usuario_id, usuario.email, nombre
+            )
+            if procesados:
+                # Recargar la vista si está abierta
+                if (hasattr(self, 'notificaciones_widget') and
+                        self.notificaciones_widget.isVisible()):
+                    self.notificaciones_widget.cargar_datos()
+        except Exception:
+            pass
+
+        # Obtener notificaciones no leidas y recordatorios pendientes
+        no_leidas, _ = self._notif_service.obtener_no_leidas(usuario.usuario_id)
+        pendientes, _ = self._notif_service.obtener_recordatorios_popup(usuario.usuario_id)
+
+        if not no_leidas and not pendientes:
+            return
+
+        self._popup_abierto = True
+        popup = NotificacionPopup(no_leidas, pendientes, self._notif_service, usuario.usuario_id, self)
+        popup.cerrado.connect(self._on_popup_cerrado)
+        popup.finished.connect(self._on_popup_cerrado)
+        popup.show()
+
+        # Actualizar label del sidebar si la sección está visible
+        if (hasattr(self, 'notificaciones_widget') and
+                self.notificaciones_widget.isVisible()):
+            self.notificaciones_widget.cargar_datos()
+
+    def _on_popup_cerrado(self):
+        self._popup_abierto = False
 
     def _create_configuracion(self):
         self.configuracion_widget = ConfiguracionView()

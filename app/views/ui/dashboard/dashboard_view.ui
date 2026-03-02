@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DashboardView</class>
+ <widget class="QWidget" name="DashboardView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>980</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* === DASHBOARD GENERAL === */
+#DashboardView {
+    background-color: #f0f2f5;
+}
+
+/* === HEADER ROW === */
+#lblSeccionKPIs, #lblSeccionTablas {
+    color: #1a1a2e;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* === KPI CARDS === */
+#cardContactos, #cardEmpresas, #cardOportunidades,
+#cardPipeline, #cardConversion, #cardActividades {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    min-height: 110px;
+    max-height: 130px;
+}
+#cardContactos:hover, #cardEmpresas:hover, #cardOportunidades:hover,
+#cardPipeline:hover, #cardConversion:hover, #cardActividades:hover {
+    border: 1px solid #4a90d9;
+}
+
+#lblContactosTitle, #lblEmpresasTitle, #lblOportunidadesTitle,
+#lblPipelineTitle, #lblConversionTitle, #lblActividadesTitle {
+    color: #7f8c9b;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+#lblContactosValue, #lblEmpresasValue, #lblOportunidadesValue,
+#lblPipelineValue, #lblConversionValue, #lblActividadesValue {
+    color: #1a1a2e;
+    font-size: 30px;
+    font-weight: bold;
+}
+#lblContactosDesc, #lblEmpresasDesc, #lblOportunidadesDesc,
+#lblPipelineDesc, #lblConversionDesc, #lblActividadesDesc {
+    color: #a0aec0;
+    font-size: 11px;
+}
+#lblContactosIcon, #lblEmpresasIcon, #lblOportunidadesIcon,
+#lblPipelineIcon, #lblConversionIcon, #lblActividadesIcon {
+    color: #4a90d9;
+    font-size: 20px;
+}
+
+/* === TABLAS === */
+#panelActividades, #panelRecordatorios {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+#lblActividadesRecientes, #lblRecordatoriosProximos {
+    color: #1a1a2e;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 0px;
+}
+#tablaActividadesRecientes, #tablaRecordatoriosProximos {
+    background-color: #ffffff;
+    border: none;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+    color: #2d3748;
+    selection-background-color: #ebf4ff;
+    selection-color: #1a1a2e;
+    alternate-background-color: #f8fafc;
+}
+#tablaActividadesRecientes QHeaderView::section,
+#tablaRecordatoriosProximos QHeaderView::section {
+    background-color: #f8fafc;
+    color: #7f8c9b;
+    font-size: 11px;
+    font-weight: 600;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 8px;
+    text-transform: uppercase;
+}
+
+/* === REFRESH BUTTON === */
+#btnRefresh {
+    background-color: #4a90d9;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    min-width: 120px;
+}
+#btnRefresh:hover {
+    background-color: #357abd;
+}
+#btnRefresh:pressed {
+    background-color: #2868a9;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>16</number>
+   </property>
+   <property name="leftMargin">
+    <number>24</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>24</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+
+   <!-- FILA SUPERIOR: titulo + boton actualizar -->
+   <item>
+    <layout class="QHBoxLayout" name="topBarLayout">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="lblSeccionKPIs">
+       <property name="text">
+        <string>Resumen Ejecutivo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="topBarSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRefresh">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string>Actualizar</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+   <!-- FILA DE KPI CARDS -->
+   <item>
+    <layout class="QHBoxLayout" name="rowKPIs">
+     <property name="spacing">
+      <number>14</number>
+     </property>
+
+     <!-- Card 1: Contactos -->
+     <item>
+      <widget class="QFrame" name="cardContactos">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardContactos">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="leftMargin">
+         <number>16</number>
+        </property>
+        <property name="topMargin">
+         <number>14</number>
+        </property>
+        <property name="rightMargin">
+         <number>16</number>
+        </property>
+        <property name="bottomMargin">
+         <number>14</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblContactosTitle">
+            <property name="text">
+             <string>Contactos Activos</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblContactosIcon">
+            <property name="text"><string>◎</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblContactosValue">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblContactosDesc">
+          <property name="text"><string>personas registradas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card 2: Empresas -->
+     <item>
+      <widget class="QFrame" name="cardEmpresas">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardEmpresas">
+        <property name="spacing"><number>4</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblEmpresasTitle">
+            <property name="text"><string>Empresas Activas</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblEmpresasIcon">
+            <property name="text"><string>▣</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblEmpresasValue">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblEmpresasDesc">
+          <property name="text"><string>cuentas en seguimiento</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card 3: Oportunidades -->
+     <item>
+      <widget class="QFrame" name="cardOportunidades">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardOportunidades">
+        <property name="spacing"><number>4</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblOportunidadesTitle">
+            <property name="text"><string>Oportunidades Abiertas</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblOportunidadesIcon">
+            <property name="text"><string>◈</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblOportunidadesValue">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblOportunidadesDesc">
+          <property name="text"><string>en pipeline activo</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card 4: Valor Pipeline -->
+     <item>
+      <widget class="QFrame" name="cardPipeline">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardPipeline">
+        <property name="spacing"><number>4</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblPipelineTitle">
+            <property name="text"><string>Valor del Pipeline</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblPipelineIcon">
+            <property name="text"><string>$</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblPipelineValue">
+          <property name="text"><string>$0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblPipelineDesc">
+          <property name="text"><string>monto total estimado</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card 5: Tasa de Conversión -->
+     <item>
+      <widget class="QFrame" name="cardConversion">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardConversion">
+        <property name="spacing"><number>4</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblConversionTitle">
+            <property name="text"><string>Tasa de Conversion</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblConversionIcon">
+            <property name="text"><string>%</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblConversionValue">
+          <property name="text"><string>0%</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblConversionDesc">
+          <property name="text"><string>oportunidades ganadas</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Card 6: Actividades Pendientes -->
+     <item>
+      <widget class="QFrame" name="cardActividades">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutCardActividades">
+        <property name="spacing"><number>4</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="QLabel" name="lblActividadesTitle">
+            <property name="text"><string>Actividades Pendientes</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+            <property name="sizeHint" stdset="0"><size><width>10</width><height>10</height></size></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblActividadesIcon">
+            <property name="text"><string>!</string></property>
+            <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblActividadesValue">
+          <property name="text"><string>0</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblActividadesDesc">
+          <property name="text"><string>por completar</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- ETIQUETA TABLAS -->
+   <item>
+    <widget class="QLabel" name="lblSeccionTablas">
+     <property name="text">
+      <string>Actividad Reciente</string>
+     </property>
+    </widget>
+   </item>
+
+   <!-- FILA DE TABLAS: Actividades + Recordatorios -->
+   <item>
+    <layout class="QHBoxLayout" name="rowTablas">
+     <property name="spacing">
+      <number>14</number>
+     </property>
+
+     <!-- Panel Actividades Recientes -->
+     <item>
+      <widget class="QFrame" name="panelActividades">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutPanelActividades">
+        <property name="spacing"><number>8</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <widget class="QLabel" name="lblActividadesRecientes">
+          <property name="text"><string>Actividades Recientes</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tablaActividadesRecientes">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text"><string>Tipo</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Asunto</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Contacto</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Estado</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Fecha</string></property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Panel Recordatorios Proximos -->
+     <item>
+      <widget class="QFrame" name="panelRecordatorios">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutPanelRecordatorios">
+        <property name="spacing"><number>8</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <widget class="QLabel" name="lblRecordatoriosProximos">
+          <property name="text"><string>Recordatorios Proximos</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tablaRecordatoriosProximos">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text"><string>Titulo</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Fecha</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Vinculado a</string></property>
+          </column>
+          <column>
+           <property name="text"><string>Recurrencia</string></property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+</ui>
