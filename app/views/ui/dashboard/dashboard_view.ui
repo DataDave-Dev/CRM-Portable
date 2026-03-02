@@ -62,6 +62,24 @@
     font-size: 20px;
 }
 
+/* === PANELES DE GRAFICAS === */
+#panelChartPipeline, #panelChartOportunidades {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+#lblChartPipelineTitle, #lblChartOportunidadesTitle {
+    color: #1a1a2e;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 0px;
+}
+#lblSeccionGraficas {
+    color: #1a1a2e;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 /* === TABLAS === */
 #panelActividades, #panelRecordatorios {
     background-color: #ffffff;
@@ -466,6 +484,93 @@
         <item>
          <widget class="QLabel" name="lblActividadesDesc">
           <property name="text"><string>por completar</string></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+    </layout>
+   </item>
+
+   <!-- ETIQUETA GRAFICAS -->
+   <item>
+    <widget class="QLabel" name="lblSeccionGraficas">
+     <property name="text">
+      <string>Analisis Visual</string>
+     </property>
+    </widget>
+   </item>
+
+   <!-- FILA DE GRAFICAS: Pipeline por etapa + Oportunidades estado -->
+   <item>
+    <layout class="QHBoxLayout" name="rowGraficas">
+     <property name="spacing">
+      <number>14</number>
+     </property>
+
+     <!-- Panel grafica Pipeline -->
+     <item>
+      <widget class="QFrame" name="panelChartPipeline">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>260</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="layoutPanelChartPipeline">
+        <property name="spacing"><number>6</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <widget class="QLabel" name="lblChartPipelineTitle">
+          <property name="text"><string>Pipeline por Etapa</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="chartPipelineContainer" native="true">
+          <property name="minimumSize">
+           <size><width>0</width><height>200</height></size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+
+     <!-- Panel grafica Oportunidades -->
+     <item>
+      <widget class="QFrame" name="panelChartOportunidades">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>260</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="layoutPanelChartOportunidades">
+        <property name="spacing"><number>6</number></property>
+        <property name="leftMargin"><number>16</number></property>
+        <property name="topMargin"><number>14</number></property>
+        <property name="rightMargin"><number>16</number></property>
+        <property name="bottomMargin"><number>14</number></property>
+        <item>
+         <widget class="QLabel" name="lblChartOportunidadesTitle">
+          <property name="text"><string>Estado de Oportunidades</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="chartOportunidadesContainer" native="true">
+          <property name="minimumSize">
+           <size><width>0</width><height>200</height></size>
+          </property>
          </widget>
         </item>
        </layout>

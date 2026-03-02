@@ -45,6 +45,45 @@ class DashboardRepository:
         )
         return cursor.fetchall()
 
+    def get_pipeline_por_etapa(self):
+        """
+        Retorna el valor total estimado de oportunidades abiertas por etapa,
+        ordenadas segun el flujo del pipeline (Orden ascendente).
+        Excluye etapas sin oportunidades abiertas para no mostrar barras vacias.
+        """
+        conn = get_connection()
+        cursor = conn.execute(
+            """
+            SELECT
+                ev.Nombre                             AS Etapa,
+                COUNT(o.OportunidadID)                AS TotalOportunidades,
+                IFNULL(SUM(o.MontoEstimado), 0)       AS MontoTotal
+            FROM EtapasVenta ev
+            INNER JOIN Oportunidades o
+                ON ev.EtapaID = o.EtapaID AND o.EsGanada IS NULL
+            GROUP BY ev.EtapaID, ev.Nombre, ev.Orden
+            ORDER BY ev.Orden
+            """
+        )
+        return cursor.fetchall()
+
+    def get_oportunidades_estado(self):
+        """
+        Retorna el conteo de oportunidades agrupado por estado:
+        Abiertas, Ganadas y Perdidas.
+        """
+        conn = get_connection()
+        cursor = conn.execute(
+            """
+            SELECT
+                SUM(CASE WHEN EsGanada IS NULL THEN 1 ELSE 0 END) AS Abiertas,
+                SUM(CASE WHEN EsGanada = 1     THEN 1 ELSE 0 END) AS Ganadas,
+                SUM(CASE WHEN EsGanada = 0     THEN 1 ELSE 0 END) AS Perdidas
+            FROM Oportunidades
+            """
+        )
+        return cursor.fetchone()
+
     def get_recordatorios_proximos(self, usuario_id, limit=8):
         """Retorna los recordatorios pendientes mas proximos del usuario."""
         conn = get_connection()
