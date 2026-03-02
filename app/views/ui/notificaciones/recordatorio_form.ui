@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RecordatorioFormWidget</class>
+ <widget class="QWidget" name="RecordatorioFormWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#RecordatorioFormWidget {
+    background-color: #f0f2f5;
+}
+QFrame#formCard {
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+QLabel#formTitle {
+    color: #1a1a2e;
+    font-size: 20px;
+    font-weight: bold;
+}
+QLabel#formSubtitle {
+    color: #7f8c9b;
+    font-size: 13px;
+}
+QLabel {
+    color: #4a5568;
+    font-size: 13px;
+    font-weight: 500;
+}
+QLineEdit,
+QTextEdit,
+QDateTimeEdit,
+QComboBox {
+    background-color: #f7fafc;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #1a1a2e;
+    min-height: 36px;
+    min-width: 80px;
+}
+QLineEdit:focus,
+QTextEdit:focus,
+QDateTimeEdit:focus,
+QComboBox:focus {
+    border: 1px solid #4a90d9;
+    background-color: #ffffff;
+}
+QComboBox::drop-down {
+    border: none;
+}
+QPushButton#btnGuardar {
+    background-color: #4a90d9;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 150px;
+}
+QPushButton#btnGuardar:hover {
+    background-color: #357abd;
+}
+QPushButton#btnCancelar {
+    background-color: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 100px;
+}
+QPushButton#btnCancelar:hover {
+    background-color: #cbd5e0;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="outerLayout">
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="formCard">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="formCardLayout">
+      <property name="leftMargin">
+       <number>24</number>
+      </property>
+      <property name="topMargin">
+       <number>20</number>
+      </property>
+      <property name="rightMargin">
+       <number>24</number>
+      </property>
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
+      <property name="spacing">
+       <number>14</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="formTitle">
+        <property name="text">
+         <string>Nuevo Recordatorio</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="formSubtitle">
+        <property name="text">
+         <string>Completa los campos para crear un recordatorio. Los campos marcados con * son obligatorios.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="formSeparator">
+        <property name="frameShape">
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: #e2e8f0;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="tituloLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="labelTitulo">
+          <property name="text">
+           <string>Titulo *</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="inputTitulo">
+          <property name="placeholderText">
+           <string>Titulo del recordatorio</string>
+          </property>
+          <property name="maxLength">
+           <number>255</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="descripcionLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="labelDescripcion">
+          <property name="text">
+           <string>Descripcion</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="inputDescripcion">
+          <property name="placeholderText">
+           <string>Detalle del recordatorio (opcional)</string>
+          </property>
+          <property name="maximumHeight">
+           <number>90</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="fechaRecurrenciaLayout">
+        <property name="spacing">
+         <number>16</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="fechaLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelFecha">
+            <property name="text">
+             <string>Fecha y Hora *</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDateTimeEdit" name="inputFecha">
+            <property name="displayFormat">
+             <string>dd/MM/yyyy HH:mm</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+            <property name="minimumWidth">
+             <number>170</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="recurrenciaLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelRecurrencia">
+            <property name="text">
+             <string>Recurrencia</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboRecurrencia"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="vinculoLayout">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="contactoLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelContacto">
+            <property name="text">
+             <string>Contacto (opcional)</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboContacto"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="empresaLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelEmpresa">
+            <property name="text">
+             <string>Empresa (opcional)</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboEmpresa"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="oportunidadLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="labelOportunidad">
+            <property name="text">
+             <string>Oportunidad (opcional)</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboOportunidad"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="formSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="btnLayout">
+        <item>
+         <spacer name="btnSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnCancelar">
+          <property name="text">
+           <string>Cancelar</string>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnGuardar">
+          <property name="text">
+           <string>Guardar Recordatorio</string>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
