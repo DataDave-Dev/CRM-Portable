@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NotificacionesWidget</class>
+ <widget class="QWidget" name="NotificacionesWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget#NotificacionesWidget {
+    background-color: transparent;
+}
+QLabel#pageTitle {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+QLabel#pageSubtitle {
+    font-size: 13px;
+    color: #7f8c9b;
+}
+QLabel#labelContadorNoLeidas {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a90d9;
+}
+QTabWidget::pane {
+    border: none;
+    background-color: transparent;
+}
+QTabBar::tab {
+    background-color: #f7fafc;
+    color: #718096;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-right: 4px;
+    min-width: 120px;
+    min-height: 20px;
+}
+QTabBar::tab:selected {
+    color: #4a90d9;
+    border-bottom: 3px solid #4a90d9;
+    background-color: transparent;
+}
+QTabBar::tab:hover:!selected {
+    color: #2d3748;
+    background-color: #edf2f7;
+}
+QPushButton#btnMarcarLeida,
+QPushButton#btnMarcarTodasLeidas,
+QPushButton#btnNuevoRecordatorio {
+    background-color: #4a90d9;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 130px;
+}
+QPushButton#btnMarcarLeida:hover,
+QPushButton#btnMarcarTodasLeidas:hover,
+QPushButton#btnNuevoRecordatorio:hover {
+    background-color: #357abd;
+}
+QPushButton#btnEditarRecordatorio,
+QPushButton#btnCompletarRecordatorio {
+    background-color: #48bb78;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 80px;
+}
+QPushButton#btnEditarRecordatorio:hover,
+QPushButton#btnCompletarRecordatorio:hover {
+    background-color: #38a169;
+}
+QPushButton#btnEliminarRecordatorio {
+    background-color: #fc8181;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 80px;
+}
+QPushButton#btnEliminarRecordatorio:hover {
+    background-color: #e53e3e;
+}
+QTableWidget {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    gridline-color: #f0f2f5;
+    font-size: 13px;
+}
+QHeaderView::section {
+    background-color: #f7fafc;
+    color: #2d3748;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 10px 8px;
+    border: none;
+    border-bottom: 2px solid #e2e8f0;
+    border-right: 1px solid #f0f2f5;
+}
+QTableWidget::item {
+    padding: 10px 8px;
+    color: #2d3748;
+    border-bottom: 1px solid #f0f2f5;
+}
+QTableWidget::item:selected {
+    background-color: #ebf8ff;
+    color: #2c5282;
+}
+QTableWidget::item:hover {
+    background-color: #f7fafc;
+}
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <property name="spacing">
+      <number>16</number>
+     </property>
+     <item>
+      <layout class="QVBoxLayout" name="headerTitleLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="pageTitle">
+         <property name="text">
+          <string>Notificaciones y Recordatorios</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="pageSubtitle">
+         <property name="text">
+          <string>Gestiona tus recordatorios y revisa las notificaciones del sistema</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelContadorNoLeidas">
+       <property name="text">
+        <string>0 sin leer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="separatorLine">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #e2e8f0;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabNotificaciones">
+      <attribute name="title">
+       <string>  Notificaciones  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="layoutTabNotif">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="toolbarNotif">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="btnMarcarLeida">
+           <property name="text">
+            <string>Marcar seleccionada como leida</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnMarcarTodasLeidas">
+           <property name="text">
+            <string>Marcar todas como leidas</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="spacerToolbarNotif">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tablaNotificaciones">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="showGrid">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Tipo</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Titulo</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Mensaje</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Fecha</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Estado</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabRecordatorios">
+      <attribute name="title">
+       <string>  Recordatorios  </string>
+      </attribute>
+      <layout class="QVBoxLayout" name="layoutTabRecord">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="toolbarRecord">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="btnNuevoRecordatorio">
+           <property name="text">
+            <string>Nuevo Recordatorio</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnEditarRecordatorio">
+           <property name="text">
+            <string>Editar</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnCompletarRecordatorio">
+           <property name="text">
+            <string>Marcar Completado</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnEliminarRecordatorio">
+           <property name="text">
+            <string>Eliminar</string>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="spacerToolbarRecord">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tablaRecordatorios">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="showGrid">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Titulo</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Fecha</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Recurrencia</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Vinculado a</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Estado</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
