@@ -15,6 +15,8 @@ Esta documentación describe la API pública de todos los servicios del sistema 
 9. [ActividadService](#actividadservice)
 10. [SegmentoService](#segmentoservice)
 11. [CampanaService](#campanaservice)
+12. [ReporteService](#reporteservice)
+13. [NotificacionService](#notificacionservice)
 
 ---
 
@@ -842,6 +844,146 @@ service.proveedores_correo  # Lista de proveedores soportados
 
 ---
 
+---
+
+## ReporteService
+
+**Ubicación**: `app/services/reporte_service.py`
+
+**Propósito**: Consulta de reportes precalculados y exportación a Excel/PDF.
+
+### Constante `REPORTES`
+
+```python
+REPORTES = {
+    "pipeline":      {"titulo": "Pipeline de Ventas",          "vista": "vw_PipelineVentas"},
+    "vendedores":    {"titulo": "Rendimiento de Vendedores",    "vista": "vw_RendimientoVendedores"},
+    "etapas":        {"titulo": "Conversión por Etapas",        "vista": "vw_ConversionEtapas"},
+    "campanas":      {"titulo": "Métricas de Campañas",         "vista": "vw_MetricasCampanas"},
+    "contactos":     {"titulo": "Actividad de Contactos",       "vista": "vw_ActividadContactos"},
+}
+```
+
+### Métodos
+
+#### `obtener_reporte(clave, fecha_inicio=None, fecha_fin=None)`
+
+Obtiene los datos de un reporte con filtro de fechas opcional.
+
+**Parámetros**:
+- `clave` (str): Clave del reporte (ver constante `REPORTES`)
+- `fecha_inicio` (str, opcional): Fecha en formato `AAAA-MM-DD`
+- `fecha_fin` (str, opcional): Fecha en formato `AAAA-MM-DD`
+
+**Retorna**:
+- `(list[dict], list[str], None)` — filas, columnas, None si exitoso
+- `(None, None, error_msg)` si falla
+
+#### `exportar_excel(clave, filas, columnas, ruta)`
+
+Exporta un reporte a archivo Excel usando openpyxl.
+
+**Retorna**: `(True, None)` o `(None, error_msg)`
+
+#### `exportar_pdf(clave, filas, columnas, ruta)`
+
+Exporta un reporte a archivo PDF usando reportlab.
+
+**Retorna**: `(True, None)` o `(None, error_msg)`
+
+**Ejemplo**:
+```python
+from app.services.reporte_service import ReporteService
+
+service = ReporteService()
+filas, columnas, error = service.obtener_reporte("pipeline", "2026-01-01", "2026-03-31")
+if error is None:
+    ok, err = service.exportar_excel("pipeline", filas, columnas, "reporte.xlsx")
+```
+
+---
+
+## NotificacionService
+
+**Ubicación**: `app/services/notificacion_service.py`
+
+**Propósito**: Gestión de notificaciones del sistema y recordatorios personales.
+
+### Métodos de Notificaciones
+
+#### `obtener_no_leidas(usuario_id)`
+
+Obtiene las notificaciones no leídas del usuario.
+
+**Retorna**: `(list[Notificacion], None)`
+
+#### `marcar_como_leidas(usuario_id)`
+
+Marca todas las notificaciones del usuario como leídas.
+
+**Retorna**: `(True, None)`
+
+### Métodos de Recordatorios
+
+#### `obtener_recordatorios(usuario_id)`
+
+Obtiene todos los recordatorios del usuario.
+
+**Retorna**: `(list[Recordatorio], None)`
+
+#### `crear_recordatorio(datos, usuario_id)`
+
+Crea un nuevo recordatorio.
+
+**Campos del dict `datos`**:
+- `titulo` (str, requerido): Título del recordatorio
+- `descripcion` (str, opcional): Descripción detallada
+- `fecha_recordatorio` (str, requerido): Fecha y hora en formato `AAAA-MM-DD HH:MM`
+- `enviar_email` (int, opcional): 1=enviar alerta por email cuando llegue la fecha
+
+**Retorna**: `(Recordatorio, None)`
+
+#### `actualizar_recordatorio(recordatorio_id, datos)`
+
+Actualiza un recordatorio existente.
+
+**Retorna**: `(Recordatorio, None)`
+
+#### `eliminar_recordatorio(recordatorio_id)`
+
+Elimina un recordatorio.
+
+**Retorna**: `(True, None)`
+
+#### `verificar_y_enviar_pendientes(usuario_id)`
+
+Verifica recordatorios con `fecha_recordatorio <= now()` y envía email si `enviar_email=1`. Llamado por el QTimer de `main_view.py` cada 2 minutos.
+
+**Retorna**: `(int, None)` — cantidad de recordatorios procesados
+
+**Ejemplo**:
+```python
+from app.services.notificacion_service import NotificacionService
+
+service = NotificacionService()
+
+# Crear recordatorio con email
+datos = {
+    "titulo": "Llamar a cliente",
+    "fecha_recordatorio": "2026-03-05 09:00",
+    "enviar_email": 1,
+    "descripcion": "Confirmar propuesta enviada la semana pasada"
+}
+recordatorio, error = service.crear_recordatorio(datos, usuario_id=1)
+
+# Verificar notificaciones al login
+no_leidas, _ = service.obtener_no_leidas(usuario_id=1)
+if no_leidas:
+    service.marcar_como_leidas(usuario_id=1)
+```
+
+---
+
 ## Resumen de validaciones por servicio
 
 | Servicio | Validaciones principales |
@@ -856,6 +998,8 @@ service.proveedores_correo  # Lista de proveedores soportados
 | **ActividadService** | Título requerido, tipo_id requerido |
 | **SegmentoService** | Nombre requerido |
 | **CampanaService** | Plantilla: nombre + asunto + HTML requeridos. Campaña: nombre requerido. Config: nombre + proveedor + email_remitente requeridos |
+| **ReporteService** | Clave de reporte debe existir en `REPORTES`. Fechas en formato AAAA-MM-DD si se proporcionan |
+| **NotificacionService** | Recordatorio: título + fecha requeridos. Fecha en formato AAAA-MM-DD HH:MM |
 
 ---
 

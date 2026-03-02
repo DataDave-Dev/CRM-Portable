@@ -174,6 +174,10 @@ El sistema está organizado en 7 capas principales:
 - `ActividadesView`: Gestión de actividades (módulo 3)
 - `SegmentacionView`: Segmentos, etiquetas y asignación de contactos (módulo 4)
 - `ComunicacionView`: Plantillas, campañas y configuración de correo (módulo 5)
+- `ReportesView`: 5 reportes precalculados con filtros de fecha y exportación Excel/PDF (módulo 6)
+- `NotificacionesView`: Dos pestañas — Notificaciones del sistema + Recordatorios personales (módulo 7)
+- `NotificacionPopup`: QDialog que se muestra al iniciar sesión con notificaciones no leídas
+- `DashboardView`: KPIs ejecutivos + gráficas matplotlib (pipeline, oportunidades) + actividades recientes
 
 **Principios**:
 - No contiene lógica de negocio
@@ -214,7 +218,9 @@ El sistema está organizado en 7 capas principales:
 - `ActividadService`: CRUD de actividades con asignación y estados
 - `SegmentoService`: Segmentos con asignación de contactos
 - `EtiquetaService`: Etiquetas para contactos y segmentos
-- `CampanaService`: Plantillas, campañas de email y configuración de correo
+- `CampanaService`: Plantillas, campañas de email y configuración de correo; envío real SMTP con métricas
+- `ReporteService`: Consultas a 5 vistas precalculadas + exportación Excel (openpyxl) y PDF (reportlab)
+- `NotificacionService`: CRUD de recordatorios, popup de notificaciones no leídas, envío de alertas por email
 
 **Principios**:
 - Valida datos de negocio (formato, requeridos, unicidad)
@@ -241,6 +247,9 @@ El sistema está organizado en 7 capas principales:
 - `SegmentoRepository`, `EtiquetaRepository`
 - `PlantillaRepository`, `CampanaRepository`
 - `ConfigCorreoRepository`
+- `ReporteRepository`: consultas contra 5 vistas SQL precalculadas
+- `NotificacionRepository`, `RecordatorioRepository`
+- `DashboardRepository`: KPIs desde `vw_ResumenEjecutivo`, pipeline, actividades recientes
 
 **Principios**:
 - Queries parametrizadas (prevención SQL injection)
@@ -263,6 +272,7 @@ El sistema está organizado en 7 capas principales:
 - `Segmento`, `Etiqueta`
 - `Plantilla`, `Campana`
 - `ConfiguracionCorreo`
+- `Notificacion`, `Recordatorio`
 
 **Principios**:
 - POJOs/DTOs simples
@@ -292,10 +302,11 @@ El sistema está organizado en 7 capas principales:
 
 **Características**:
 - SQLite con modo WAL (Write-Ahead Logging)
-- 41+ tablas normalizadas
-- Triggers para timestamps y auditoría
-- Vistas para reportes de pipeline, rendimiento y conversión
+- 42+ tablas normalizadas
+- Triggers para timestamps, historial de etapas y auditoría
+- 6 vistas precalculadas: `vw_ResumenEjecutivo`, `vw_PipelineVentas`, `vw_RendimientoVendedores`, `vw_ConversionEtapas`, `vw_MetricasCampanas`, `vw_ActividadContactos`
 - Foreign keys con integridad referencial
+- `migrate_database()` en `initializer.py` crea tablas faltantes en DBs existentes
 - Conexión thread-local via `get_connection()` (no singleton de instancia)
 
 ---
@@ -651,19 +662,23 @@ except Exception as e:
 ┌──────────────────────────────────────────────────────────┐
 │                      APLICACIÓN CRM                       │
 │                                                           │
-│  ┌────────┐ ┌────────┐ ┌──────────┐ ┌─────────────────┐ │
-│  │ Login  │ │  Main  │ │ Clientes │ │     Ventas      │ │
-│  │  View  │ │  View  │ │  View    │ │      View       │ │
-│  └───┬────┘ └───┬────┘ └────┬─────┘ └────────┬────────┘ │
-│      │          │           │                 │          │
-│  ┌───┴──────────┴───────────┴─────────────────┴──────┐  │
-│  │  ┌─────────────┐ ┌───────────────┐ ┌───────────┐  │  │
-│  │  │ Actividades │ │ Segmentación  │ │Comunicación│  │  │
-│  │  │    View     │ │     View      │ │    View    │  │  │
-│  │  └──────┬──────┘ └──────┬────────┘ └─────┬─────┘  │  │
-│  └─────────┼───────────────┼────────────────┼────────┘  │
-│            │               │                │           │
-│  ┌─────────┴───────────────┴────────────────┴────────┐  │
+│  ┌────────┐ ┌───────────┐ ┌──────────┐ ┌─────────────┐  │
+│  │ Login  │ │ Dashboard │ │ Clientes │ │   Ventas    │  │
+│  │  View  │ │   View    │ │  View    │ │    View     │  │
+│  └───┬────┘ └─────┬─────┘ └────┬─────┘ └──────┬─────┘  │
+│      │            │            │               │        │
+│  ┌───┴────────────┴────────────┴───────────────┴────┐   │
+│  │  ┌────────────┐ ┌───────────┐ ┌──────────────┐   │   │
+│  │  │Actividades │ │Segmentac. │ │Comunicación  │   │   │
+│  │  │   View     │ │   View    │ │   View       │   │   │
+│  │  └──────┬─────┘ └─────┬─────┘ └──────┬───────┘   │   │
+│  │  ┌──────┴─────┐ ┌─────┴─────┐ ┌──────┴───────┐   │   │
+│  │  │ Reportes   │ │Notificac. │ │  Popup Notif.│   │   │
+│  │  │   View     │ │   View    │ │              │   │   │
+│  │  └────────────┘ └───────────┘ └──────────────┘   │   │
+│  └────────────────────────┬──────────────────────────┘   │
+│                           │                             │
+│  ┌────────────────────────┴───────────────────────────┐  │
 │  │               Controllers Layer                   │  │
 │  └────────────────────────┬───────────────────────────┘  │
 │                           │                             │
@@ -672,6 +687,7 @@ except Exception as e:
 │  │  Auth · Usuario · Empresa · Contacto · Notas       │  │
 │  │  Producto · Oportunidad · Cotizacion               │  │
 │  │  Actividad · Segmento · Etiqueta · Campana         │  │
+│  │  Reporte · Notificacion                            │  │
 │  └────────────────────────┬───────────────────────────┘  │
 │                           │                             │
 │  ┌────────────────────────┴───────────────────────────┐  │
@@ -679,7 +695,8 @@ except Exception as e:
 │  │  Usuario · Empresa · Contacto · Notas · Catálogo   │  │
 │  │  Producto · Oportunidad · Cotizacion · Actividad   │  │
 │  │  Segmento · Etiqueta · Plantilla · Campana         │  │
-│  │  ConfigCorreo · Auditoria                          │  │
+│  │  ConfigCorreo · Auditoria · Reporte                │  │
+│  │  Notificacion · Recordatorio · Dashboard           │  │
 │  └────────────────────────┬───────────────────────────┘  │
 │                           │                             │
 │  ┌────────────────────────┴───────────────────────────┐  │

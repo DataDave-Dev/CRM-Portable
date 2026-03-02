@@ -87,7 +87,9 @@ Proyecto Equipo #1/
 │   │   ├── Actividad.py
 │   │   ├── Segmento.py, Etiqueta.py
 │   │   ├── Plantilla.py, Campana.py
-│   │   └── ConfiguracionCorreo.py
+│   │   ├── ConfiguracionCorreo.py
+│   │   ├── Notificacion.py         # Alertas del sistema
+│   │   └── Recordatorio.py         # Recordatorios personales del usuario
 │   ├── repositories/        # Capa de acceso a datos (CRUD + SQL)
 │   ├── services/            # Lógica de negocio y validaciones
 │   ├── controllers/         # Controladores MVC (login, main)
@@ -96,7 +98,9 @@ Proyecto Equipo #1/
 │   │   │   ├── main/, auth/, users/
 │   │   │   ├── clientes/, ventas/, catalogos/
 │   │   │   ├── actividades/, segmentacion/
-│   │   │   ├── comunicacion/, configuracion/, geografia/
+│   │   │   ├── comunicacion/, reportes/
+│   │   │   ├── notificaciones/, dashboard/
+│   │   │   ├── configuracion/, geografia/
 │   └── utils/               # Utilidades transversales
 │       ├── validators.py    # Validaciones (email, RFC, teléfono)
 │       ├── sanitizer.py     # Sanitización XSS

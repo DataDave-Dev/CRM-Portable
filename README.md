@@ -16,6 +16,8 @@ Aplicación de escritorio para la gestión de relaciones con clientes (CRM), des
 | bcrypt | 5.0.0 | Hashing seguro de contraseñas |
 | openpyxl | 3.1.5 | Exportación de reportes a Excel (.xlsx) |
 | reportlab | 4.4.10 | Exportación de reportes a PDF |
+| matplotlib | latest | Gráficas del dashboard (pipeline, oportunidades) |
+| pillow | 12.1.1 | Soporte de imágenes en la interfaz |
 
 ---
 
@@ -54,7 +56,7 @@ CRM-Portable/
 │   │   └── catalogos.py
 │   ├── database/                   # Capa de base de datos
 │   │   ├── connection.py           # Conexión thread-local a SQLite
-│   │   └── initializer.py         # Creación de esquema y datos iniciales
+│   │   └── initializer.py         # Creación de esquema, migración y datos iniciales
 │   ├── models/                     # Modelos de datos
 │   │   ├── Usuario.py, Rol.py, Catalogo.py
 │   │   ├── Empresa.py, Contacto.py
@@ -63,7 +65,9 @@ CRM-Portable/
 │   │   ├── Actividad.py
 │   │   ├── Segmento.py, Etiqueta.py
 │   │   ├── Plantilla.py, Campana.py
-│   │   └── ConfiguracionCorreo.py
+│   │   ├── ConfiguracionCorreo.py
+│   │   ├── Notificacion.py         # Modelo de notificaciones del sistema
+│   │   └── Recordatorio.py         # Modelo de recordatorios personales
 │   ├── repositories/               # Capa de acceso a datos (CRUD)
 │   │   ├── usuario_repository.py, rol_repository.py
 │   │   ├── empresa_repository.py, contacto_repository.py
@@ -77,7 +81,10 @@ CRM-Portable/
 │   │   ├── segmento_repository.py, etiqueta_repository.py
 │   │   ├── plantilla_repository.py, campana_repository.py
 │   │   ├── config_correo_repository.py
-│   │   └── reporte_repository.py
+│   │   ├── reporte_repository.py   # Queries contra 5 vistas precalculadas
+│   │   ├── notificacion_repository.py
+│   │   ├── recordatorio_repository.py
+│   │   └── dashboard_repository.py # KPIs, pipeline, actividades recientes
 │   ├── services/                   # Capa de lógica de negocio
 │   │   ├── auth_service.py, usuario_service.py
 │   │   ├── empresa_service.py, contacto_service.py
@@ -87,24 +94,37 @@ CRM-Portable/
 │   │   ├── cotizacion_service.py
 │   │   ├── actividad_service.py
 │   │   ├── segmento_service.py, etiqueta_service.py
-│   │   ├── campana_service.py
-│   │   └── reporte_service.py
+│   │   ├── campana_service.py      # Envío SMTP real + sincronización de métricas
+│   │   ├── reporte_service.py      # Exportación Excel/PDF (openpyxl, reportlab)
+│   │   └── notificacion_service.py # CRUD recordatorios + envío email + popup check
 │   ├── controllers/                # Controladores MVC
 │   │   ├── login_controller.py
 │   │   └── main_controller.py
+│   ├── utils/                      # Utilidades transversales
+│   │   ├── validators.py           # Validaciones (email, RFC, contraseña, etc.)
+│   │   ├── sanitizer.py            # Protección XSS en contenido de notas
+│   │   ├── catalog_cache.py        # Caché en memoria de catálogos (TTL 5 min)
+│   │   ├── logger.py               # Logger centralizado con rotación 10 MB
+│   │   └── db_retry.py             # Reintentos con backoff exponencial
 │   └── views/                      # Vistas e interfaz gráfica
 │       ├── ui/                     # Archivos .ui (Qt Designer)
-│       │   ├── main/, auth/, users/       # UI principal, login y usuarios
-│       │   ├── clientes/                  # UI módulo de clientes (empresas, contactos, notas)
-│       │   ├── catalogos/                 # UI catálogos (ventas, actividades, empresas, sistema)
-│       │   ├── actividades/               # UI módulo de actividades (3 archivos)
-│       │   ├── segmentacion/              # UI módulo de segmentación (5 archivos)
-│       │   ├── comunicacion/              # UI módulo de comunicación (1 archivo)
-│       │   ├── reportes/                  # UI módulo de reportes (1 archivo)
-│       │   ├── configuracion/, geografia/
-│       │   └── ventas/                    # UI módulo de ventas (10 archivos)
+│       │   ├── main/               # main_view.ui
+│       │   ├── auth/               # login_view.ui, setup_view.ui
+│       │   ├── users/              # user_form.ui, user_list.ui
+│       │   ├── clientes/           # 6 archivos (empresa, contacto, notas)
+│       │   ├── catalogos/          # 14 archivos (ventas, actividades, empresas, sistema)
+│       │   ├── actividades/        # 3 archivos
+│       │   ├── segmentacion/       # 6 archivos
+│       │   ├── comunicacion/       # comunicacion_view.ui
+│       │   ├── reportes/           # reportes_view.ui
+│       │   ├── notificaciones/     # notificaciones_view.ui, recordatorio_form.ui
+│       │   ├── dashboard/          # dashboard_view.ui
+│       │   ├── configuracion/      # configuracion_view.ui
+│       │   ├── geografia/          # 4 archivos (paises, estados, ciudades)
+│       │   └── ventas/             # 10 archivos
 │       ├── login_view.py, setup_view.py
-│       ├── main_view.py, configuracion_view.py
+│       ├── main_view.py            # Barra lateral + QTimer cada 2 min (notificaciones)
+│       ├── configuracion_view.py
 │       ├── catalogo_list_widget.py, catalogo_form_dialog.py
 │       ├── geografia_widget.py
 │       ├── clientes_view.py
@@ -116,13 +136,16 @@ CRM-Portable/
 │       ├── actividades_view.py
 │       ├── segmentacion_view.py
 │       ├── comunicacion_view.py
-│       └── reportes_view.py
+│       ├── reportes_view.py
+│       ├── notificaciones_view.py  # Pestañas: Notificaciones + Recordatorios
+│       ├── notificacion_popup.py   # QDialog popup al iniciar sesión
+│       └── dashboard_view.py       # KPIs ejecutivos + gráficas matplotlib
 ├── db/                             # Base de datos y esquema SQL
-│   ├── database_query.sql          # Esquema completo (41+ tablas)
+│   ├── database_query.sql          # Esquema completo (42+ tablas, vistas, triggers)
 │   └── crm.db                     # Archivo SQLite generado
 ├── tests/                          # Pruebas unitarias
 ├── docs/                           # Documentación del proyecto
-├── main.py                         # Punto de entrada de la aplicación
+├── main.py                         # Punto de entrada (llama migrate_database())
 ├── requirements.txt                # Dependencias de Python
 └── README.md
 ```
@@ -131,7 +154,7 @@ CRM-Portable/
 
 ## Base de datos
 
-El esquema SQLite contiene **42 tablas**, 7 vistas, triggers e índices. A continuación los módulos principales:
+El esquema SQLite contiene **42 tablas**, vistas, triggers e índices. A continuación los módulos principales:
 
 | Módulo | Tablas principales | Descripción |
 |---|---|---|
@@ -141,17 +164,29 @@ El esquema SQLite contiene **42 tablas**, 7 vistas, triggers e índices. A conti
 | Actividades | `Actividades`, `TiposActividad` | Llamadas, reuniones, tareas |
 | Segmentación | `Segmentos`, `SegmentoContactos`, `Etiquetas` | Agrupación de contactos |
 | Comunicación | `PlantillasCorreo`, `Campanas`, `CampanaDestinatarios` | Campañas de email masivo |
+| Notificaciones | `Notificaciones`, `Recordatorios` | Alertas del sistema y recordatorios personales |
 | Config. Correo | `ConfiguracionCorreo` | Cuentas SMTP/API para envíos |
 | Geografía | `Paises`, `Estados`, `Ciudades` | Jerarquía geográfica |
 | Catálogos | `Industrias`, `Monedas`, `Prioridades`, etc. | Tablas de configuración |
-| Auditoría | `LogAuditoria`, `Notificaciones` | Trazabilidad y alertas |
+| Auditoría | `LogAuditoria` | Trazabilidad de CREATE/UPDATE/DELETE |
+
+### Vistas precalculadas
+
+| Vista | Propósito |
+|---|---|
+| `vw_ResumenEjecutivo` | KPIs del dashboard (contactos, empresas, pipeline, revenue) |
+| `vw_PipelineVentas` | Reporte de pipeline por etapa |
+| `vw_RendimientoVendedores` | Conversión y montos por vendedor |
+| `vw_ConversionEtapas` | Tasa de conversión entre etapas |
+| `vw_MetricasCampanas` | Métricas de campañas de email |
+| `vw_ActividadContactos` | Actividad reciente por contacto |
 
 ### Características de la BD
 
-- Claves foráneas con integridad referencial
+- Claves foráneas con integridad referencial (`PRAGMA foreign_keys = ON`)
 - Triggers para timestamps automáticos, historial de etapas y auditoría
-- Vistas precalculadas para reportes (pipeline, rendimiento, conversión)
 - Modo WAL para mejor rendimiento concurrente
+- `migrate_database()` en `initializer.py` crea tablas faltantes en DBs existentes
 
 ---
 
@@ -174,7 +209,7 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 
 **Al iniciar la aplicación por primera vez**, se mostrará un asistente de configuración inicial que te permitirá crear tu usuario administrador personalizado:
 
-1. La aplicación detecta que no hay usuarios en el sistema
+1. La aplicación detecta que no hay usuarios administradores en el sistema
 2. Se muestra la ventana de "Configuración Inicial"
 3. Completa el formulario con tu información:
    - Nombre
@@ -213,9 +248,10 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 - [x] **Campañas de comunicación**: Gestión de campañas de email con destinatarios y métricas
 - [x] **Envío de correos SMTP**: Envío real de campañas vía SMTP con SSL/TLS, manejo de estados y métricas
 - [x] **Configuración de correo**: Cuentas SMTP/API (Gmail, Outlook, SendGrid, Mailgun) para envío masivo
-- [x] **Reportes**: 5 reportes precalculados (pipeline, vendedores, etapas, campañas, actividad de contactos) con filtro de fechas y exportación a Excel y PDF
-- [ ] Gestión de documentos
-- [ ] Recordatorios y notificaciones
+- [x] **Reportes**: 5 reportes precalculados con filtro de fechas y exportación a Excel y PDF
+- [x] **Notificaciones**: Popup al iniciar sesión con notificaciones no leídas; marcado automático como leídas
+- [x] **Recordatorios**: CRUD de recordatorios personales con envío de email de alerta vía SMTP
+- [x] **Dashboard ejecutivo**: KPIs en tiempo real, gráfica de pipeline por etapa, gráfica de oportunidades y tabla de actividades recientes
 
 ---
 
@@ -260,29 +296,29 @@ El proyecto incluye las siguientes mejoras de seguridad implementadas:
 - Validación de tipos de datos y formatos
 - Protección contra entrada maliciosa
 
-### Sanitización de Inputs (Implementado)
+### Sanitización de Inputs
 - Módulo `sanitizer.py` para prevenir XSS
 - Escape automático de HTML en contenido de notas
 - Validación de longitud con límites configurables
 - Truncado automático de texto excedente
 
-### Sistema de Logging (Implementado)
-- Logger centralizado con rotación automática (10MB por archivo)
+### Sistema de Logging
+- Logger centralizado con rotación automática (10 MB por archivo)
 - Filtrado automático de 15+ tipos de datos sensibles (contraseñas, RFC, tokens, etc.)
 - Logs separados: `app.log` (todos los niveles) y `errors.log` (solo errores)
 - Registro de operaciones CRUD con usuario responsable
 - Stack traces completos en logs de error
 
-### Sistema de Auditoría (Implementado)
+### Sistema de Auditoría
 - Tabla `LogAuditoria` con registro completo de operaciones
 - Tracking de CREATE, UPDATE, DELETE
 - Almacenamiento de valores anteriores y nuevos en JSON
 - Asociación de operaciones al usuario que las realiza
 - IP de origen registrada
 
-### Manejo de Errores (Implementado)
+### Manejo de Errores
 - Sanitización de mensajes de error para usuarios finales
-- Reintentos automáticos con backoff exponencial para errores de DB
+- Reintentos automáticos con backoff exponencial para errores de DB (`db_retry.py`)
 - Validación de foreign keys antes de insertar
 - Mensajes amigables sin exponer detalles técnicos
 
@@ -305,30 +341,29 @@ El proyecto implementa optimizaciones clave para mejorar el rendimiento y escala
 - Métodos `find_all(limit, offset)` y `count_all()` en repositorios
 - Reduce uso de memoria con grandes volúmenes de datos
 
-### Impacto Esperado
-- Reducción de 80% en consultas a BD para carga de formularios
-- Uso de memoria estable independiente del volumen de datos
+### Vistas Precalculadas
+- 6 vistas SQL en la BD calculan agregaciones costosas de forma incremental
+- El dashboard y los reportes consultan directamente estas vistas en lugar de hacer JOINs complejos en tiempo real
 
 ---
 
 ## Testing
 
-El proyecto incluye una suite completa de **53 tests unitarios** (100% passing):
+El proyecto incluye una suite de **46 tests unitarios** (100% passing):
 
 ### Estructura de Tests
 ```
 tests/
 ├── test_utils/
 │   ├── test_validators.py             # Tests de validaciones (15 tests)
-│   ├── test_catalog_cache.py          # Tests de caché (4 tests)
-│   └── test_sanitizer.py              # Tests de sanitización (16 tests)
+│   └── test_catalog_cache.py          # Tests de caché (4 tests)
 └── test_services/
     ├── test_auth_service.py           # Tests de autenticación (9 tests)
     ├── test_nota_contacto_service.py  # Tests de notas de contacto (9 tests)
     └── test_nota_empresa_service.py   # Tests de notas de empresa (9 tests)
 ```
 
-### Cobertura de Tests (53 tests - 100% passing)
+### Cobertura de Tests (46 tests - 100% passing)
 
 - **Validadores** (15 tests): 100% de cobertura
   - Validación de email, teléfono, código postal
@@ -350,12 +385,6 @@ tests/
   - Invalidación de caché
   - Caché con filtros
   - Configuración de TTL
-
-- **Sanitización** (16 tests): Seguridad contra XSS
-  - Sanitización de HTML y caracteres especiales
-  - Validación de longitud de texto
-  - Validación de rangos numéricos
-  - Truncado automático de texto largo
 
 - **Notas de Contacto** (9 tests): CRUD completo
   - Creación exitosa con validaciones
@@ -386,12 +415,6 @@ pytest --cov=app --cov-report=html
 # Ejecutar tests de un módulo específico
 pytest tests/test_utils/test_validators.py
 ```
-
-### Próximos Tests Planeados
-- Tests de servicios de Empresas y Contactos (CRUD completo)
-- Tests de repositorios
-- Tests de integración end-to-end
-- Configuración de CI/CD con GitHub Actions
 
 ---
 

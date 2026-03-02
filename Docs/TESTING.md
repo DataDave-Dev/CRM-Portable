@@ -20,13 +20,12 @@ El proyecto utiliza **pytest** como framework de testing principal, con **pytest
 
 ### Estadísticas actuales
 
-- **Total de tests**: 53
+- **Total de tests**: 46
 - **Status**: 100% passing ✅
 - **Categorías**:
   - Validadores: 15 tests
   - Autenticación: 9 tests
   - Caché: 4 tests
-  - Sanitización: 16 tests
   - Notas de contacto: 9 tests
   - Notas de empresa: 9 tests
 
@@ -40,11 +39,10 @@ tests/
 ├── test_utils/
 │   ├── __init__.py
 │   ├── test_validators.py        # Tests de validaciones (15 tests)
-│   ├── test_catalog_cache.py     # Tests de caché (4 tests)
-│   └── test_sanitizer.py         # Tests de sanitización (16 tests)
+│   └── test_catalog_cache.py     # Tests de caché (4 tests)
 └── test_services/
     ├── __init__.py
-    ├── test_auth_service.py      # Tests de autenticación (9 tests)
+    ├── test_auth_service.py           # Tests de autenticación (9 tests)
     ├── test_nota_contacto_service.py  # Tests de notas de contacto (9 tests)
     └── test_nota_empresa_service.py   # Tests de notas de empresa (9 tests)
 ```
@@ -644,9 +642,10 @@ def test_crear_usuario_error_bd():  # Error de sistema
 ## Próximos pasos
 
 Tests pendientes de implementar:
-- [ ] Tests de EmpresaService
-- [ ] Tests de ContactoService
+- [ ] Tests de EmpresaService y ContactoService
 - [ ] Tests de CatalogoService
+- [ ] Tests de ActividadService, SegmentoService, CampanaService
+- [ ] Tests de ReporteService y NotificacionService
 - [ ] Tests de repositories
 - [ ] Tests de integración end-to-end
 - [ ] CI/CD con GitHub Actions
