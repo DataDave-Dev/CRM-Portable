@@ -881,6 +881,10 @@ INSERT INTO Roles (NombreRol, Descripcion) VALUES
 ('Vendedor', 'Gestión de contactos, oportunidades y actividades'),
 ('Marketing', 'Gestión de campañas y comunicaciones');
 
+-- Administrador por defecto — Login: admin@crm.com / Test1234
+INSERT INTO Usuarios (UsuarioID, Nombre, ApellidoPaterno, Email, Telefono, ContrasenaHash, RolID, Activo) VALUES
+(1, 'Admin', 'Sistema', 'admin@crm.com', '8180000000', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 1, 1);
+
 -- Usuarios de prueba (contraseña de todos: Test1234)
 INSERT INTO Usuarios (UsuarioID, Nombre, ApellidoPaterno, ApellidoMaterno, Email, Telefono, ContrasenaHash, RolID, Activo) VALUES
 (2, 'María',  'González',  'Soto',   'mgonzalez@crm.com',  '8181110001', '$2b$12$CHdRzEA79sLCImEidhdGSObYTEzSQFmoEo8FQefSf5dRGD9R6XSmW', 3, 1),
@@ -1162,6 +1166,136 @@ INSERT INTO ContactoEtiquetas (ContactoID, EtiquetaID, AsignadoPor) VALUES
 (6, 2, 2), (10, 2, 2),
 (4, 3, 4), (7, 3, 4), (10, 3, 4);
 
+-- Recordatorios de prueba
+INSERT INTO Recordatorios (UsuarioID, Titulo, Descripcion, FechaRecordatorio, ContactoID, EmpresaID, OportunidadID, TipoRecurrencia, EsLeido, EsCompletado) VALUES
+(2, 'Seguimiento propuesta PIAGA',          'Llamar a Roberto García para confirmar si revisó la propuesta de mantenimiento', '2026-03-05 09:00:00', 2, 1, 1,  NULL,      0, 0),
+(2, 'Cierre contrato equipos seguridad',    'Negociación final con Arturo Chávez en MinSanPedro',                           '2026-03-10 11:00:00', 10, 6, 6,  NULL,      0, 0),
+(2, 'Revisión pipeline mensual',            'Actualizar estado de todas las oportunidades abiertas del mes',                 '2026-03-31 08:00:00', NULL, NULL, NULL, 'Mensual', 0, 0),
+(3, 'Demo ERP GIM - segunda sesión',        'Preparar demo con módulo de producción para Carlos Ramírez',                   '2026-03-06 10:00:00', 4, 2, 2,   NULL,      0, 0),
+(3, 'Propuesta GPS TransReyes',             'Enviar cotización final actualizada a Gabriela Núñez',                         '2026-03-08 15:00:00', 11, 7, 7,  NULL,      0, 0),
+(3, 'Reunión semanal de ventas',            'Preparar reporte de avance de oportunidades para el gerente',                  '2026-03-07 09:00:00', NULL, NULL, NULL, 'Semanal', 0, 0),
+(4, 'Revisión pipeline equipo',             'Revisar avance de oportunidades de María y Carlos antes de la reunión',        '2026-03-04 08:30:00', NULL, NULL, NULL, NULL,      0, 0),
+(4, 'Contrato equipos pesados Vanguardia',  'Confirmar firma definitiva con Patricia Morales',                              '2026-03-03 10:00:00', 7, 4, 4,   NULL,      0, 0),
+(5, 'Campaña Módulo Reportes',              'Revisar lista de destinatarios para la campaña de lanzamiento',                '2026-03-12 09:00:00', NULL, NULL, NULL, NULL,      0, 0),
+(5, 'Análisis apertura Newsletter Q1',      'Comparar métricas de apertura con Q4 2025',                                   '2026-03-15 14:00:00', NULL, NULL, NULL, NULL,      0, 0),
+-- Recordatorios del administrador
+(1, 'Revisar reporte ejecutivo Q1 2026',   'Generar y revisar el reporte ejecutivo de ventas del primer trimestre con el equipo gerencial',  '2026-03-31 09:00:00', NULL, NULL, NULL, NULL,      0, 0),
+(1, 'Reunion general mensual de equipo',   'Reunion mensual con todo el equipo de ventas y marketing para revisar objetivos y métricas',     '2026-03-07 10:00:00', NULL, NULL, NULL, 'Mensual', 0, 0),
+(1, 'Auditoria de accesos del sistema',    'Revisar permisos, roles y últimos accesos de todos los usuarios del CRM',                        '2026-03-20 11:00:00', NULL, NULL, NULL, NULL,      0, 0);
+
+-- Notificaciones iniciales para el administrador
+INSERT INTO Notificaciones (UsuarioID, Tipo, Titulo, Mensaje, EntidadTipo, EntidadID, EsLeida) VALUES
+(1, 'Sistema', 'Sistema CRM listo para usar',           'El CRM ha sido configurado con datos de demostración. Revisa el módulo de Reportes para el resumen ejecutivo del equipo de ventas.',                                         NULL, NULL, 0),
+(1, 'Sistema', '4 usuarios activos en el equipo',       'Equipo actual: María González (Vendedora), Carlos Ramírez (Vendedor), Lucía Hernández (Gerente de Ventas), Pedro Sánchez (Marketing).',                                      NULL, NULL, 0),
+(1, 'Ventas',  'Pipeline activo: 8 oportunidades',      '8 oportunidades abiertas. Mayor valor: Equipos construcción pesada Vanguardia por $450,000 MXN en etapa de Negociación.',                                                   NULL, NULL, 0),
+(1, 'Ventas',  'Cotización aceptada: COT-2026-002',     'La cotización COT-2026-002 de $522,000 MXN fue aceptada por Constructora Vanguardia. Oportunidad lista para cierre.',                                                        'Cotizacion', 2, 0);
+
+-- Productos del catálogo
+INSERT INTO Productos (Codigo, Nombre, Descripcion, Categoria, PrecioUnitario, MonedaID, UnidadMedida, Activo) VALUES
+('SRV-MANT-001', 'Mantenimiento Preventivo Industrial',  'Servicio anual de mantenimiento preventivo en instalaciones industriales',        'Servicios',    15000.00, 1, 'Contrato Anual',    1),
+('SRV-CONS-001', 'Consultoría IT Básica',                'Análisis y diagnóstico de infraestructura tecnológica',                          'Consultoría',  25000.00, 1, 'Proyecto',          1),
+('SRV-CONS-002', 'Consultoría IT Avanzada',              'Planificación, diseño y migración de infraestructura tecnológica completa',       'Consultoría',  80000.00, 1, 'Proyecto',          1),
+('SW-ERP-001',   'Licencia ERP Módulo Base',             'Módulo base del sistema ERP: contabilidad, inventario y compras',               'Software',    120000.00, 1, 'Licencia Perpetua', 1),
+('SW-ERP-002',   'Licencia ERP Módulo Producción',       'Módulo de control de producción, MRP y manufactura',                            'Software',     85000.00, 1, 'Licencia Perpetua', 1),
+('SW-GPS-001',   'Sistema GPS Flotilla (10 unidades)',   'Rastreo GPS para flotilla de hasta 10 vehículos, suscripción anual',             'Software',     18000.00, 1, 'Suscripción Anual', 1),
+('EQ-SEG-001',   'Kit de Seguridad Industrial Básico',   'EPP y equipos de protección colectiva para área operativa (10 personas)',        'Equipos',      45000.00, 1, 'Kit',               1),
+('EQ-CONS-001',  'Grúa Telescópica 50T',                 'Grúa telescópica de 50 toneladas para construcción pesada. Incluye instalación.','Equipos',     850000.00, 1, 'Unidad',            1),
+('SW-INV-001',   'Software Gestión de Inventario',       'Sistema de control de almacén e inventario en tiempo real con reportes',         'Software',     35000.00, 1, 'Licencia Perpetua', 1),
+('SRV-CAP-001',  'Capacitación Técnica (10 horas)',      'Sesiones de capacitación técnica para el equipo operativo del cliente',          'Servicios',     8000.00, 1, 'Paquete',           1);
+
+-- Productos vinculados a oportunidades abiertas
+-- ProductoID: 1=SRV-MANT-001  2=SRV-CONS-001  3=SRV-CONS-002  4=SW-ERP-001  5=SW-ERP-002
+--             6=SW-GPS-001     7=EQ-SEG-001    8=EQ-CONS-001   9=SW-INV-001  10=SRV-CAP-001
+INSERT INTO OportunidadProductos (OportunidadID, ProductoID, Cantidad, PrecioUnitario, Descuento, Notas) VALUES
+-- Oportunidad 1: Contrato mantenimiento pintura PIAGA (85,000)
+(1,  1, 5, 15000.00, 0, 'Contratos anuales de mantenimiento para 5 líneas de producción'),
+(1, 10, 1,  8000.00, 0, 'Capacitación inicial del personal técnico de PIAGA'),
+-- Oportunidad 2: ERP para GIM (350,000)
+(2,  4, 2, 120000.00, 0, 'Dos licencias módulo base para sede Monterrey y planta Apodaca'),
+(2,  5, 1,  85000.00, 0, 'Licencia módulo producción para la planta Apodaca'),
+(2, 10, 3,   8000.00, 0, 'Tres sesiones de capacitación ERP: TI, Operaciones y Finanzas'),
+-- Oportunidad 3: Consultoría TI TechSolutions (120,000)
+(3,  3, 1,  80000.00, 0, 'Consultoría avanzada: diagnóstico, diseño y plan de migración'),
+(3,  2, 1,  25000.00, 0, 'Análisis preliminar de requerimientos e inventario de activos TI'),
+(3, 10, 2,   8000.00, 0, 'Dos sesiones de capacitación en mejores prácticas de infraestructura'),
+-- Oportunidad 4: Equipos construcción pesada Vanguardia (450,000 — precio negociado)
+(4,  8, 1, 450000.00, 0, 'Grúa telescópica 50T — precio especial proyecto Vanguardia 2026'),
+-- Oportunidad 5: Software inventario DistNorte (95,000)
+(5,  9, 2,  35000.00, 0, 'Dos licencias: almacén central Saltillo y sucursal Monterrey'),
+(5,  2, 1,  25000.00, 0, 'Consultoría básica para implementación del sistema de inventario'),
+-- Oportunidad 6: Equipos seguridad industrial MinSanPedro (200,000)
+(6,  7, 4,  45000.00, 0, 'Cuatro kits de seguridad para áreas de alto riesgo en la mina'),
+(6, 10, 2,   8000.00, 0, 'Dos sesiones de capacitación en uso y mantenimiento de EPP');
+
+-- Cotizaciones formales
+INSERT INTO Cotizaciones (NumeroCotizacion, OportunidadID, ContactoID, FechaEmision, FechaVigencia, Subtotal, IVA, Total, MonedaID, Estado, Notas, CreadoPor) VALUES
+('COT-2026-001', 1, 3, '2026-01-16', '2026-02-15',  83000.00,  13280.00,  96280.00, 1, 'Enviada',  'Incluye 5 contratos anuales de mantenimiento preventivo y una capacitación inicial para PIAGA.',      2),
+('COT-2026-002', 4, 7, '2026-01-30', '2026-03-01', 450000.00,  72000.00, 522000.00, 1, 'Aceptada', 'Grúa telescópica 50T con precio negociado para proyecto Vanguardia Monterrey-2026. Aceptada 03-Feb.', 4),
+('COT-2026-003', 2, 4, '2026-02-05', '2026-03-07', 349000.00,  55840.00, 404840.00, 1, 'Borrador', 'Propuesta ERP completa para GIM. En revisión interna antes de enviar al cliente.',                    3);
+
+-- Detalle de cotizaciones
+INSERT INTO CotizacionDetalle (CotizacionID, ProductoID, Descripcion, Cantidad, PrecioUnitario, Descuento) VALUES
+-- COT-2026-001 (PIAGA mantenimiento)
+(1,  1, 'Contratos anuales mantenimiento preventivo industrial (5 líneas)', 5, 15000.00, 0),
+(1, 10, 'Capacitación técnica inicial para personal de PIAGA',              1,  8000.00, 0),
+-- COT-2026-002 (Vanguardia grúa — precio negociado)
+(2,  8, 'Grúa telescópica 50T — precio especial proyecto Monterrey 2026',  1, 450000.00, 0),
+-- COT-2026-003 (GIM ERP)
+(3,  4, 'Licencias ERP Módulo Base (sede Monterrey + planta Apodaca)',      2, 120000.00, 0),
+(3,  5, 'Licencia ERP Módulo Producción (planta Apodaca)',                  1,  85000.00, 0),
+(3, 10, 'Capacitación ERP — 3 sesiones (TI + Operaciones + Finanzas)',      3,   8000.00, 0);
+
+-- Historial de cambios de etapa (progresión de oportunidades)
+INSERT INTO HistorialEtapas (OportunidadID, EtapaAnteriorID, EtapaNuevaID, UsuarioID, Comentario, FechaCambio) VALUES
+-- Oportunidad 1 PIAGA: Prospecto → Calificación → Presentación → Propuesta
+(1, 1, 2, 2, 'Prospecto calificado tras llamada con Alonso De León (sistemas PIAGA)',    '2026-01-11 10:30:00'),
+(1, 2, 3, 2, 'Presentación realizada con Roberto García y Daniela Flores en PIAGA',     '2026-01-13 14:00:00'),
+(1, 3, 4, 2, 'Propuesta enviada formalmente a Daniela Flores (Jefa de Compras)',        '2026-01-16 09:15:00'),
+-- Oportunidad 2 GIM: Prospecto → Calificación → Presentación
+(2, 1, 2, 3, 'GIM calificado: presupuesto confirmado para ERP en plan 2026',            '2026-01-22 11:00:00'),
+(2, 2, 3, 3, 'Demo módulo base exitosa. Enrique Torres solicita demo de producción',    '2026-01-29 16:30:00'),
+-- Oportunidad 4 Vanguardia: Propuesta → Negociación (posterior a cotización aceptada)
+(4, 4, 5, 4, 'Vanguardia envía contrapropuesta de precio. Inicio formal de negociación','2026-01-27 08:45:00'),
+-- Oportunidades ganadas 2025 — historial de cierre
+(9, 3, 4, 2, 'Propuesta de renovación 2025 enviada a Roberto García',                  '2025-05-01 09:00:00'),
+(9, 4, 5, 2, 'Negociación de descuento por volumen exitosa (5% sobre precio base)',    '2025-05-20 10:00:00'),
+(9, 5, 6, 2, 'Contrato firmado. Primer pago recibido vía transferencia',               '2025-06-02 09:30:00'),
+(10, 4, 5, 4, 'GIM negocia condiciones de pago y alcance del soporte posventa',        '2025-09-15 11:00:00'),
+(10, 5, 6, 4, 'Firma del contrato de automatización. Kick-off programado Oct-2025',    '2025-09-30 14:00:00');
+
+-- Notas de contactos clave
+INSERT INTO NotasContacto (ContactoID, Titulo, Contenido, EsPrivada, CreadoPor) VALUES
+(2,  'Preferencia de comunicación',     'Roberto prefiere llamadas directas. Mejor horario: 9-11am. Evitar correo por política interna. Contacto alternativo: Daniela Flores (compras).', 0, 2),
+(4,  'Autoridad de compra confirmada',  'Enrique Torres aprueba hasta $500,000 MXN. Montos mayores requieren firma del Director General. Ciclo de aprobación: 15-20 días hábiles.',         0, 4),
+(6,  'Contexto de evaluación activo',   'Diego López evalúa 3 proveedores para consultoría TI. Principal preocupación: tiempo de implementación y soporte post-proyecto en Monterrey.',     0, 2),
+(7,  'Urgencia confirmada',             'Patricia Morales necesita los equipos antes del Q2 2026 para proyecto en Nuevo León. Mencionó proveedor alternativo si no cerramos antes de marzo.',0, 4),
+(9,  'Historial de relación comercial', 'Laura Reyes trabajó antes con el fundador de la empresa. Relación de confianza establecida. El proceso de compra puede agilizarse con propuesta competitiva.', 0, 3);
+
+-- Notas de empresas clave
+INSERT INTO NotasEmpresa (EmpresaID, Titulo, Contenido, EsPrivada, CreadoPor) VALUES
+(1, 'Cliente con renovación anual',       'PIAGA renueva contratos de mantenimiento cada enero desde 2022. Alta probabilidad de renovación si el servicio es satisfactorio. Expansión de planta planeada en 2027.', 0, 2),
+(2, 'Ciclo de compra formal y largo',     'GIM tiene comité de adquisiciones que se reúne el primer lunes de cada mes. Ciclo típico: 45-60 días desde propuesta hasta firma. Requiere aprobación de 2 directivos.', 0, 4),
+(4, 'Cliente estratégico para referidos', 'Vanguardia tiene relación directa con 3 constructoras del norte. Un cierre exitoso puede generar referidos de alto valor en equipos similares para 2026-2027.',           0, 4),
+(3, 'RFP formal activo hasta mayo',       'TechSolutions tiene RFP formal con cierre el 15 de mayo. Evalúan 3 proveedores. Diferenciador clave: soporte técnico local en Monterrey y tiempos de respuesta.',        0, 2);
+
+-- Etiquetas asignadas a empresas
+INSERT INTO EmpresaEtiquetas (EmpresaID, EtiquetaID, AsignadoPor) VALUES
+(1, 1, 4),
+(2, 1, 4),
+(2, 3, 4),
+(4, 1, 4),
+(4, 3, 4),
+(3, 2, 2),
+(6, 3, 2);
+
+-- Metas de ventas 2026
+INSERT INTO MetasVentas (UsuarioID, Periodo, TipoPeriodo, MetaMonto, MonedaID, MetaOportunidades, MontoAlcanzado, OportunidadesCerradas) VALUES
+(2, 'Q1-2026', 'Trimestral',  250000.00, 1,  2, 0.00, 0),
+(3, 'Q1-2026', 'Trimestral',  300000.00, 1,  3, 0.00, 0),
+(4, 'Q1-2026', 'Trimestral',  800000.00, 1,  5, 0.00, 0),
+(2, '2026',    'Anual',      1000000.00, 1,  8, 0.00, 0),
+(3, '2026',    'Anual',      1200000.00, 1, 10, 0.00, 0);
+
 --- ÍNDICES ---
 
 -- Indices en foreign keys de Empresas
@@ -1209,6 +1343,100 @@ CREATE INDEX IF NOT EXISTS idx_ciudades_estado ON Ciudades(EstadoID);
 -- Indices compuestos para filtros frecuentes
 CREATE INDEX IF NOT EXISTS idx_empresas_activo_fecha ON Empresas(Activo, FechaCreacion DESC);
 CREATE INDEX IF NOT EXISTS idx_contactos_activo_fecha ON Contactos(Activo, FechaCreacion DESC);
+
+--- ÍNDICES MÓDULO 7 Y DASHBOARD ---
+
+-- Recordatorios: consultas del QTimer (cada 2 min) y dashboard
+CREATE INDEX IF NOT EXISTS idx_recordatorios_fecha ON Recordatorios(FechaRecordatorio);
+CREATE INDEX IF NOT EXISTS idx_recordatorios_completado_leido ON Recordatorios(EsCompletado, EsLeido);
+
+-- Notificaciones: count_unread y find_unread corren cada 2 min
+CREATE INDEX IF NOT EXISTS idx_notificaciones_leida ON Notificaciones(EsLeida);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_fecha ON Notificaciones(FechaCreacion);
+
+-- Campañas y oportunidades: utilizados en vistas y triggers
+CREATE INDEX IF NOT EXISTS idx_campana_clics_dest ON CampanaClics(DestinatarioID);
+CREATE INDEX IF NOT EXISTS idx_oportunidades_esganda ON Oportunidades(EsGanada);
+CREATE INDEX IF NOT EXISTS idx_cotizaciones_estado ON Cotizaciones(Estado);
+
+--- NUEVOS TRIGGERS ---
+
+-- Actualizar FechaModificacion en Campanas (faltaba, igual que Empresas/Contactos/Oportunidades)
+CREATE TRIGGER IF NOT EXISTS trg_Campanas_UpdateFecha
+AFTER UPDATE ON Campanas
+BEGIN
+    UPDATE Campanas
+    SET FechaModificacion = datetime('now', 'localtime')
+    WHERE CampanaID = NEW.CampanaID;
+END;
+
+-- Auditoría en eliminación de oportunidades
+CREATE TRIGGER IF NOT EXISTS trg_Oportunidades_AuditoriaDelete
+BEFORE DELETE ON Oportunidades
+BEGIN
+    INSERT INTO LogAuditoria (UsuarioID, Accion, EntidadTipo, EntidadID, ValoresAnteriores)
+    VALUES (
+        NULL,
+        'DELETE',
+        'Oportunidad',
+        OLD.OportunidadID,
+        '{"Nombre":"' || OLD.Nombre || '","EsGanada":' || IFNULL(OLD.EsGanada, 'null') || ',"MontoEstimado":' || IFNULL(OLD.MontoEstimado, 0) || '}'
+    );
+END;
+
+-- Auditoría en eliminación de usuarios (seguridad)
+CREATE TRIGGER IF NOT EXISTS trg_Usuarios_AuditoriaDelete
+BEFORE DELETE ON Usuarios
+BEGIN
+    INSERT INTO LogAuditoria (UsuarioID, Accion, EntidadTipo, EntidadID, ValoresAnteriores)
+    VALUES (
+        NULL,
+        'DELETE',
+        'Usuario',
+        OLD.UsuarioID,
+        '{"Nombre":"' || OLD.Nombre || '","Email":"' || OLD.Email || '","RolID":' || OLD.RolID || '}'
+    );
+END;
+
+-- Notificación cuando una Actividad cambia a estado Completada (EstadoActividadID = 3)
+CREATE TRIGGER IF NOT EXISTS trg_Actividades_NotificacionCompletada
+AFTER UPDATE OF EstadoActividadID ON Actividades
+WHEN NEW.EstadoActividadID = 3 AND OLD.EstadoActividadID != 3
+BEGIN
+    INSERT INTO Notificaciones (UsuarioID, Tipo, Titulo, Mensaje, EntidadTipo, EntidadID)
+    VALUES (
+        NEW.PropietarioID,
+        'ActividadCompletada',
+        'Actividad completada: ' || NEW.Asunto,
+        'La actividad "' || NEW.Asunto || '" ha sido marcada como completada.',
+        'Actividad',
+        NEW.ActividadID
+    );
+END;
+
+--- VISTA DASHBOARD (Módulo 8) ---
+
+-- Vista: KPIs ejecutivos consolidados para el dashboard
+CREATE VIEW IF NOT EXISTS vw_ResumenEjecutivo AS
+SELECT
+    (SELECT COUNT(*) FROM Contactos WHERE Activo = 1)                    AS ContactosActivos,
+    (SELECT COUNT(*) FROM Empresas  WHERE Activo = 1)                    AS EmpresasActivas,
+    (SELECT COUNT(*) FROM Oportunidades WHERE EsGanada IS NULL)          AS OportunidadesAbiertas,
+    (SELECT IFNULL(SUM(MontoEstimado), 0)
+       FROM Oportunidades WHERE EsGanada IS NULL)                        AS ValorPipeline,
+    (SELECT IFNULL(SUM(MontoEstimado), 0)
+       FROM Oportunidades
+      WHERE EsGanada = 1
+        AND substr(FechaCierreReal, 1, 7) = strftime('%Y-%m', 'now', 'localtime')) AS RevenueEsteMes,
+    (SELECT COUNT(*) FROM Actividades WHERE EstadoActividadID IN (1, 2)) AS ActividadesPendientes,
+    (SELECT COUNT(*) FROM Campanas   WHERE Estado = 'Enviada')           AS CampanasEnviadas,
+    CASE
+        WHEN (SELECT COUNT(*) FROM Oportunidades WHERE EsGanada IS NOT NULL) > 0
+        THEN ROUND(
+            CAST((SELECT COUNT(*) FROM Oportunidades WHERE EsGanada = 1) AS REAL) /
+            (SELECT COUNT(*) FROM Oportunidades WHERE EsGanada IS NOT NULL) * 100, 1)
+        ELSE 0
+    END AS TasaConversionGlobal;
 CREATE INDEX IF NOT EXISTS idx_oportunidades_activo_fecha ON Oportunidades(FechaCreacion DESC);
 CREATE INDEX IF NOT EXISTS idx_usuarios_activo_rol ON Usuarios(Activo, RolID);
 
