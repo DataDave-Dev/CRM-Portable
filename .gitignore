@@ -3,9 +3,16 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-app\controllers\__pycache__
-app\database\__pycache__
-app\views\__pycache__
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# PyInstaller build output
+build/
+dist/
+*.spec.bak
 
 # Database files
 *.db
