@@ -207,6 +207,7 @@ El sistema está organizado en 7 capas principales:
 **Componentes**:
 - `AuthService`: Autenticación y sesión
 - `UsuarioService`: CRUD de usuarios
+- `PermissionService`: Matriz de permisos por rol (RBAC) — determina qué secciones puede ver cada rol
 - `EmpresaService`: CRUD de empresas
 - `ContactoService`: CRUD de contactos
 - `NotaContactoService`: CRUD de notas de contacto
@@ -719,7 +720,8 @@ except Exception as e:
 Esta arquitectura proporciona:
 - ✅ **Mantenibilidad**: Capas bien definidas
 - ✅ **Testabilidad**: Desacoplamiento con Repository/Service
-- ✅ **Seguridad**: Logging con filtrado, sanitización XSS, bcrypt
+- ✅ **Seguridad**: Logging con filtrado, sanitización XSS, bcrypt, RBAC
 - ✅ **Rendimiento**: Caché, paginación, WAL mode
 - ✅ **Trazabilidad**: Logging completo + auditoría CRUD
 - ✅ **Robustez**: Retry automático, validaciones múltiples niveles
+- ✅ **Control de acceso**: Permisos por rol centralizados en `permission_service.py`

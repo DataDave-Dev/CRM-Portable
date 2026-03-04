@@ -21,6 +21,7 @@ from app.views.notificaciones_view import NotificacionesView
 from app.views.notificacion_popup import NotificacionPopup
 from app.services.notificacion_service import NotificacionService
 from app.views.dashboard_view import DashboardView
+from app.services.permission_service import tiene_acceso
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "main", "main_view.ui")
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -105,6 +106,24 @@ class MainView(QMainWindow):
         self.btnNotificaciones.clicked.connect(self._mostrar_seccion_notificaciones)
         self.btnUsuarios.clicked.connect(self._mostrar_seccion_usuarios)
         self.btnConfiguracion.clicked.connect(self._mostrar_seccion_configuracion)
+        self._aplicar_permisos()
+
+    def _aplicar_permisos(self):
+        mapa = {
+            self.btnDashboard:      "dashboard",
+            self.btnClientes:       "clientes",
+            self.btnVentas:         "ventas",
+            self.btnActividades:    "actividades",
+            self.btnSegmentacion:   "segmentacion",
+            self.btnComunicacion:   "comunicacion",
+            self.btnReportes:       "reportes",
+            self.btnNotificaciones: "notificaciones",
+            self.btnUsuarios:       "usuarios",
+            self.btnConfiguracion:  "configuracion",
+        }
+        for boton, seccion in mapa.items():
+            if not tiene_acceso(self._usuario_actual, seccion):
+                boton.hide()
 
     def _resaltar_boton_activo(self, boton_activo):
         # resetear el estilo de todos los botones del sidebar
@@ -132,9 +151,10 @@ class MainView(QMainWindow):
             margin: 2px 12px;
         """
 
-        # aplicar estilo normal a todos los botones
+        # aplicar estilo normal a todos los botones visibles
         for boton in self.sidebar_buttons:
-            boton.setStyleSheet(estilo_normal)
+            if boton.isVisible():
+                boton.setStyleSheet(estilo_normal)
 
         # aplicar estilo activo al botón seleccionado
         if boton_activo:

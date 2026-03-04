@@ -87,6 +87,7 @@ CRM-Portable/
 │   │   └── dashboard_repository.py # KPIs, pipeline, actividades recientes
 │   ├── services/                   # Capa de lógica de negocio
 │   │   ├── auth_service.py, usuario_service.py
+│   │   ├── permission_service.py   # Matriz de permisos por rol (RBAC)
 │   │   ├── empresa_service.py, contacto_service.py
 │   │   ├── nota_contacto_service.py, nota_empresa_service.py
 │   │   ├── catalogo_service.py
@@ -228,6 +229,7 @@ La base de datos se crea automáticamente en la primera ejecución con la estruc
 ## Módulos implementados
 
 - [x] **Autenticación**: Login seguro con bcrypt, actualización de último acceso
+- [x] **Control de acceso por roles (RBAC)**: Sidebar adaptativo — cada rol ve únicamente los módulos autorizados
 - [x] **Gestión de usuarios**: CRUD completo con validaciones robustas
 - [x] **Gestión de empresas**: CRUD con validación de RFC, email, teléfono
 - [x] **Gestión de contactos**: CRUD con validación de múltiples emails y teléfonos
@@ -284,6 +286,24 @@ El proyecto incluye las siguientes mejoras de seguridad implementadas:
 - Configuración inicial interactiva para crear primer usuario administrador
 - Sin credenciales por defecto ni hardcodeadas en el código fuente
 - Validación de fortaleza de contraseña en tiempo real durante el registro
+
+### Control de Acceso por Roles (RBAC)
+- Cuatro roles definidos: Administrador, Gerente de Ventas, Vendedor, Marketing
+- Módulos del sidebar ocultos automáticamente según el rol del usuario autenticado
+- Matriz de permisos centralizada en `app/services/permission_service.py`
+
+| Módulo         | Admin | Gerente | Vendedor | Marketing |
+|----------------|-------|---------|----------|-----------|
+| Dashboard      |   ✓   |    ✓    |    ✓     |     ✓     |
+| Clientes       |   ✓   |    ✓    |    ✓     |     ✓     |
+| Ventas         |   ✓   |    ✓    |    ✓     |           |
+| Actividades    |   ✓   |    ✓    |    ✓     |           |
+| Segmentacion   |   ✓   |    ✓    |          |     ✓     |
+| Comunicacion   |   ✓   |    ✓    |          |     ✓     |
+| Reportes       |   ✓   |    ✓    |          |     ✓     |
+| Notificaciones |   ✓   |    ✓    |    ✓     |     ✓     |
+| Usuarios       |   ✓   |         |          |           |
+| Configuracion  |   ✓   |         |          |           |
 
 ### Protección contra Inyección SQL
 - Queries parametrizadas en todos los repositorios
