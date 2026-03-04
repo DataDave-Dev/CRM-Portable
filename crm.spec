@@ -42,7 +42,6 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[
         'tkinter',
-        'unittest',
         'xmlrpc',
     ],
     win_no_prefer_redirects=False,
