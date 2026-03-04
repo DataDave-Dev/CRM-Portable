@@ -43,9 +43,6 @@ a = Analysis(
     excludes=[
         'tkinter',
         'unittest',
-        'email',
-        'html',
-        'http',
         'xmlrpc',
     ],
     win_no_prefer_redirects=False,
