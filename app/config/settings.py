@@ -24,40 +24,46 @@ Estructura de directorios esperada:
 """
 
 import os
+import sys
 
 # ---------------------------------------------------------------------------
 # Rutas del proyecto
 # ---------------------------------------------------------------------------
 
-# BASE_DIR: ruta absoluta a la carpeta raiz del proyecto.
+# Detectar si la aplicacion corre como ejecutable PyInstaller o desde el codigo fuente.
 #
-# Como calcularla:
-#   __file__ es la ruta de este archivo settings.py en tiempo de ejecucion.
-#   os.path.abspath convierte cualquier ruta relativa a absoluta.
-#   os.path.dirname sube un nivel en el arbol de directorios.
-#   Al aplicarlo tres veces subimos:
-#     1er dirname: config/      -> app/
-#     2do dirname: app/         -> Proyecto Equipo #1/
-#     3er dirname: no aplica    (ya estamos en la raiz, solo usamos 2 para este archivo)
+# Cuando PyInstaller empaqueta la app:
+#   sys.frozen    = True
+#   sys.executable = ruta al .exe  (ej. C:\CRM-Sistema\CRM-Sistema.exe)
+#   sys._MEIPASS  = ruta a _internal/ con los archivos bundleados
 #
-# NOTA: En realidad son 3 os.path.dirname anidados:
-#   __file__ = .../app/config/settings.py
-#   dirname  = .../app/config/
-#   dirname  = .../app/
-#   dirname  = .../ (raiz del proyecto = BASE_DIR)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Cuando corre desde el codigo fuente:
+#   sys.frozen no existe  -> getattr devuelve False
+#   __file__ = .../app/config/settings.py (3 niveles abajo de la raiz)
 
-# DB_PATH: ruta absoluta al archivo de base de datos SQLite.
-# SQLite guarda toda la base de datos en este unico archivo binario.
-# Si el archivo no existe, sqlite3.connect() lo crea automaticamente.
-# El archivo se encuentra en la carpeta "db/" dentro del proyecto.
-DB_PATH = os.path.join(BASE_DIR, "db", "crm.db")
+_IS_FROZEN = getattr(sys, "frozen", False)
 
-# SCHEMA_PATH: ruta absoluta al script SQL con la estructura de la base de datos.
-# Este archivo contiene las sentencias CREATE TABLE, CREATE INDEX, INSERT de datos
-# iniciales (catalogos, roles, etc.) para construir la BD desde cero.
-# Se ejecuta solo la primera vez (cuando crm.db no existe aun).
-SCHEMA_PATH = os.path.join(BASE_DIR, "db", "database_query.sql")
+if _IS_FROZEN:
+    # Directorio que contiene el .exe: aqui se guarda crm.db para que sea
+    # visible, movible y respaldable junto con la carpeta del ejecutable.
+    BASE_DIR = os.path.dirname(sys.executable)
+
+    # El esquema SQL viene dentro de _internal/db/ (definido en crm.spec).
+    # sys._MEIPASS apunta a esa carpeta en tiempo de ejecucion.
+    SCHEMA_PATH = os.path.join(sys._MEIPASS, "db", "database_query.sql")
+
+    # La base de datos se crea junto al .exe, NO dentro de _internal/.
+    # Mover la carpeta CRM-Sistema/ a otra maquina conserva todos los datos.
+    DB_PATH = os.path.join(BASE_DIR, "crm.db")
+else:
+    # Ejecucion desde el codigo fuente.
+    #   __file__ = .../app/config/settings.py
+    #   dirname  = .../app/config/
+    #   dirname  = .../app/
+    #   dirname  = .../ (raiz del proyecto)
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DB_PATH     = os.path.join(BASE_DIR, "db", "crm.db")
+    SCHEMA_PATH = os.path.join(BASE_DIR, "db", "database_query.sql")
 
 # ---------------------------------------------------------------------------
 # Constantes de la aplicacion
