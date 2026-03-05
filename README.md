@@ -2,7 +2,7 @@
 
 Aplicación de escritorio para la gestión de relaciones con clientes (CRM), desarrollada como proyecto académico para la materia de **Base de Datos y Lenguajes** en la Facultad de Ingeniería Mecánica y Eléctrica (FIME) de la Universidad Autónoma de Nuevo León (UANL).
 
-<img width="1102" height="739" alt="imagen" src="https://github.com/user-attachments/assets/74fe877d-3dfb-427f-9b57-0e9dd233b76c" />
+<img width="1102" height="739" alt="imagen" src="https://github.com/user-attachments/assets/9e845f89-8d43-4801-b104-ac36bf358d0b" />
 
 ---
 
