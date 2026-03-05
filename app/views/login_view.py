@@ -2,13 +2,24 @@
 
 import os
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QPixmap, QPainter, QIcon
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5 import uic
 
 UI_PATH = os.path.join(os.path.dirname(__file__), "ui", "auth", "login_view.ui")
-ICON_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "building.svg")
+LOGO_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "logo.svg")
+ICON_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "icon.svg")
+
+
+def _svg_to_pixmap(svg_path, width, height):
+    renderer = QSvgRenderer(svg_path)
+    pixmap = QPixmap(width, height)
+    pixmap.fill(Qt.transparent)
+    painter = QPainter(pixmap)
+    renderer.render(painter)
+    painter.end()
+    return pixmap
 
 
 class LoginView(QWidget):
@@ -18,8 +29,18 @@ class LoginView(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi(UI_PATH, self)
+        self._load_logo()
+        self._set_window_icon()
         self._connect_signals()
         self._center_on_screen()
+
+    def _load_logo(self):
+        pixmap = _svg_to_pixmap(LOGO_PATH, 380, 100)
+        self.logoLabel.setPixmap(pixmap)
+
+    def _set_window_icon(self):
+        pixmap = _svg_to_pixmap(ICON_PATH, 64, 64)
+        self.setWindowIcon(QIcon(pixmap))
 
     def _connect_signals(self):
         self.loginBtn.clicked.connect(self._emit_login)

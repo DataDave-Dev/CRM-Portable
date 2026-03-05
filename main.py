@@ -1,7 +1,10 @@
 import sys
+import os
 import signal
 from typing import Optional
 from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor
+from PyQt5.QtSvg import QSvgRenderer
 
 from app.database.initializer import initialize_database, has_users
 from app.views.setup_view import SetupView
@@ -39,6 +42,7 @@ class CRMApp:
           El usuario debe cerrar la app desde la ventana principal.
         """
         self._app = QApplication(sys.argv)
+        self._app.setWindowIcon(self._load_icon())
         # no cerrar la app cuando se cierra el login (aun falta abrir el menu)
         self._app.setQuitOnLastWindowClosed(False)
         # ignorar Ctrl+C en consola para evitar cierre sin limpiar recursos
@@ -47,6 +51,16 @@ class CRMApp:
         self._setup_view: Optional[SetupView] = None
         self._login_controller: Optional[LoginController] = None
         self._main_controller: Optional[MainController] = None
+
+    def _load_icon(self):
+        icon_path = os.path.join(os.path.dirname(__file__), "app", "assets", "icon.svg")
+        renderer = QSvgRenderer(icon_path)
+        pixmap = QPixmap(256, 256)
+        pixmap.fill(QColor(0, 0, 0, 0))
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        return QIcon(pixmap)
 
     def run(self):
         """

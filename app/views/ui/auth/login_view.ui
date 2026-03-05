@@ -193,22 +193,27 @@ QLineEdit:hover {
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="brandTitle">
+       <widget class="QLabel" name="logoLabel">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
-         <string>CRM System</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="brandSubtitle">
-        <property name="text">
-         <string>Sistema de Gestión Empresarial</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="scaledContents">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

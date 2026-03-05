@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+
+  <!-- Fondo -->
+  <rect width="256" height="256" rx="48" fill="#1976D2"/>
+
+  <!-- Nodo central -->
+  <circle cx="128" cy="128" r="26" fill="white"/>
+
+  <!-- Nodos externos -->
+  <circle cx="128" cy="48" r="10" fill="white"/>
+  <circle cx="208" cy="128" r="10" fill="white"/>
+  <circle cx="128" cy="208" r="10" fill="white"/>
+  <circle cx="48" cy="128" r="10" fill="white"/>
+
+  <!-- Conexiones -->
+  <line x1="128" y1="74" x2="128" y2="108" stroke="white" stroke-width="8"/>
+  <line x1="154" y1="128" x2="182" y2="128" stroke="white" stroke-width="8"/>
+  <line x1="128" y1="148" x2="128" y2="182" stroke="white" stroke-width="8"/>
+  <line x1="74" y1="128" x2="108" y2="128" stroke="white" stroke-width="8"/>
+
+</svg>
